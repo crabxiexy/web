@@ -20,7 +20,7 @@ case class AddPatientMessagePlanner(doctorName: String, patientName: String, ove
     startTransaction{
       for {
         _ <- writeDB(s"INSERT INTO ${schemaName}.doctor_patient (doctor_name, patient_name) VALUES (?, ?)",
-          List(SqlParameter("String", doctorName), SqlParameter("String", ""))
+          List(SqlParameter("String", doctorName), SqlParameter("String", patientName))
         )
         a <- startTransaction {
           PatientQueryMessage(doctorName, patientName).send  //发个消息出去
