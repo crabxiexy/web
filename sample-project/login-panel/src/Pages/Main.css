@@ -1,0 +1,148 @@
+/* Main.css */
+.App {
+    text-align: center;
+    background: linear-gradient(to right, #f0f2f5, #d6e0f0);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Arial', sans-serif;
+}
+
+.App-header {
+    background-color: #34495e;
+    padding: 20px;
+    color: white;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.App-header h1 {
+    margin: 0;
+}
+
+.user-section {
+    display: flex;
+    align-items: center;
+}
+
+.user-avatar {
+    margin-left: 20px;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.dropdown-menu {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    right: 20px;
+    top: 60px;
+    width: 150px;
+    text-align: left;
+}
+
+.dropdown-menu p {
+    margin: 0;
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+}
+
+.dropdown-menu p:hover {
+    background: #f0f2f5;
+}
+
+main {
+    width: 80%;
+    max-width: 1000px;
+}
+
+section {
+    background: white;
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+section h2 {
+    border-bottom: 2px solid #34495e;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.notification-board {
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 5px;
+}
+
+.notification-board p {
+    background: #f9e79f;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.button-group button {
+    margin: 10px;
+}
+
+.btn {
+    padding: 15px 30px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.login-btn {
+    background: linear-gradient(to right, #e74c3c, #e67e22);
+    color: white;
+    box-shadow: 0 4px 8px rgba(231, 76, 60, 0.25);
+}
+
+.login-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(231, 76, 60, 0.35);
+}
+
+.activity-btn {
+    background: linear-gradient(to right, #8e44ad, #3498db);
+    color: white;
+    box-shadow: 0 4px 8px rgba(142, 68, 173, 0.25);
+}
+
+.activity-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(142, 68, 173, 0.35);
+}
+
+.exercise-btn {
+    background: linear-gradient(to right, #27ae60, #2ecc71);
+    color: white;
+    box-shadow: 0 4px 8px rgba(39, 174, 96, 0.25);
+}
+
+.exercise-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(39, 174, 96, 0.35);
+}
