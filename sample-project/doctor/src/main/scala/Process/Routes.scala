@@ -34,6 +34,11 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "DeleteMessage" =>
+        IO(decode[DeleteMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for DeleteMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }
