@@ -7,12 +7,12 @@ import { PatientLoginMessage } from 'Plugins/PatientAPI/PatientLoginMessage'
 import { PatientRegisterMessage } from 'Plugins/PatientAPI/PatientRegisterMessage'
 import { AddPatientMessage } from 'Plugins/DoctorAPI/AddPatientMessage'
 import { useHistory } from 'react-router';
+import './login.css';
 
 export function Login() {
     const history = useHistory();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-
 
     const sendPostRequest = async (message:API) => {
         try {
@@ -21,9 +21,8 @@ export function Login() {
             });
             console.log('Response status:', response.status);
             console.log('Response body:', response.data);
-            // Assuming the response is a string "valid" or "invalid"
-            if (response.data === "Valid user") {
-                history.push("/root"); // Navigate to /dashboard upon successful login
+            if (response.data === 'Valid user') {
+                history.push('/root'); // Navigate to /dashboard upon successful login
             }
         } catch (error) {
             if (isAxiosError(error)) {
@@ -39,38 +38,38 @@ export function Login() {
     };
 
     return (
-        <div className="App">
-            <header className="App-header">
-                <h1>HTTP Post Requests</h1>
-            </header>
-            <main>
-                <div className="login-container">
-                    <h2>Login</h2>
-
+        <div className="login-container">
+            <div className="login-box">
+                <header className="login-header">
+                    <h1>Welcome Back!</h1>
+                    <p>Please login to your account</p>
+                </header>
+                <main>
                     <div className="form-group">
-                        <label>Username</label>
+                        <label htmlFor="username">Username</label>
                         <input
                             type="text"
+                            id="username"
                             value={username}
-                            onChange={e => setUsername(e.target.value)}
+                            onChange={(e) => setUsername(e.target.value)}
                             required
                         />
                     </div>
                     <div className="form-group">
-                        <label>Password</label>
+                        <label htmlFor="password">Password</label>
                         <input
                             type="password"
+                            id="password"
                             value={password}
-                            onChange={e => setPassword(e.target.value)}
+                            onChange={(e) => setPassword(e.target.value)}
                             required
                         />
                     </div>
-                    <button onClick={() => sendPostRequest(new LoginMessage(username, password))}>
-                        submit
+                    <button className="fancy-btn" onClick={() => sendPostRequest(new LoginMessage(username, password))}>
+                        Submit
                     </button>
-
-                </div>
-            </main>
+                </main>
+            </div>
         </div>
     );
 }
