@@ -22,20 +22,25 @@ case class RegisterMessagePlanner(userName: String, password: String,override va
       if (exists) {
         IO.raiseError(new Exception("already registered"))
       } else {
-        val id = readDBInt(s"SELECT COALESCE(MAX(id), 0) FROM ${schemaName}.user", List())
-        id.flatMap { id =>
-          val role: String = if (id != 0) "student" else "supervisor"
-          writeDB(s"INSERT INTO ${schemaName}.user (id, user_name, password, identity) VALUES (?, ?, ?, ?)",
-            List(SqlParameter("Int", (id+1).toString),
-              SqlParameter("String", userName),
-              SqlParameter("String", password),
-              SqlParameter("String", role)
-            )
-          ).flatMap { _ =>
-            IO.pure("User registered successfully")
-          }
+        // Use SQL to get the new ID and insert the new user in one transaction
+        val insertUser = writeDB(
+          s"""
+             |WITH new_id AS (
+             |  SELECT COALESCE(MAX(id), 0) + 1 AS id FROM ${schemaName}.user
+             |)
+             |INSERT INTO ${schemaName}.user (id, user_name, password, identity)
+             |SELECT new_id.id, ?, ?, CASE WHEN new_id.id = 1 THEN 'supervisor' ELSE 'student' END
+             |FROM new_id
+           """.stripMargin,
+          List(
+            SqlParameter("String", userName),
+            SqlParameter("String", password)
+          )
+        )
+
+        insertUser.flatMap { _ =>
+          IO.pure("User registered successfully")
         }
       }
     }
   }
-
