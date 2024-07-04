@@ -29,6 +29,11 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "RenameMessage" =>
+        IO(decode[RegisterMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for RenameMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }

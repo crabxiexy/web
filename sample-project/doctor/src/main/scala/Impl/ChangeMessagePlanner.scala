@@ -10,14 +10,26 @@ import io.circe.Json
 import io.circe.generic.auto.*
 
 
-case class ChangeMessagePlanner(userName: String, password: String, override val planContext: PlanContext) extends Planner[String]:
-  override def plan(using PlanContext): IO[String] = {
-    // Attempt to validate the user by reading the rows from the database
-    readDBRows(
-      s"SELECT user_name FROM ${schemaName}.user WHERE user_name = ? AND password = ?",
-      List(SqlParameter("String", userName), SqlParameter("String", password))
-    ).map{
-      case Nil => "Invalid user"
-      case _ => "Valid user"
+case class UpdatePasswordPlanner(userid: Int, newuserName: String, newPassword: String, override val planContext: PlanContext) extends Planner[String]:
+  override def plan(using planContext: PlanContext): IO[String] = {
+    // Check if the user exists
+    val checkUserExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.user WHERE id = ?)",
+      List(SqlParameter("Int", userid.toString))
+    )
+
+    checkUserExists.flatMap { exists =>
+      if (!exists) {
+        IO.raiseError(new Exception("user not found"))
+      } else {
+        // Update the user's password
+        writeDB(s"UPDATE ${schemaName}.user SET password = ? AND user_name = ? WHERE id = ?",
+          List(SqlParameter("String", newPassword),
+            SqlParameter("String", newuserName),
+            SqlParameter("Int", userid.toString)
+          )
+        ).flatMap { _ =>
+          IO.pure("Password updated successfully")
+        }
+      }
     }
   }

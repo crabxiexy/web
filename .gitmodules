@@ -1,0 +1,3 @@
+[submodule "sample-project/doctor/src/api"]
+	path = sample-project/doctor/src/api
+	url = https://github.com/yangchenxiao123/doctorAPI.git
