@@ -17,7 +17,6 @@ export function Main() {
             console.log('Response body:', response.data);
         } catch (error) {
             if (isAxiosError(error)) {
-                // Check if the error has a response and a data property
                 if (error.response && error.response.data) {
                     console.error('Error sending request:', error.response.data);
                 } else {
@@ -38,7 +37,7 @@ export function Main() {
     };
 
     const handleLogin = () => {
-        history.push("/login");
+        history.push("/login"); // Navigate to /login route
     };
 
     return (
