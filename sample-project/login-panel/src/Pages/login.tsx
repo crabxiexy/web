@@ -7,35 +7,13 @@ import { PatientLoginMessage } from 'Plugins/PatientAPI/PatientLoginMessage'
 import { PatientRegisterMessage } from 'Plugins/PatientAPI/PatientRegisterMessage'
 import { AddPatientMessage } from 'Plugins/DoctorAPI/AddPatientMessage'
 import { useHistory } from 'react-router';
+import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils'
 import './login.css';
 
 export function Login() {
     const history = useHistory();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-
-    const sendPostRequest = async (message:API) => {
-        try {
-            const response = await axios.post(message.getURL(), JSON.stringify(message), {
-                headers: { 'Content-Type': 'application/json' },
-            });
-            console.log('Response status:', response.status);
-            console.log('Response body:', response.data);
-            if (response.data === 'Valid user') {
-                history.push('/root'); // Navigate to /dashboard upon successful login
-            }
-        } catch (error) {
-            if (isAxiosError(error)) {
-                if (error.response && error.response.data) {
-                    console.error('Error sending request:', error.response.data);
-                } else {
-                    console.error('Error sending request:', error.message);
-                }
-            } else {
-                console.error('Unexpected error:', error);
-            }
-        }
-    };
 
     return (
         <div className="login-container">

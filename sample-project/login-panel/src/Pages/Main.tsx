@@ -2,38 +2,28 @@ import React, { useState } from 'react';
 import axios, { isAxiosError } from 'axios';
 import { API } from 'Plugins/CommonUtils/API';
 import { useHistory } from 'react-router';
+import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils'
 import './Main.css'; // Import the CSS file
 
 export function Main() {
     const history = useHistory();
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
-    const sendPostRequest = async (message: API) => {
-        try {
-            const response = await axios.post(message.getURL(), JSON.stringify(message), {
-                headers: { 'Content-Type': 'application/json' },
-            });
-            console.log('Response status:', response.status);
-            console.log('Response body:', response.data);
-        } catch (error) {
-            if (isAxiosError(error)) {
-                if (error.response && error.response.data) {
-                    console.error('Error sending request:', error.response.data);
-                } else {
-                    console.error('Error sending request:', error.message);
-                }
-            } else {
-                console.error('Unexpected error:', error);
-            }
-        }
-    };
-
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
     };
 
-    const handleUserConfig = () => {
-        history.push("/config");
+    const handleProfile = () => {
+        history.push("/profile");
+    };
+
+    const handleHelp = () => {
+        history.push("/help");
+    };
+
+    const handleLogout = () => {
+        // Add your logout logic here
+        history.push("/login");
     };
 
     const handleLogin = () => {
@@ -49,7 +39,9 @@ export function Main() {
                     <div className="user-avatar" onClick={toggleDropdown}>👤</div>
                     {dropdownVisible && (
                         <div className="dropdown-menu">
-                            <p onClick={handleUserConfig}>User Config</p>
+                            <p onClick={handleProfile}>Profile</p>
+                            <p onClick={handleHelp}>Help</p>
+                            <p onClick={handleLogout}>Logout</p>
                         </div>
                     )}
                 </div>
