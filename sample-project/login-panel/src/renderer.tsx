@@ -4,7 +4,7 @@ import { HashRouter, Route, Switch } from 'react-router-dom'
 import { Main } from 'Pages/Main'
 import { Login } from 'Pages/login'
 import {root} from 'Pages/root'
-import {rename} from 'Pages/rename'
+import {Rename} from 'Pages/rename'
 import {Register} from 'Pages/register'
 const Layout = () => {
     return (
@@ -13,7 +13,7 @@ const Layout = () => {
                 <Route path="/" exact component={Main} />
                 <Route path="/login" exact component={Login} />
                 <Route path="/root" exact component={root} />
-                <Route path="/rename" exact component={rename} />
+                <Route path="/rename" exact component={Rename} />
                 <Route path="/register" exact component={Register} />
             </Switch>
         </HashRouter>
