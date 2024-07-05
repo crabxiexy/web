@@ -15,7 +15,7 @@ export function Login() {
             const response = await sendPostRequest(new LoginMessage(username, password));
             // Handle successful response
             console.log('Login Response:', response);
-            if (response.data == "Invalid user") {
+            if (response.data == "Valid user") {
                 // Example: Navigate to dashboard upon successful login
                 history.push('/root');
             }
