@@ -25,7 +25,6 @@ export function Login() {
             setError(error.message); // Update state with error message
         }
     };
-
     return (
         <div className="login-container">
             <div className="login-box">
@@ -55,7 +54,7 @@ export function Login() {
                             required
                         />
                     </div>
-                    <button className="fancy-btn" onClick={handleLogin}>
+                    <button className="button" onClick={handleLogin}>
                         Submit
                     </button>
                 </main>

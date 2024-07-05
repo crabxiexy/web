@@ -6,18 +6,22 @@ import './login.css';
 
 export function Rename() {
     const history = useHistory();
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [id, setId] = useState<string>(''); // State for ID as string
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [error, setError] = useState<string>(''); // State for error message
 
     const handleRename = async () => {
         try {
-            const response = await sendPostRequest(new RenameMessage(username, password));
+            // Convert id to number if needed
+            const idNumber = parseInt(id, 10); // Example: parsing as integer
+
+            const response = await sendPostRequest(new RenameMessage( username, password,idNumber));
 
             // Handle successful response
             console.log('Rename Response:', response);
 
-            // Example: Redirect to profile page upon successful rename
+            // Example: Redirect to root page upon successful rename
             history.push('/root');
 
         } catch (error) {
@@ -37,7 +41,15 @@ export function Rename() {
                     <h2>Rename</h2>
 
                     {error && <p className="error-message">{error}</p>}
-
+                    <div className="form-group">
+                        <label>ID</label>
+                        <input
+                            type="text"
+                            value={id}
+                            onChange={e => setId(e.target.value)}
+                            required
+                        />
+                    </div>
                     <div className="form-group">
                         <label>Username</label>
                         <input
@@ -56,11 +68,11 @@ export function Rename() {
                             required
                         />
                     </div>
-                    <button className="fancy-btn" onClick={handleRename}>
+                    <button onClick={handleRename}>
                         Submit
                     </button>
                     <button onClick={() => history.push("/root")}>
-                        back
+                        Back
                     </button>
 
                 </div>
