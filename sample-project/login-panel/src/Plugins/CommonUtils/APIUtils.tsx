@@ -8,6 +8,7 @@ export const sendPostRequest = async (message: API) => {
         });
         console.log('Response status:', response.status);
         console.log('Response body:', response.data);
+        return response
     } catch (error) {
         if (isAxiosError(error)) {
             if (error.response && error.response.data) {

@@ -1,19 +1,30 @@
 import React, { useState } from 'react';
-import axios, { isAxiosError } from 'axios'
-import { API } from 'Plugins/CommonUtils/API'
-import { LoginMessage } from 'Plugins/DoctorAPI/LoginMessage'
-import { RegisterMessage } from 'Plugins/DoctorAPI/RegisterMessage'
-import { PatientLoginMessage } from 'Plugins/PatientAPI/PatientLoginMessage'
-import { PatientRegisterMessage } from 'Plugins/PatientAPI/PatientRegisterMessage'
-import { AddPatientMessage } from 'Plugins/DoctorAPI/AddPatientMessage'
 import { useHistory } from 'react-router';
-import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils'
+import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
+import { LoginMessage } from 'Plugins/DoctorAPI/LoginMessage';
 import './login.css';
 
 export function Login() {
     const history = useHistory();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+
+    const handleLogin = async () => {
+        try {
+            const response = await sendPostRequest(new LoginMessage(username, password));
+            // Handle successful response
+            console.log('Login Response:', response);
+            if (response.data == "Invalid user") {
+                // Example: Navigate to dashboard upon successful login
+                history.push('/root');
+            }
+        } catch (error) {
+            // Handle error
+            console.error('Login Er, error.message');
+            setError(error.message); // Update state with error message
+        }
+    };
 
     return (
         <div className="login-container">
@@ -23,6 +34,7 @@ export function Login() {
                     <p>Please login to your account</p>
                 </header>
                 <main>
+                    {error && <p className="error-message">{error}</p>}
                     <div className="form-group">
                         <label htmlFor="username">Username</label>
                         <input
@@ -43,7 +55,7 @@ export function Login() {
                             required
                         />
                     </div>
-                    <button className="fancy-btn" onClick={() => sendPostRequest(new LoginMessage(username, password))}>
+                    <button className="fancy-btn" onClick={handleLogin}>
                         Submit
                     </button>
                 </main>
