@@ -12,12 +12,12 @@ import cats.effect.IO
 import io.circe.generic.auto.*
 
 
-case class LoginMessagePlanner(userName: String, password: String, override val planContext: PlanContext) extends Planner[String]:
+case class LoginMessagePlanner(student_id:Int, password: String, identity:Int, override val planContext: PlanContext) extends Planner[String]:
   override def plan(using PlanContext): IO[String] = {
     // Attempt to validate the user by reading the rows from the database
     readDBRows(
-      s"SELECT user_name FROM ${schemaName}.user WHERE user_name = ? AND password = ?",
-      List(SqlParameter("String", userName), SqlParameter("String", password))
+      s"SELECT student_id FROM ${schemaName}.user WHERE student_id = ? AND password = ? AND identity = ?",
+      List(SqlParameter("Int", student_id.toString), SqlParameter("String", password), SqlParameter("Int", identity.toString))
     ).map{
       case Nil => "Invalid user"
       case _ => "Valid user"

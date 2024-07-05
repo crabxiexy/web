@@ -36,7 +36,7 @@ object PortalService {
   def handlePostRequest(client: Client[IO], req: Request[IO], serviceName: String, messageName: String): IO[Either[Throwable, Json]] = {
     for {
       bodyJson <- req.as[Json]
-      planContext = PlanContext(TraceID(UUID.randomUUID().toString), transactionLevel = 0)
+      planContext = PlanContext(TraceID(UUID.randomUUID().toString), transactionLevel = 0)//planContext is for better tracing
       planContextJson = planContext.asJson
       updatedJson = bodyJson.deepMerge(Json.obj("planContext" -> planContextJson))
       _ <- IO.println(updatedJson)

@@ -3,7 +3,7 @@ package Impl
 import cats.effect.IO
 import io.circe.generic.auto.*
 import Common.API.{PlanContext, Planner}
-import Common.DBAPI.{writeDB, *}
+import Common.DBAPI.*
 import Common.Object.{ParameterList, SqlParameter}
 import Common.ServiceUtils.schemaName
 import APIs.PatientAPI.PatientQueryMessage
@@ -11,11 +11,16 @@ import cats.effect.IO
 import io.circe.generic.auto.*
 
 
-case class RegisterMessagePlanner(userName: String, password: String,override val planContext: PlanContext) extends Planner[String]:
+
+// 示例：获取ID为1的角色名称
+//println(getRoleName(1)) // 输出：超级管理员
+
+
+case class RegisterMessagePlanner(student_id:Int, name: String, password: String,  identity:Int, override val planContext: PlanContext) extends Planner[String]:
   override def plan(using planContext: PlanContext): IO[String] = {
     // Check if the user is already registered
-    val checkUserExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.user WHERE user_name = ?)",
-        List(SqlParameter("String", userName))
+    val checkUserExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.user WHERE student_id = ?)",
+        List(SqlParameter("Int", student_id.toString))
       )
 
     checkUserExists.flatMap { exists =>
@@ -28,13 +33,16 @@ case class RegisterMessagePlanner(userName: String, password: String,override va
              |WITH new_id AS (
              |  SELECT COALESCE(MAX(id), 0) + 1 AS id FROM ${schemaName}.user
              |)
-             |INSERT INTO ${schemaName}.user (id, user_name, password, identity)
-             |SELECT new_id.id, ?, ?, CASE WHEN new_id.id = 1 THEN 'supervisor' ELSE 'student' END
+             |INSERT INTO ${schemaName}.user (id, name, password, student_id, identity)
+             |SELECT new_id.id, ?, ?, ?, ?
              |FROM new_id
-           """.stripMargin,
+       """.stripMargin,
           List(
-            SqlParameter("String", userName),
-            SqlParameter("String", password)
+            SqlParameter("String", name),
+            SqlParameter("String", password),
+            SqlParameter("Int", student_id.toString),
+            SqlParameter("Int", identity.toString),
+//            SqlParameter("Int", identity.toString) // 需要两次，一次用于CASE语句，一次用于INSERT
           )
         )
 
