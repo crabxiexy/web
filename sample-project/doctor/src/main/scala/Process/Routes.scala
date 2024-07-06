@@ -30,7 +30,7 @@ object Routes:
             m.fullPlan.map(_.asJson.toString)
           }
       case "RenameMessage" =>
-        IO(decode[RegisterMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for RenameMessage")))
+        IO(decode[UpdatePasswordPlanner](str).getOrElse(throw new Exception("Invalid JSON for RenameMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }

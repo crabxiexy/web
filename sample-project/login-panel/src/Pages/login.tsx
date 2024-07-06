@@ -3,13 +3,15 @@ import { useHistory } from 'react-router';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { LoginMessage } from 'Plugins/DoctorAPI/LoginMessage'; // Assuming LoginMessage is correctly imported
 import './login.css';
+import useStudentIdStore from './studentIdStore'; // Adjust the path based on your file structure
 
 export function Login() {
     const history = useHistory();
-    const [student_id, setID] = useState('');
     const [password, setPassword] = useState('');
     const [identity, setIdentity] = useState('student');
     const [error, setError] = useState('');
+
+    const { studentId, setStudentId, updateStudentId } = useStudentIdStore();
 
     const handleLogin = async () => {
         try {
@@ -20,8 +22,8 @@ export function Login() {
                 leader: 4
             };
 
-            // Ensure student_id is parsed as an integer
-            const studentIdNumber = parseInt(student_id);
+            // Ensure student_id is parsed as needed (if it's used as a number)
+            const studentIdNumber = parseInt(studentId); // Adjust parsing as necessary
 
             // Construct the login message object
             const loginMessage = new LoginMessage(studentIdNumber, password, identityMap[identity]);
@@ -32,6 +34,9 @@ export function Login() {
             console.log('Login Response:', response);
 
             if (response && response.data === "Valid user") {
+                // Update studentId in Zustand only if login succeeds
+                updateStudentId(studentId);
+
                 switch (identity) {
                     case 'admin':
                         history.push('/root');
@@ -57,6 +62,11 @@ export function Login() {
         }
     };
 
+    const handleStudentIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target;
+        setStudentId(value);
+    };
+
     return (
         <div className="login-container">
             <div className="login-box">
@@ -71,8 +81,8 @@ export function Login() {
                         <input
                             type="text"
                             id="username"
-                            value={student_id}
-                            onChange={(e) => setID(e.target.value)}
+                            value={studentId}
+                            onChange={handleStudentIdChange}
                             required
                         />
                     </div>
