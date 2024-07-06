@@ -1,5 +1,7 @@
 package Impl
 
+import java.security.MessageDigest
+import java.util.Base64
 import cats.effect.IO
 import io.circe.generic.auto.*
 import Common.API.{PlanContext, Planner}
@@ -16,17 +18,20 @@ import io.circe.generic.auto.*
 //println(getRoleName(1)) // 输出：超级管理员
 
 
-case class RegisterMessagePlanner(student_id:Int, name: String, password: String,  identity:Int, override val planContext: PlanContext) extends Planner[String]:
+case class RegisterMessagePlanner(student_id: Int, name: String, password: String, identity: Int, override val planContext: PlanContext) extends Planner[String] {
   override def plan(using planContext: PlanContext): IO[String] = {
     // Check if the user is already registered
     val checkUserExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.user WHERE student_id = ?)",
-        List(SqlParameter("Int", student_id.toString))
-      )
+      List(SqlParameter("Int", student_id.toString))
+    )
 
     checkUserExists.flatMap { exists =>
       if (exists) {
         IO.raiseError(new Exception("already registered"))
       } else {
+        // Hash the password
+        val hashedPassword = hashPassword(password)
+
         // Use SQL to get the new ID and insert the new user in one transaction
         val insertUser = writeDB(
           s"""
@@ -39,10 +44,9 @@ case class RegisterMessagePlanner(student_id:Int, name: String, password: String
        """.stripMargin,
           List(
             SqlParameter("String", name),
-            SqlParameter("String", password),
+            SqlParameter("String", hashedPassword),
             SqlParameter("Int", student_id.toString),
-            SqlParameter("Int", identity.toString),
-//            SqlParameter("Int", identity.toString) // 需要两次，一次用于CASE语句，一次用于INSERT
+            SqlParameter("Int", identity.toString)
           )
         )
 
@@ -52,3 +56,10 @@ case class RegisterMessagePlanner(student_id:Int, name: String, password: String
       }
     }
   }
+
+  private def hashPassword(password: String): String = {
+    val digest = MessageDigest.getInstance("SHA-256")
+    val hashBytes = digest.digest(password.getBytes("UTF-8"))
+    Base64.getEncoder.encodeToString(hashBytes)
+  }
+}
