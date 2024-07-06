@@ -1,3 +1,3 @@
 package APIs.DoctorAPI
 
-case class LoginMessage(userName:String, password:String) extends DoctorMessage[String]
+case class LoginMessage(student_id:Int, password: String, identity:Int) extends DoctorMessage[String]
