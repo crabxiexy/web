@@ -36,7 +36,7 @@ export function Main() {
                 <h1>Physical Exercise System</h1>
                 <div className="user-section">
                     <button className="btn login-btn" onClick={handleLogin}>Login</button>
-                    <button className="btn login-btn" onClick={handleRegister}>Login</button>
+                    <button className="btn login-btn" onClick={handleRegister}>Register</button>
                     <div className="user-avatar" onClick={toggleDropdown}>👤</div>
                     {dropdownVisible && (
                         <div className="dropdown-menu">
