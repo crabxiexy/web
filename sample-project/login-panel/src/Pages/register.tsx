@@ -32,9 +32,10 @@ export function Register() {
             // Handle successful response
             console.log('Response status:', response.status);
             console.log('Response data:', response.data);
-
-            // Optionally, navigate to another page upon successful registration
-            history.push('/root'); // Example navigation
+            if (response.status==200) {
+                // Optionally, navigate to another page upon successful registration
+                history.push('/root');
+            }// Example navigation
         } catch (error) {
             // Handle error
             console.error('Error:', error.message);

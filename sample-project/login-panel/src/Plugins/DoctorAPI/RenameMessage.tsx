@@ -1,14 +1,14 @@
 import { DoctorMessage } from 'Plugins/DoctorAPI/DoctorMessage'
 
 export class RenameMessage extends DoctorMessage {
-    userName: string;
-    password: string;
-    id:number;
+    old_password: string;
+    new_password: string;
+    student_id:number;
 
-    constructor(userName: string, password: string, id: number) {
+    constructor(student_id:number,old_password:string,new_password:string) {
         super();
-        this.userName = userName;
-        this.password = password;
-        this.id=id
+        this.student_id = student_id;
+        this.old_password = old_password;
+        this.new_password = new_password;
     }
 }

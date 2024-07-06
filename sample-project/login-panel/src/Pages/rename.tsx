@@ -3,29 +3,34 @@ import { useHistory } from 'react-router';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { RenameMessage } from 'Plugins/DoctorAPI/RenameMessage';
 import './login.css';
+import useStudentIdStore from './studentIdStore'; // Adjust the path based on your file structure
 
 export function Rename() {
     const history = useHistory();
-    const [id, setId] = useState<string>(''); // State for ID as string
-    const [username, setUsername] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [error, setError] = useState<string>(''); // State for error message
+    const [old_password, setOldPassword] = useState('');
+    const [new_password, setNewPassword] = useState('');
+    const [error, setError] = useState('');
+
+    // Retrieve studentId from Zustand store
+    const studentId = useStudentIdStore(state => state.studentId);
 
     const handleRename = async () => {
         try {
-            // Convert id to number if needed
-            const idNumber = parseInt(id, 10); // Example: parsing as integer
+            // Convert studentId to number (if needed)
+            const idNumber = parseInt(studentId); // Ensure it matches the expected type
 
-            const response = await sendPostRequest(new RenameMessage( username, password,idNumber));
+            // Create RenameMessage object
+            const renameMessage = new RenameMessage(idNumber,old_password,new_password);
 
-            // Handle successful response
+            // Send POST request with RenameMessage
+            const response = await sendPostRequest(renameMessage);
+
             console.log('Rename Response:', response);
 
-            // Example: Redirect to root page upon successful rename
+            // Handle successful response (example: redirect to root)
             history.push('/root');
 
         } catch (error) {
-            // Handle error
             console.error('Rename Error:', error.message);
             setError(error.message); // Update state with error message
         }
@@ -42,29 +47,20 @@ export function Rename() {
 
                     {error && <p className="error-message">{error}</p>}
                     <div className="form-group">
-                        <label>ID</label>
+                        <label>Old Password</label>
                         <input
                             type="text"
-                            value={id}
-                            onChange={e => setId(e.target.value)}
+                            value={old_password}
+                            onChange={e => setOldPassword(e.target.value)}
                             required
                         />
                     </div>
                     <div className="form-group">
-                        <label>Username</label>
-                        <input
-                            type="text"
-                            value={username}
-                            onChange={e => setUsername(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Password</label>
+                        <label>New Password</label>
                         <input
                             type="password"
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
+                            value={new_password}
+                            onChange={e => setNewPassword(e.target.value)}
                             required
                         />
                     </div>
@@ -74,7 +70,6 @@ export function Rename() {
                     <button onClick={() => history.push("/root")}>
                         Back
                     </button>
-
                 </div>
             </main>
         </div>
