@@ -5,7 +5,7 @@ import { useHistory } from 'react-router';
 export function Register() {
     const history = useHistory();
     const [student_id, setStudentId] = useState(0); // Changed to number for student_id
-    const [username, setUsername] = useState('');
+    const [name, setname] = useState('');
     const [password, setPassword] = useState('');
     const [identity, setIdentity] = useState('student'); // Default identity as string
     const [error, setError] = useState('');
@@ -24,7 +24,7 @@ export function Register() {
             const identityNumber = identityMap[identity];
 
             // Create DoctorMessage object with appropriate fields
-            const message = new RegisterMessage(student_id, username, password, identityNumber);
+            const message = new RegisterMessage(student_id, name, password, identityNumber);
 
             // Send post request with DoctorMessage object
             const response = await sendPostRequest(message);
@@ -66,8 +66,8 @@ export function Register() {
                         <label>Username</label>
                         <input
                             type="text"
-                            value={username}
-                            onChange={e => setUsername(e.target.value)}
+                            value={name}
+                            onChange={e => setname(e.target.value)}
                             required
                         />
                     </div>
