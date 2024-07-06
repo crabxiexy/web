@@ -1,12 +1,13 @@
 import { DoctorMessage } from 'Plugins/DoctorAPI/DoctorMessage'
 
 export class LoginMessage extends DoctorMessage {
-    userName: string;
+    student_id: number;
     password: string;
-
-    constructor(userName: string, password: string) {
+    identity:number;
+    constructor(student_id:number, password: string,identity:number) {
         super();
-        this.userName = userName;
+        this.student_id = student_id;
         this.password = password;
+        this.identity = identity;
     }
 }
