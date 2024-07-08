@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import axios, { isAxiosError } from 'axios';
-import { API } from 'Plugins/CommonUtils/API';
 import { useHistory } from 'react-router';
-import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils'
 import './Main.css'; // Import the CSS file
 
 export function Main() {
@@ -22,12 +19,11 @@ export function Main() {
     };
 
     const handleRegister = () => {
-        // Add your logout logic here
         history.push("/register");
     };
 
     const handleLogin = () => {
-        history.push("/login"); // Navigate to /login route
+        history.push("/login");
     };
 
     return (
@@ -42,7 +38,6 @@ export function Main() {
                         <div className="dropdown-menu">
                             <p onClick={handleProfile}>Profile</p>
                             <p onClick={handleHelp}>Help</p>
-
                         </div>
                     )}
                 </div>

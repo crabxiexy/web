@@ -1,11 +1,13 @@
+/* Main.css */
+
 .App {
     text-align: center;
-    background: linear-gradient(to right, #f0f2f5, #d6e0f0);
+    background: linear-gradient(135deg, #FFDEE9, #B5FFFC);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     font-family: 'Arial', sans-serif;
 }
 
@@ -13,17 +15,20 @@
     background-color: #34495e;
     padding: 20px;
     color: white;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 40px;
-    width: 100%;
+    width: 100%; /* Ensure the header spans the full width */
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: fixed; /* Fixes the header at the top */
+    top: 0;
+
 }
 
 .App-header h1 {
     margin: 0;
+    font-size: 1.5rem;
+    color: white;
 }
 
 .user-section {
@@ -41,8 +46,8 @@
     position: absolute;
     background: white;
     border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     right: 20px;
     top: 60px;
@@ -62,39 +67,46 @@
 }
 
 .dropdown-menu p:hover {
-    background: #f0f2f5;
+    background: #FFD3E8; /* Light background for hover */
 }
 
 main {
-    width: 80%;
+    width: 90%;
     max-width: 1000px;
+    margin-top: 100px; /* Adjusted to give space for the fixed header */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 section {
-    background: white;
+    background: rgba(255, 255, 255, 0.9);
     margin: 20px 0;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
     text-align: left;
 }
 
 section h2 {
-    border-bottom: 2px solid #34495e;
+    border-bottom: 2px solid #63D1FF;
     padding-bottom: 10px;
     margin-bottom: 20px;
+    color: #444;
 }
 
 .notification-board {
     padding: 10px;
     background: #f9f9f9;
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
 .notification-board p {
-    background: #f9e79f;
+    background: #ffeecf;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 10px;
     margin-bottom: 10px;
 }
 
@@ -102,6 +114,7 @@ section h2 {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    width: 100%;
 }
 
 .button-group button {
@@ -112,26 +125,26 @@ section h2 {
     padding: 15px 30px;
     font-size: 16px;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .login-btn {
-    background: linear-gradient(to right, #e74c3c, #e67e22);
+    background: linear-gradient(to right, #FF867C, #FEB2A8);
     color: white;
-    box-shadow: 0 4px 8px rgba(231, 76, 60, 0.25);
+    box-shadow: 0 4px 12px rgba(255, 134, 124, 0.25);
 }
 
 .login-btn:hover {
     transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(231, 76, 60, 0.35);
+    box-shadow: 0 8px 16px rgba(255, 134, 124, 0.35);
 }
 
 .activity-btn {
     background: linear-gradient(to right, #8e44ad, #3498db);
     color: white;
-    box-shadow: 0 4px 8px rgba(142, 68, 173, 0.25);
+    box-shadow: 0 4px 12px rgba(142, 68, 173, 0.25);
 }
 
 .activity-btn:hover {
@@ -142,7 +155,7 @@ section h2 {
 .exercise-btn {
     background: linear-gradient(to right, #27ae60, #2ecc71);
     color: white;
-    box-shadow: 0 4px 8px rgba(39, 174, 96, 0.25);
+    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.25);
 }
 
 .exercise-btn:hover {

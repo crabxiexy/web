@@ -7,7 +7,7 @@ import './register.css';
 export function Register() {
     const history = useHistory();
     const [student_id, setStudentId] = useState(0);
-    const [name, setname] = useState('');
+    const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [repeatPassword, setRepeatPassword] = useState('');
     const [identity, setIdentity] = useState('student');
@@ -38,13 +38,17 @@ export function Register() {
         }
     };
 
+    const navigateTo = (path: string) => {
+        history.push(path);
+    };
+
     return (
         <div className="register-container">
             <header className="register-header">
-                <div className="logo">MyApp</div>
+                <div className="logo" onClick={() => navigateTo('/home')}>MyApp</div>
                 <nav>
                     <ul>
-                        <li><a href="/">Home</a></li>
+                        <li onClick={() => navigateTo('/')}>Home</li>
                     </ul>
                 </nav>
             </header>
@@ -65,7 +69,7 @@ export function Register() {
                         <input
                             type="text"
                             value={name}
-                            onChange={e => setname(e.target.value)}
+                            onChange={e => setName(e.target.value)}
                             required
                             placeholder="Username"
                         />
@@ -102,7 +106,7 @@ export function Register() {
                     </div>
                     <div className="button-group">
                         <button className="submit-button" onClick={handleRegister}>Submit</button>
-                        <button className="back-button" onClick={() => history.push('/root')}>Back</button>
+                        <button className="back-button" onClick={() => navigateTo('/')}>Back</button>
                     </div>
                 </div>
             </main>
