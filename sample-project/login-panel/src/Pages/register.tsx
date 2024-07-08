@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { RegisterMessage } from 'Plugins/DoctorAPI/RegisterMessage'; // Import DoctorMessage
+import { RegisterMessage } from 'Plugins/DoctorAPI/RegisterMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { useHistory } from 'react-router';
+import './register.css';
+
 export function Register() {
     const history = useHistory();
-    const [student_id, setStudentId] = useState(0); // Changed to number for student_id
+    const [student_id, setStudentId] = useState(0);
     const [name, setname] = useState('');
     const [password, setPassword] = useState('');
-    const [identity, setIdentity] = useState('student'); // Default identity as string
+    const [repeatPassword, setRepeatPassword] = useState('');
+    const [identity, setIdentity] = useState('student');
     const [error, setError] = useState('');
 
-    // Mapping of identity string to corresponding number
-    const identityMap:Record<string, number> = {
+    const identityMap: Record<string, number> = {
         admin: 1,
         student: 2,
         ta: 3,
@@ -19,70 +21,74 @@ export function Register() {
     };
 
     const handleRegister = async () => {
+        if (password !== repeatPassword) {
+            setError("Passwords do not match");
+            return;
+        }
+
         try {
-            // Ensure identity is converted to number based on identityMap
             const identityNumber = identityMap[identity];
-
-            // Create DoctorMessage object with appropriate fields
             const message = new RegisterMessage(student_id, name, password, identityNumber);
-
-            // Send post request with DoctorMessage object
             const response = await sendPostRequest(message);
-
-            // Handle successful response
-            console.log('Response status:', response.status);
-            console.log('Response data:', response.data);
-            if (response.status==200) {
-                // Optionally, navigate to another page upon successful registration
+            if (response.status === 200) {
                 history.push('/root');
-            }// Example navigation
+            }
         } catch (error) {
-            // Handle error
-            console.error('Error:', error.message);
-            setError(error.message); // Update state with error message
+            setError(error.message);
         }
     };
 
     return (
-        <div className="App">
-            <header className="App-header">
-                <h1>HTTP Post Requests</h1>
+        <div className="register-container">
+            <header className="register-header">
+                <div className="logo">MyApp</div>
+                <nav>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                    </ul>
+                </nav>
             </header>
-            <main>
-                <div className="login-container">
-                    <h2>Register</h2>
-
+            <main className="main-content">
+                <div className="form-container">
+                    <h2>Create an Account</h2>
                     {error && <p className="error-message">{error}</p>}
-
                     <div className="form-group">
-                        <label>Student ID</label>
                         <input
-                            type="number" // Ensure input type matches the expected type
+                            type="number"
                             value={student_id}
                             onChange={e => setStudentId(parseInt(e.target.value))}
                             required
+                            placeholder="Student ID"
                         />
                     </div>
                     <div className="form-group">
-                        <label>Username</label>
                         <input
                             type="text"
                             value={name}
                             onChange={e => setname(e.target.value)}
                             required
+                            placeholder="Username"
                         />
                     </div>
                     <div className="form-group">
-                        <label>Password</label>
                         <input
                             type="password"
                             value={password}
                             onChange={e => setPassword(e.target.value)}
                             required
+                            placeholder="Password"
                         />
                     </div>
                     <div className="form-group">
-                        <label>Identity</label>
+                        <input
+                            type="password"
+                            value={repeatPassword}
+                            onChange={e => setRepeatPassword(e.target.value)}
+                            required
+                            placeholder="Repeat Password"
+                        />
+                    </div>
+                    <div className="form-group">
                         <select
                             value={identity}
                             onChange={e => setIdentity(e.target.value)}
@@ -94,10 +100,10 @@ export function Register() {
                             <option value="leader">Leader</option>
                         </select>
                     </div>
-                    <button onClick={handleRegister}>Submit</button>
-                    <button onClick={() => history.push("/root")}>
-                        Back
-                    </button>
+                    <div className="button-group">
+                        <button className="submit-button" onClick={handleRegister}>Submit</button>
+                        <button className="back-button" onClick={() => history.push('/root')}>Back</button>
+                    </div>
                 </div>
             </main>
         </div>

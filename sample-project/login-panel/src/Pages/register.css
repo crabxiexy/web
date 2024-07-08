@@ -1,0 +1,150 @@
+/* Register.css */
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #FFDEE9, #B5FFFC);
+    color: #444;
+    height: 100%;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    flex-direction: column;
+}
+
+.register-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.register-header {
+    width: 100%;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    position: fixed; /* Fix the header at the top */
+    top: 0;
+}
+
+.register-header .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #63D1FF;
+}
+
+.register-header nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+.register-header nav ul li {
+    margin: 0 10px;
+}
+
+.register-header nav ul li a {
+    text-decoration: none;
+    color: #444;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.register-header nav ul li a:hover {
+    color: #63D1FF;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Center vertically */
+    flex: 1; /* Take available space */
+    width: 100%;
+    margin-top: 80px; /* Ensure it's below the header */
+}
+
+.form-container {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #444;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #fff;
+    color: #444;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input::placeholder {
+    color: #aaa;
+}
+
+.form-group input:focus, .form-group select:focus {
+    border-color: #63D1FF;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.submit-button, .back-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    flex: 1;
+    margin: 5px;
+}
+
+.submit-button {
+    background: #63D1FF;
+    transition: background 0.3s ease;
+}
+
+.back-button {
+    background: #FF867C;
+    transition: background 0.3s ease;
+}
+
+.submit-button:hover, .back-button:hover {
+    background-position: right;
+}
+
+.error-message {
+    color: #FF867C;
+    margin-bottom: 15px;
+}
