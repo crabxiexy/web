@@ -18,7 +18,7 @@ case class RegisterMessagePlanner(student_id: Int, name: String, password: Strin
     val identityTable = identity.toString match {
       case "1" => "admin"
       case "2" => "student"
-      case "3" => "ta"
+      case "3" => "TA"
       case "4" => "leader"
       case _ => throw new Exception("Unknown user identity")
     }
@@ -34,7 +34,7 @@ case class RegisterMessagePlanner(student_id: Int, name: String, password: Strin
         // Insert the identity first
         val insertIdentity = writeDB(
           s"""
-             INSERT INTO ${identityTable}.${identityTable} (student_id) VALUES(?)
+             INSERT INTO ${identityTable}.${identityTable} (${identityTable}_id) VALUES(?)
        """.stripMargin,
           List(
             SqlParameter("Int", student_id.toString),

@@ -31,7 +31,7 @@ case class DeleteMessagePlanner(student_id: Int, override val planContext: PlanC
           val identityTable = identity.toString match {
             case "1" => "admin"
             case "2" => "student"
-            case "3" => "ta"
+            case "3" => "TA"
             case "4" => "leader"
             case _ => throw new Exception("Unknown user identity")
           }
@@ -40,7 +40,7 @@ case class DeleteMessagePlanner(student_id: Int, override val planContext: PlanC
             List(SqlParameter("Int", student_id.toString))
           ).flatMap { _ =>
             // Delete the user from the corresponding table (student or TA)
-            writeDB(s"DELETE FROM ${identityTable}.${identityTable} WHERE student_id = ?",
+            writeDB(s"DELETE FROM ${identityTable}.${identityTable} WHERE ${identityTable}_id = ?",
               List(SqlParameter("Int", student_id.toString))
             ).flatMap { _ =>
               IO.pure("User and associated records deleted successfully")
