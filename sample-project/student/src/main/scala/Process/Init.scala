@@ -16,8 +16,9 @@ object Init {
     for{
       _ <- API.init(config.maximumClientConnection)
       _ <- initSchema(schemaName)
-      _ <- writeDB(s"CREATE TABLE IF NOT EXISTS ${schemaName}.doctor_patient (doctor_name TEXT, patient_name TEXT)", List())
-      _ <- writeDB(s"CREATE TABLE IF NOT EXISTS ${schemaName}.user (id INT, name TEXT, password TEXT, student_id INT, identity INT, authority1 BOOLEAN, authority2 BOOLEAN, authority3 BOOLEAN, authority4 BOOLEAN, authority5 BOOLEAN)", List())
+      _ <- writeDB(s"CREATE TABLE IF NOT EXISTS ${schemaName}.student (student_id INT , TA_id INT, score INT, department TEXT)", List())
+      _ <- writeDB(s"CREATE TABLE IF NOT EXISTS ${schemaName}.student_team (student_id INT, team_id INT)", List())
+      _ <- writeDB(s"CREATE TABLE IF NOT EXISTS ${schemaName}.student_club (student_id INT, club_id INT)", List())
     } yield ()
 
 }

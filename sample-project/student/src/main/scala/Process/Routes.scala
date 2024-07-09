@@ -14,31 +14,21 @@ import org.http4s.dsl.io.*
 object Routes:
   private def executePlan(messageType:String, str: String): IO[String]=
     messageType match {
-      case "AddPatientMessage" =>
-        IO(decode[AddPatientMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for AddPatientMessage")))
+      case "AssignTAMessage" =>
+        IO(decode[AssignTAPlanner](str).getOrElse(throw new Exception("Invalid JSON for AssignTAMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
-      case "LoginMessage" =>
-        IO(decode[LoginMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for LoginMessage")))
+      case "AssignScoreMessage" =>
+        IO(decode[AssignScorePlanner](str).getOrElse(throw new Exception("Invalid JSON for AssignScoreMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
-      case "RegisterMessage" =>
-        IO(decode[RegisterMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for RegisterMessage")))
+      case "AssignDepartmentMessage" =>
+        IO(decode[AssignDepartmentPlanner](str).getOrElse(throw new Exception("Invalid JSON for AssignDepartmentMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
-          }
-      case "RenameMessage" =>
-        IO(decode[UpdatePasswordPlanner](str).getOrElse(throw new Exception("Invalid JSON for RenameMessage")))
-          .flatMap{m=>
-            m.fullPlan.map(_.asJson.toString)
-          }
-      case "DeleteMessage" =>
-        IO(decode[DeleteMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for DeleteMessage")))
-          .flatMap{m=>
-            m.fullPlan.map(_.asJson.toString)
-          }
+          }  
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }

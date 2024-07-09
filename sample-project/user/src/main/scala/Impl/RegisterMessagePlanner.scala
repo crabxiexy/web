@@ -12,26 +12,34 @@ import APIs.PatientAPI.PatientQueryMessage
 import cats.effect.IO
 import io.circe.generic.auto.*
 
-
-
-// 示例：获取ID为1的角色名称
-//println(getRoleName(1)) // 输出：超级管理员
-
-
 case class RegisterMessagePlanner(student_id: Int, name: String, password: String, identity: Int, override val planContext: PlanContext) extends Planner[String] {
   override def plan(using planContext: PlanContext): IO[String] = {
-    // Check if the user is already registered
+    // Check if the identity is already registered
+    val identityTable = identity.toString match {
+      case "1" => "admin"
+      case "2" => "student"
+      case "3" => "ta"
+      case "4" => "leader"
+      case _ => throw new Exception("Unknown user identity")
+    }
     val checkUserExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.user WHERE student_id = ?)",
       List(SqlParameter("Int", student_id.toString))
     )
-
     checkUserExists.flatMap { exists =>
       if (exists) {
-        IO.raiseError(new Exception("already registered"))
+        IO.raiseError(new Exception("This user already registered"))
       } else {
         // Hash the password
         val hashedPassword = hashPassword(password)
-
+        // Insert the identity first
+        val insertIdentity = writeDB(
+          s"""
+             INSERT INTO ${identityTable}.${identityTable} (student_id) VALUES(?)
+       """.stripMargin,
+          List(
+            SqlParameter("Int", student_id.toString),
+          )
+        )
         // Use SQL to get the new ID and insert the new user in one transaction
         val insertUser = writeDB(
           s"""
@@ -49,9 +57,11 @@ case class RegisterMessagePlanner(student_id: Int, name: String, password: Strin
             SqlParameter("Int", identity.toString)
           )
         )
-
-        insertUser.flatMap { _ =>
-          IO.pure("User registered successfully")
+        // Chain the insertUser operation after the insertIdentity operation
+        insertIdentity.flatMap { _ =>
+          insertUser.flatMap { _ =>
+            IO.pure("User registered successfully")
+          }
         }
       }
     }
