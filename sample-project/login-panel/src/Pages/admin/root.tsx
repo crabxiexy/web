@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
-import './dashboard.css'; // Import the CSS file
-import useStudentIdStore from 'Pages/studentIdStore'; // Adjust the path based on your file structure
-
-export function dashboard() {
+import 'Pages/Main.css'; // Import the CSS file
+import useStudentIdStore from 'Pages/studentIdStore';
+export function root() {
     const history = useHistory();
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const { setStudentId } = useStudentIdStore();
-
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
     };
@@ -16,17 +14,18 @@ export function dashboard() {
         history.push("/profile");
     };
 
-    const handleRename = () => {
-        history.push("/rename");
+    const handleHelp = () => {
+        history.push("/help");
     };
 
-    const handleRunUpload = () => {
-        history.push("/student_runupload");
+    const handleRename = () => {
+        history.push("/rename");
     };
 
     const handleLogout = () => {
         setStudentId('');
         history.push("/");
+
     };
 
     return (
@@ -39,6 +38,7 @@ export function dashboard() {
                     {dropdownVisible && (
                         <div className="dropdown-menu">
                             <p onClick={handleRename}>Rename</p>
+
                         </div>
                     )}
                 </div>
@@ -54,26 +54,23 @@ export function dashboard() {
                     </div>
                 </section>
 
-                <div className="square-block" onClick={handleRunUpload}>
-                    阳光长跑登记
-                </div>
-
                 <section className="activities">
                     <h2>Activities for Department Team</h2>
                     <div className="button-group">
-                        {/* Add your activity buttons here */}
+                        {/*<button className="btn activity-btn" onClick={() => sendPostRequest(new API('teamYogaEndpoint'))}>Team Yoga</button>*/}
+                        {/*<button className="btn activity-btn" onClick={() => sendPostRequest(new API('departmentRunEndpoint'))}>Department Run</button>*/}
+                        {/*<button className="btn activity-btn" onClick={() => sendPostRequest(new API('cyclingTogetherEndpoint'))}>Cycling Together</button>*/}
                     </div>
                 </section>
 
                 <section className="common-exercises">
                     <h2>Common Exercises</h2>
                     <div className="button-group">
-                        {/* Add your exercise buttons here */}
+                        {/*<button className="btn exercise-btn" onClick={() => sendPostRequest(new API('sunshineRunningEndpoint'))}>Sunshine Running</button>*/}
+                        {/*<button className="btn exercise-btn" onClick={() => sendPostRequest(new API('exerciseTogetherEndpoint'))}>Exercise Together</button>*/}
                     </div>
                 </section>
             </main>
         </div>
     );
 }
-
-export default dashboard;

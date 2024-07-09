@@ -23,7 +23,7 @@ object Server extends IOApp {
         Resource.make(IO(dataSource.getConnection))(conn => IO(conn.close())).use { connection =>
           for {
             _ <- IO.println(getPort(serviceCode))
-            connectionMap <- Ref.of[IO, Map[String, Connection]](Map.empty)
+            connectionMap <- Ref.of[IO, Map[String, Connection]](Map.empty)    
             server <- BlazeServerBuilder[IO]
               .bindHttp(10001, "0.0.0.0")
               .withHttpApp(Router("/" -> Routes.service(dataSource, connectionMap)).orNotFound)

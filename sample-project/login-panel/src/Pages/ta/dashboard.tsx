@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
-import './dashboard.css'; // Import the CSS file
 import useStudentIdStore from 'Pages/studentIdStore'; // Adjust the path based on your file structure
 
 export function dashboard() {
@@ -10,10 +9,6 @@ export function dashboard() {
 
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
-    };
-
-    const handleProfile = () => {
-        history.push("/profile");
     };
 
     const handleRename = () => {

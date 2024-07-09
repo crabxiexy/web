@@ -5,6 +5,7 @@ import { LoginMessage } from 'Plugins/DoctorAPI/LoginMessage'; // Assuming Login
 import './login.css';
 import useStudentIdStore from './studentIdStore'; // Adjust the path based on your file structure
 
+
 export function Login() {
     const history = useHistory();
     const [password, setPassword] = useState('');
@@ -19,7 +20,6 @@ export function Login() {
                 admin: 1,
                 student: 2,
                 ta: 3,
-                leader: 4
             };
 
             // Ensure student_id is parsed as needed (if it's used as a number)
@@ -39,16 +39,13 @@ export function Login() {
 
                 switch (identity) {
                     case 'admin':
-                        history.push('/root');
+                        history.push('/admin/root');
                         break;
                     case 'student':
-                        history.push('/student-dashboard');
+                        history.push('/student_dashboard');
                         break;
                     case 'ta':
-                        history.push('/ta-dashboard');
-                        break;
-                    case 'leader':
-                        history.push('/leader-dashboard');
+                        history.push('/ta/dashboard');
                         break;
                     default:
                         history.push('/');

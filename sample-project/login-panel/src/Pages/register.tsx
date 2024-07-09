@@ -17,7 +17,7 @@ export function Register() {
         admin: 1,
         student: 2,
         ta: 3,
-        leader: 4
+
     };
 
     const handleRegister = async () => {
@@ -31,7 +31,8 @@ export function Register() {
             const message = new RegisterMessage(student_id, name, password, identityNumber);
             const response = await sendPostRequest(message);
             if (response.status === 200) {
-                history.push('/root');
+                    history.push('/admin/root');
+
             }
         } catch (error) {
             setError(error.message);
@@ -101,7 +102,6 @@ export function Register() {
                             <option value="admin">Admin</option>
                             <option value="student">Student</option>
                             <option value="ta">TA</option>
-                            <option value="leader">Leader</option>
                         </select>
                     </div>
                     <div className="button-group">
