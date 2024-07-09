@@ -45,7 +45,7 @@ export function Login() {
                         history.push('/student_dashboard');
                         break;
                     case 'ta':
-                        history.push('/ta/dashboard');
+                        history.push('/ta_dashboard');
                         break;
                     default:
                         history.push('/');
@@ -104,7 +104,6 @@ export function Login() {
                             <option value="admin">Admin</option>
                             <option value="student">Student</option>
                             <option value="ta">TA</option>
-                            <option value="leader">Leader</option>
                         </select>
                     </div>
                     <button className="button" onClick={handleLogin}>

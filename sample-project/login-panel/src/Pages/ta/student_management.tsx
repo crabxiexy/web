@@ -8,15 +8,15 @@ import useIdStore from 'Pages/IdStore'; // Adjust import path based on your file
 export const AssignTA = () => {
     const history = useHistory();
     const { Id } = useIdStore(); // Zustand hook to get student Id
-    const [taId, setTaId] = useState('');
+    const [studentId, setStudentId] = useState(0);
     const [error, setError] = useState('');
 
     const handleAssignTA = async () => {
         try {
-            const studentIdNumber = parseInt(Id); // Convert student ID to number if needed
+            const taIdNumber = parseInt(Id); // Convert student ID to number if needed
 
             // Construct the AssignTAMessage object
-            const assignTAMessage = new AssignTAMessage(studentIdNumber, parseInt(taId));
+            const assignTAMessage = new AssignTAMessage(studentId, taIdNumber);
 
             // Send the registration request
             const response = await sendPostRequest(assignTAMessage);
@@ -34,10 +34,6 @@ export const AssignTA = () => {
         }
     };
 
-    const handleTaIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { value } = e.target;
-        setTaId(value);
-    };
 
     return (
         <div className="assignTA-container">
@@ -51,20 +47,11 @@ export const AssignTA = () => {
                     <div className="form-group">
                         <label htmlFor="studentId">Student ID</label>
                         <input
-                            type="text"
-                            id="studentId"
-                            value={Id}
-                            readOnly
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="taId">TA ID</label>
-                        <input
-                            type="text"
-                            id="taId"
-                            value={taId}
-                            onChange={handleTaIdChange}
+                            type="number"
+                            value={studentId}
+                            onChange={e => setStudentId(parseInt(e.target.value))}
                             required
+                            placeholder="Student ID"
                         />
                     </div>
                     <button className="button" onClick={handleAssignTA}>

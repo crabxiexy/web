@@ -14,16 +14,12 @@ import org.http4s.dsl.io.*
 object Routes:
   private def executePlan(messageType:String, str: String): IO[String]=
     messageType match {
-      case "StartRunningMessage" =>
-        IO(decode[StartRunningPlanner](str).getOrElse(throw new Exception("Invalid JSON for StartRunningMessage")))
+      case "SubmitRunningMessage" =>
+        IO(decode[SubmitRunningPlanner](str).getOrElse(throw new Exception("Invalid JSON for SubmitRunningMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
-      case "FinishRunningMessage" =>
-        IO(decode[StartRunningPlanner](str).getOrElse(throw new Exception("Invalid JSON for StartRunningMessage")))
-          .flatMap{m=>
-            m.fullPlan.map(_.asJson.toString)
-          }  
+    
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }

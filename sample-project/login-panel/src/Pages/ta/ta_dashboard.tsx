@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
-import './dashboard.css'; // Import the CSS file
 import useIdStore from 'Pages/IdStore'; // Adjust the path based on your file structure
+import './dashboard.css'; // Ensure the correct path to your CSS file
 
 export function TA_dashboard() {
     const history = useHistory();
@@ -12,16 +12,12 @@ export function TA_dashboard() {
         setDropdownVisible(!dropdownVisible);
     };
 
-    const handleProfile = () => {
-        history.push("/profile");
-    };
-
     const handleRename = () => {
         history.push("/rename");
     };
 
-    const handleRunUpload = () => {
-        history.push("/student_runupload");
+    const handleStudentManagement = () => {
+        history.push("/ta_student_management");
     };
 
     const handleLogout = () => {
@@ -30,39 +26,24 @@ export function TA_dashboard() {
     };
 
     return (
-        <div className="App">
-            <header className="App-header">
+        <div className="dashboard-container">
+            <header className="dashboard-header">
                 <h1>Physical Exercise System</h1>
-
+                <div className="user-section">
+                    <button className="btn login-btn" onClick={handleLogout}>Logout</button>
+                    <div className="user-avatar" onClick={toggleDropdown}>👤</div>
+                    {dropdownVisible && (
+                        <div className="dropdown-menu">
+                            <p onClick={handleRename}>Rename</p>
+                        </div>
+                    )}
+                </div>
             </header>
             <main>
-                <section className="notifications">
-                    <h2>Notifications</h2>
-                    <div className="notification-board">
-                        <p>Don't forget to warm up before exercising!</p>
-                        <p>Drink plenty of water.</p>
-                        <p>Team Yoga session at 10 AM tomorrow.</p>
-                        <p>Friday Cycling Event has been rescheduled to 8 AM.</p>
-                    </div>
-                </section>
-
-                <div className="square-block" onClick={handleRunUpload}>
-                    阳光长跑登记
+                <div className="square-block" onClick={handleStudentManagement}>
+                    学生管理
                 </div>
-
-                <section className="activities">
-                    <h2>Activities for Department Team</h2>
-                    <div className="button-group">
-                        {/* Add your activity buttons here */}
-                    </div>
-                </section>
-
-                <section className="common-exercises">
-                    <h2>Common Exercises</h2>
-                    <div className="button-group">
-                        {/* Add your exercise buttons here */}
-                    </div>
-                </section>
+                {/* Add other sections or components here */}
             </main>
         </div>
     );

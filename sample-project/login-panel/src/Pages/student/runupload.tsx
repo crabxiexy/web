@@ -1,35 +1,53 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
-import useStudentIdStore from 'Pages/IdStore'; // Adjust the path based on your file structure
+import useIdStore from 'Pages/IdStore';
+import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
+import { StartRunningMessage } from 'Plugins/RunAPI/StartRunningMessage' // Adjust the path based on your file structure
 
 export const runupload: React.FC = () => {
     const history = useHistory();
-    const {Id } = useStudentIdStore(); // Assuming you have access to studentId from Zustand
+    const { Id } = useIdStore(); // Assuming you have access to studentId from Zustand
     const [startTime, setStartTime] = useState<Date | null>(null);
     const [finishTime, setFinishTime] = useState<Date | null>(null);
     const [distance, setDistance] = useState<string>('');
     const [clickCount, setClickCount] = useState<number>(0);
     const [submitted, setSubmitted] = useState<boolean>(false);
+    const [runId, setRunId] = useState<string>(''); // State to store the run_id
 
-    const handleStartRunning = () => {
+    const handleStartRunning = async () => {
         setClickCount(clickCount + 1);
 
         if (clickCount === 0) {
             // First click
             setStartTime(new Date());
-            // Implement sending start running message with studentId
-            console.log(`Start running message sent with studentId: ${Id}`);
+
+            try {
+                // Send start running message and get run_id
+                const studentIdNumber=parseInt(Id);
+                const startrunningMessage = new StartRunningMessage(studentIdNumber);
+                const response = await sendPostRequest(startrunningMessage)
+
+
+                console.log('Start Running Message Response:', response);
+
+                // Assuming your backend returns the run_id
+                if (response && response.data && response.data.run_id) {
+                    setRunId(response.data.run_id);
+                }
+            } catch (error) {
+                console.error('Error sending start running message:', error.message);
+                // Handle error as needed
+            }
         } else if (clickCount === 1) {
             // Second click
             setFinishTime(new Date());
-            // Store timestamp or implement further logic
             console.log('Finish timestamp stored:', finishTime);
         }
     };
 
     const handleSubmit = () => {
         // Implement your submission logic (e.g., sending data to backend)
-        console.log('Submitting run data:', { startTime, finishTime, distance });
+        console.log('Submitting run data:', { startTime, finishTime, distance, runId });
 
         // Set submitted flag to true
         setSubmitted(true);
