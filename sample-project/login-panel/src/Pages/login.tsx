@@ -106,9 +106,10 @@ export function Login() {
                             <option value="ta">TA</option>
                         </select>
                     </div>
-                    <button className="button" onClick={handleLogin}>
-                        Submit
-                    </button>
+                    <div className="button-group">
+                        <button className="submit-button" onClick={handleLogin}>Submit</button>
+                        <button className="back-button" onClick={() => history.push('/')}>Back</button>
+                    </div>
                 </main>
             </div>
         </div>
