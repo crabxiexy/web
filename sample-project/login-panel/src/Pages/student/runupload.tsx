@@ -2,64 +2,60 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import useIdStore from 'Pages/IdStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
-import { StartRunningMessage } from 'Plugins/RunAPI/StartRunningMessage' // Adjust the path based on your file structure
+import { SubmitRunningMessage } from 'Plugins/RunAPI/StartRunningMessage';
 
 export const runupload: React.FC = () => {
     const history = useHistory();
-    const { Id } = useIdStore(); // Assuming you have access to studentId from Zustand
+    const { Id } = useIdStore();
     const [startTime, setStartTime] = useState<Date | null>(null);
     const [finishTime, setFinishTime] = useState<Date | null>(null);
     const [distance, setDistance] = useState<string>('');
     const [clickCount, setClickCount] = useState<number>(0);
     const [submitted, setSubmitted] = useState<boolean>(false);
-    const [runId, setRunId] = useState<string>(''); // State to store the run_id
+    const [runId, setRunId] = useState<string>('');
 
     const handleStartRunning = async () => {
-        setClickCount(clickCount + 1);
+        setClickCount(prevCount => prevCount + 1);
 
         if (clickCount === 0) {
-            // First click
-            setStartTime(new Date());
+            const start = new Date();
+            setStartTime(start);
 
             try {
-                // Send start running message and get run_id
-                const studentIdNumber=parseInt(Id);
-                const startrunningMessage = new StartRunningMessage(studentIdNumber);
-                const response = await sendPostRequest(startrunningMessage)
-
+                const studentIdNumber = parseInt(Id);
+                const startRunningMessage = new SubmitRunningMessage(studentIdNumber, start, start, 0, new Uint8Array());
+                const response = await sendPostRequest(startRunningMessage);
 
                 console.log('Start Running Message Response:', response);
 
-                // Assuming your backend returns the run_id
                 if (response && response.data && response.data.run_id) {
                     setRunId(response.data.run_id);
                 }
             } catch (error) {
                 console.error('Error sending start running message:', error.message);
-                // Handle error as needed
             }
         } else if (clickCount === 1) {
-            // Second click
             setFinishTime(new Date());
-            console.log('Finish timestamp stored:', finishTime);
         }
     };
 
-    const handleSubmit = () => {
-        // Implement your submission logic (e.g., sending data to backend)
-        console.log('Submitting run data:', { startTime, finishTime, distance, runId });
+    const handleSubmit = async () => {
+        if (startTime && finishTime && distance && runId) {
+            const studentIdNumber = parseInt(Id);
+            const distanceNumber = parseFloat(distance);
+            const submitMessage = new SubmitRunningMessage(studentIdNumber, startTime, finishTime, distanceNumber, new Uint8Array());
 
-        // Set submitted flag to true
-        setSubmitted(true);
-
-        // Optionally reset state
-        setStartTime(null);
-        setFinishTime(null);
-        setDistance('');
+            try {
+                const response = await sendPostRequest(submitMessage);
+                console.log('Submit Running Message Response:', response);
+                setSubmitted(true);
+            } catch (error) {
+                console.error('Error submitting run data:', error.message);
+            }
+        }
     };
 
     const handleCancel = () => {
-        // Navigate back to the main page
         history.push("/student_dashboard");
     };
 
@@ -90,7 +86,7 @@ export const runupload: React.FC = () => {
                 <button className="start-button" onClick={handleStartRunning}>
                     {clickCount === 0 ? 'Start Running' : 'Finish Running'}
                 </button>
-                <button className="submit-button" onClick={handleSubmit}>
+                <button className="submit-button" onClick={handleSubmit} disabled={!finishTime || !distance}>
                     Submit
                 </button>
                 <button className="cancel-button" onClick={handleCancel}>
