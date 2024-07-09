@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import useIdStore from 'Pages/IdStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
-import { SubmitRunningMessage } from 'Plugins/RunAPI/StartRunningMessage';
+import { SubmitRunningMessage } from 'Plugins/RunAPI/SubmitRunningMessage';
 
-export const runupload: React.FC = () => {
+export const RunUpload: React.FC = () => {
     const history = useHistory();
     const { Id } = useIdStore();
+
+    // States for tracking run data
     const [startTime, setStartTime] = useState<Date | null>(null);
     const [finishTime, setFinishTime] = useState<Date | null>(null);
     const [distance, setDistance] = useState<string>('');
@@ -14,36 +16,45 @@ export const runupload: React.FC = () => {
     const [submitted, setSubmitted] = useState<boolean>(false);
     const [runId, setRunId] = useState<string>('');
 
-    const handleStartRunning = async () => {
+    // State for uploaded image
+    const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null); // State for image URL
+
+    // Function to handle start or finish running
+    const handleStartFinishRunning = async () => {
         setClickCount(prevCount => prevCount + 1);
 
         if (clickCount === 0) {
             const start = new Date();
             setStartTime(start);
 
-            try {
-                const studentIdNumber = parseInt(Id);
-                const startRunningMessage = new SubmitRunningMessage(studentIdNumber, start, start, 0, new Uint8Array());
-                const response = await sendPostRequest(startRunningMessage);
-
-                console.log('Start Running Message Response:', response);
-
-                if (response && response.data && response.data.run_id) {
-                    setRunId(response.data.run_id);
-                }
-            } catch (error) {
-                console.error('Error sending start running message:', error.message);
-            }
         } else if (clickCount === 1) {
             setFinishTime(new Date());
         }
     };
 
+    // Function to handle image upload
+    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const files = event.target.files;
+        if (files && files.length > 0) {
+            const file = files[0];
+            const reader = new FileReader();
+
+            reader.onloadend = () => {
+                const arrayBuffer = reader.result as ArrayBuffer;
+                const uint8Array = new Uint8Array(arrayBuffer);
+                setUploadedImageUrl(reader.result as string); // Set URL for displaying image
+            };
+
+            reader.readAsDataURL(file); // Read as data URL for displaying
+        }
+    };
+
+    // Function to handle form submission
     const handleSubmit = async () => {
-        if (startTime && finishTime && distance && runId) {
+        if (startTime && finishTime && distance && uploadedImageUrl) {
             const studentIdNumber = parseInt(Id);
             const distanceNumber = parseFloat(distance);
-            const submitMessage = new SubmitRunningMessage(studentIdNumber, startTime, finishTime, distanceNumber, new Uint8Array());
+            const submitMessage = new SubmitRunningMessage(studentIdNumber, startTime, finishTime, distanceNumber, uploadedImageUrl);
 
             try {
                 const response = await sendPostRequest(submitMessage);
@@ -55,10 +66,12 @@ export const runupload: React.FC = () => {
         }
     };
 
+    // Function to handle cancellation
     const handleCancel = () => {
         history.push("/student_dashboard");
     };
 
+    // Function to handle distance change
     const handleDistanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setDistance(e.target.value);
     };
@@ -82,8 +95,20 @@ export const runupload: React.FC = () => {
                     required
                 />
             </div>
+            <div className="image-upload">
+                <label htmlFor="file-upload">Upload Image:</label>
+                <input
+                    type="file"
+                    id="file-upload"
+                    onChange={handleImageUpload}
+                    accept="image/*"
+                />
+                {uploadedImageUrl && (
+                    <img src={uploadedImageUrl} alt="Uploaded" style={{ maxWidth: '100%', marginTop: '10px' }} />
+                )}
+            </div>
             <div className="button-group">
-                <button className="start-button" onClick={handleStartRunning}>
+                <button className="start-button" onClick={handleStartFinishRunning}>
                     {clickCount === 0 ? 'Start Running' : 'Finish Running'}
                 </button>
                 <button className="submit-button" onClick={handleSubmit} disabled={!finishTime || !distance}>
@@ -98,4 +123,4 @@ export const runupload: React.FC = () => {
     );
 };
 
-export default runupload;
+export default RunUpload;

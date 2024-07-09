@@ -5,14 +5,14 @@ export class SubmitRunningMessage extends RunMessage {
     startTime: Date;
     finishTime: Date;
     distance: number;
-    png: Uint8Array;
+    imgUrl: String;
 
-    constructor(student_id: number, startTime: Date, finishTime: Date, distance: number, png: Uint8Array) {
+    constructor(student_id: number, startTime: Date, finishTime: Date, distance: number, imgUrl: String) {
         super();
         this.student_id = student_id;
         this.startTime = startTime;
         this.finishTime = finishTime;
         this.distance = distance;
-        this.png = png;
+        this.imgUrl = imgUrl;
     }
 }

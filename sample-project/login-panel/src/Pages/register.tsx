@@ -31,7 +31,7 @@ export function Register() {
             const message = new RegisterMessage(student_id, name, password, identityNumber);
             const response = await sendPostRequest(message);
             if (response.status === 200) {
-                    history.push('/admin/root');
+                    history.push('/root');
 
             }
         } catch (error) {
