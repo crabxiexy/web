@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
-import useStudentIdStore from 'Pages/studentIdStore'; // Adjust the path based on your file structure
+import './dashboard.css'; // Import the CSS file
+import useIdStore from 'Pages/IdStore'; // Adjust the path based on your file structure
 
-export function dashboard() {
+export function TA_dashboard() {
     const history = useHistory();
     const [dropdownVisible, setDropdownVisible] = useState(false);
-    const { setStudentId } = useStudentIdStore();
+    const { setId } = useIdStore();
 
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
+    };
+
+    const handleProfile = () => {
+        history.push("/profile");
     };
 
     const handleRename = () => {
@@ -20,7 +25,7 @@ export function dashboard() {
     };
 
     const handleLogout = () => {
-        setStudentId('');
+        setId('');
         history.push("/");
     };
 
@@ -28,15 +33,7 @@ export function dashboard() {
         <div className="App">
             <header className="App-header">
                 <h1>Physical Exercise System</h1>
-                <div className="user-section">
-                    <button className="btn login-btn" onClick={handleLogout}>Logout</button>
-                    <div className="user-avatar" onClick={toggleDropdown}>👤</div>
-                    {dropdownVisible && (
-                        <div className="dropdown-menu">
-                            <p onClick={handleRename}>Rename</p>
-                        </div>
-                    )}
-                </div>
+
             </header>
             <main>
                 <section className="notifications">
@@ -71,4 +68,4 @@ export function dashboard() {
     );
 }
 
-export default dashboard;
+export default TA_dashboard;

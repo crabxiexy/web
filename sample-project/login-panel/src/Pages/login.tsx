@@ -3,7 +3,7 @@ import { useHistory } from 'react-router';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { LoginMessage } from 'Plugins/DoctorAPI/LoginMessage'; // Assuming LoginMessage is correctly imported
 import './login.css';
-import useStudentIdStore from './studentIdStore'; // Adjust the path based on your file structure
+import useStudentIdStore from './IdStore'; // Adjust the path based on your file structure
 
 
 export function Login() {
@@ -12,7 +12,7 @@ export function Login() {
     const [identity, setIdentity] = useState('student');
     const [error, setError] = useState('');
 
-    const { studentId, setStudentId, updateStudentId } = useStudentIdStore();
+    const { Id, setId, updateId } = useStudentIdStore();
 
     const handleLogin = async () => {
         try {
@@ -23,7 +23,7 @@ export function Login() {
             };
 
             // Ensure student_id is parsed as needed (if it's used as a number)
-            const studentIdNumber = parseInt(studentId); // Adjust parsing as necessary
+            const studentIdNumber = parseInt(Id); // Adjust parsing as necessary
 
             // Construct the login message object
             const loginMessage = new LoginMessage(studentIdNumber, password, identityMap[identity]);
@@ -35,7 +35,7 @@ export function Login() {
 
             if (response && response.data === "Valid user") {
                 // Update studentId in Zustand only if login succeeds
-                updateStudentId(studentId);
+                updateId(Id);
 
                 switch (identity) {
                     case 'admin':
@@ -61,7 +61,7 @@ export function Login() {
 
     const handleStudentIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
-        setStudentId(value);
+        setId(value);
     };
 
     return (
@@ -77,8 +77,8 @@ export function Login() {
                         <label htmlFor="username">Username</label>
                         <input
                             type="text"
-                            id="username"
-                            value={studentId}
+                            id="user_id"
+                            value={Id}
                             onChange={handleStudentIdChange}
                             required
                         />

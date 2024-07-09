@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import './dashboard.css'; // Import the CSS file
-import useStudentIdStore from 'Pages/studentIdStore'; // Adjust the path based on your file structure
+import useIdStore from 'Pages/IdStore'; // Adjust the path based on your file structure
 
 export function dashboard() {
     const history = useHistory();
     const [dropdownVisible, setDropdownVisible] = useState(false);
-    const { setStudentId } = useStudentIdStore();
+    const { setId } = useIdStore();
 
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
@@ -25,7 +25,7 @@ export function dashboard() {
     };
 
     const handleLogout = () => {
-        setStudentId('');
+        setId('');
         history.push("/");
     };
 

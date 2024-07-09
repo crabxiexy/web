@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import 'Pages/Main.css'; // Import the CSS file
-import useStudentIdStore from 'Pages/studentIdStore';
+import useIdStore from 'Pages/IdStore';
 export function root() {
     const history = useHistory();
     const [dropdownVisible, setDropdownVisible] = useState(false);
-    const { setStudentId } = useStudentIdStore();
+    const { setId } = useIdStore();
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
     };
@@ -23,7 +23,7 @@ export function root() {
     };
 
     const handleLogout = () => {
-        setStudentId('');
+        setId('');
         history.push("/");
 
     };

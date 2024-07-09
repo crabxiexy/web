@@ -3,7 +3,7 @@ import { useHistory } from 'react-router';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { RenameMessage } from 'Plugins/DoctorAPI/RenameMessage';
 import './login.css';
-import useStudentIdStore from './studentIdStore'; // Adjust the path based on your file structure
+import useIdStore from './IdStore'; // Adjust the path based on your file structure
 
 export function Rename() {
     const history = useHistory();
@@ -12,7 +12,7 @@ export function Rename() {
     const [error, setError] = useState('');
 
     // Retrieve studentId from Zustand store
-    const studentId = useStudentIdStore(state => state.studentId);
+    const studentId = useIdStore(state => state.Id);
 
     const handleRename = async () => {
         try {

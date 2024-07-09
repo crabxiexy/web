@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
-// Import the CSS file (create if not exists)
-import useStudentIdStore from 'Pages/studentIdStore'; // Adjust the path based on your file structure
+import useStudentIdStore from 'Pages/IdStore'; // Adjust the path based on your file structure
 
 export const runupload: React.FC = () => {
     const history = useHistory();
-    const { studentId } = useStudentIdStore(); // Assuming you have access to studentId from Zustand
+    const {Id } = useStudentIdStore(); // Assuming you have access to studentId from Zustand
     const [startTime, setStartTime] = useState<Date | null>(null);
     const [finishTime, setFinishTime] = useState<Date | null>(null);
     const [distance, setDistance] = useState<string>('');
@@ -19,7 +18,7 @@ export const runupload: React.FC = () => {
             // First click
             setStartTime(new Date());
             // Implement sending start running message with studentId
-            console.log(`Start running message sent with studentId: ${studentId}`);
+            console.log(`Start running message sent with studentId: ${Id}`);
         } else if (clickCount === 1) {
             // Second click
             setFinishTime(new Date());
@@ -43,7 +42,7 @@ export const runupload: React.FC = () => {
 
     const handleCancel = () => {
         // Navigate back to the main page
-        history.push("/");
+        history.push("/student_dashboard");
     };
 
     const handleDistanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -8,6 +8,8 @@ import {Rename} from 'Pages/rename'
 import {Register} from 'Pages/register'
 import { dashboard } from 'Pages/student/dashboard'
 import { runupload } from 'Pages/student/runupload'
+import {TA_dashboard} from 'Pages/ta/ta_dashboard'
+import {AssignTA} from 'Pages/ta/student_management'
 const Layout = () => {
     return (
         <HashRouter>
@@ -19,6 +21,8 @@ const Layout = () => {
                 <Route path="/register" exact component={Register} />
                 <Route path="/student_dashboard" exact component={dashboard} />
                 <Route path="/student_runupload" exact component={runupload}/>
+                <Route path="/ta_dashboard" exact component={TA_dashboard} />
+                <Route path="/ta_student_management" exact component={AssignTA} />
             </Switch>
         </HashRouter>
     )
