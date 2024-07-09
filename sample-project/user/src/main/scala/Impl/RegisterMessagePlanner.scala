@@ -22,6 +22,7 @@ case class RegisterMessagePlanner(student_id: Int, name: String, password: Strin
       case "4" => "leader"
       case _ => throw new Exception("Unknown user identity")
     }
+
     val checkUserExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.user WHERE student_id = ?)",
       List(SqlParameter("Int", student_id.toString))
     )
