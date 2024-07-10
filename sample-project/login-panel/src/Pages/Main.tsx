@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useHistory } from 'react-router';
 import './Main.css'; // Import the CSS file
 
 export function Main() {
     const history = useHistory();
     const [dropdownVisible, setDropdownVisible] = useState(false);
+    const [username, setUsername] = useState('Guest')
+
+    useEffect(() => {
+        const storedUsername = localStorage.getItem('username'); // Assuming username is stored in local storage
+        if (storedUsername) {
+            setUsername(storedUsername);
+        }
+    }, []);
 
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
@@ -32,7 +40,8 @@ export function Main() {
                 <h1>Physical Exercise System</h1>
                 <div className="user-section">
                     <button className="btn login-btn" onClick={handleLogin}>Login</button>
-                    <div className="user-avatar" onClick={toggleDropdown}>👤</div>
+                    <button className="btn login-btn" onClick={handleRegister}>Register</button>
+                    <div className="user-avatar" onClick={toggleDropdown}>{username}</div>
                     {dropdownVisible && (
                         <div className="dropdown-menu">
                             <p onClick={handleProfile}>Profile</p>

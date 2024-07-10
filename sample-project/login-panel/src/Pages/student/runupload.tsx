@@ -17,22 +17,19 @@ export const RunUpload: React.FC = () => {
     const [runId, setRunId] = useState<string>('');
 
     // State for uploaded image
-    const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null); // State for image URL
+    const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
-    // Function to handle start or finish running
-    const handleStartFinishRunning = async () => {
-        setClickCount(prevCount => prevCount + 1);
-
+    const handleStartFinishRunning = () => {
         if (clickCount === 0) {
-            const start = new Date();
-            setStartTime(start);
-
+            setStartTime(new Date());
         } else if (clickCount === 1) {
             setFinishTime(new Date());
         }
+
+        setClickCount(prevCount => prevCount + 1);
     };
 
-    // Function to handle image upload
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
         if (files && files.length > 0) {
@@ -40,16 +37,13 @@ export const RunUpload: React.FC = () => {
             const reader = new FileReader();
 
             reader.onloadend = () => {
-                const arrayBuffer = reader.result as ArrayBuffer;
-                const uint8Array = new Uint8Array(arrayBuffer);
-                setUploadedImageUrl(reader.result as string); // Set URL for displaying image
+                setUploadedImageUrl(reader.result as string);
             };
 
-            reader.readAsDataURL(file); // Read as data URL for displaying
+            reader.readAsDataURL(file);
         }
     };
 
-    // Function to handle form submission
     const handleSubmit = async () => {
         if (startTime && finishTime && distance && uploadedImageUrl) {
             const studentIdNumber = parseInt(Id);
@@ -60,18 +54,25 @@ export const RunUpload: React.FC = () => {
                 const response = await sendPostRequest(submitMessage);
                 console.log('Submit Running Message Response:', response);
                 setSubmitted(true);
+                setError(null);
             } catch (error) {
                 console.error('Error submitting run data:', error.message);
+                setError('提交跑步数据时出错，请稍后再试。');
             }
         }
     };
 
-    // Function to handle cancellation
     const handleCancel = () => {
+        setStartTime(null);
+        setFinishTime(null);
+        setDistance('');
+        setUploadedImageUrl(null);
+        setClickCount(0);
+        setError(null);
+        setSubmitted(false);
         history.push("/student_dashboard");
     };
 
-    // Function to handle distance change
     const handleDistanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setDistance(e.target.value);
     };
@@ -79,6 +80,7 @@ export const RunUpload: React.FC = () => {
     return (
         <div className="run-upload-page">
             <h1>Run Upload</h1>
+            {error && <p className="error-message">{error}</p>}
             <div className="timestamp-box">
                 <p>Start Time: {startTime ? startTime.toLocaleString() : '-'}</p>
                 <p>Finish Time: {finishTime ? finishTime.toLocaleString() : '-'}</p>
@@ -108,10 +110,10 @@ export const RunUpload: React.FC = () => {
                 )}
             </div>
             <div className="button-group">
-                <button className="start-button" onClick={handleStartFinishRunning}>
+                <button className="start-button" onClick={handleStartFinishRunning} disabled={clickCount >= 2}>
                     {clickCount === 0 ? 'Start Running' : 'Finish Running'}
                 </button>
-                <button className="submit-button" onClick={handleSubmit} disabled={!finishTime || !distance}>
+                <button className="submit-button" onClick={handleSubmit} disabled={!startTime || !finishTime || !distance || !uploadedImageUrl || submitted}>
                     Submit
                 </button>
                 <button className="cancel-button" onClick={handleCancel}>
