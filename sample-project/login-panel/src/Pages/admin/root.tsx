@@ -27,6 +27,11 @@ export function root() {
         history.push("/");
 
     };
+    const handleRegister = () => {
+        setId('');
+        history.push("/register");
+
+    };
 
     return (
         <div className="App">
@@ -34,6 +39,7 @@ export function root() {
                 <h1>Physical Exercise System</h1>
                 <div className="user-section">
                     <button className="btn login-btn" onClick={handleLogout}>Logout</button>
+                    <button className="btn login-btn" onClick={handleRegister}>Register</button>
                     <div className="user-avatar" onClick={toggleDropdown}>👤</div>
                     {dropdownVisible && (
                         <div className="dropdown-menu">

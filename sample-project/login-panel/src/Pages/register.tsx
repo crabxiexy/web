@@ -31,7 +31,7 @@ export function Register() {
             const message = new RegisterMessage(student_id, name, password, identityNumber);
             const response = await sendPostRequest(message);
             if (response.status === 200) {
-                    history.push('/root');
+                    history.push('/admin/root');
 
             }
         } catch (error) {
@@ -106,7 +106,7 @@ export function Register() {
                     </div>
                     <div className="button-group">
                         <button className="submit-button" onClick={handleRegister}>Submit</button>
-                        <button className="back-button" onClick={() => navigateTo('/')}>Back</button>
+                        <button className="back-button" onClick={() => navigateTo('/admin/root')}>Back</button>
                     </div>
                 </div>
             </main>

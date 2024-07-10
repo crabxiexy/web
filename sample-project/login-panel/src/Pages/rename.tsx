@@ -28,7 +28,7 @@ export function Rename() {
             console.log('Rename Response:', response);
 
             // Handle successful response (example: redirect to root)
-            history.push('/root');
+            history.push('/admin/root');
 
         } catch (error) {
             console.error('Rename Error:', error.message);
@@ -67,7 +67,7 @@ export function Rename() {
                     <button onClick={handleRename}>
                         Submit
                     </button>
-                    <button onClick={() => history.push("/root")}>
+                    <button onClick={() => history.push("/admin/root")}>
                         Back
                     </button>
                 </div>

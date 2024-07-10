@@ -74,7 +74,7 @@ export function Login() {
                 <main>
                     {error && <p className="error-message">{error}</p>}
                     <div className="form-group">
-                        <label htmlFor="username">Username</label>
+                        <label htmlFor="user_id">User_ID</label>
                         <input
                             type="text"
                             id="user_id"
