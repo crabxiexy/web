@@ -1,83 +1,101 @@
-.run-upload-page {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
+body, html {
+    margin: 0;
+    padding: 0;
     font-family: 'Arial', sans-serif;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #FFDEE9, #B5FFFC);
+    color: #444;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
-h1 {
-    color: #63D1FF;
+.run-upload-page {
+    width: 100%;
+    max-width: 500px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
 
-.timestamp-box, .distance-input {
-    background: #FFF3F8;
-    border: 1px solid #FFC0CB;
-    padding: 10px;
-    margin-bottom: 20px;
-    border-radius: 5px;
+h1 {
+    margin-bottom: 1rem;
 }
 
-.distance-input label {
+.timestamp-box p {
+    margin: 0.5rem 0;
+}
+
+.distance-input label,
+.image-upload label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
     color: #444;
 }
 
-.distance-input input {
+.distance-input input,
+.image-upload input {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #FFC0CB;
-    border-radius: 4px;
-    background: #FFF;
-    color: #444;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 1rem;
     outline: none;
     transition: border-color 0.3s ease;
 }
 
-.distance-input input:focus {
+.distance-input input:focus,
+.image-upload input:focus {
     border-color: #63D1FF;
 }
 
 .button-group {
     display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 20px;
+    justify-content: space-around;
+    flex-wrap: wrap;
 }
 
-.button-group button {
-    padding: 10px 15px;
+.start-button,
+.submit-button,
+.cancel-button {
+    padding: 0.5rem 1rem;
     border: none;
     border-radius: 4px;
+    color: white;
     cursor: pointer;
-    font-size: 16px;
-    transition: background 0.3s ease;
-    flex-grow: 1;
+    margin: 0.5rem 0;
+    flex: 1;
     margin: 5px;
 }
 
-.button-group .start-button {
-    background-color: #FFD6E8;
-    color: #444;
+.start-button {
+    background: #63D1FF;
 }
 
-.button-group .submit-button {
-    background-color: #63D1FF;
-    color: white;
+.submit-button {
+    background: #4CAF50;
 }
 
-.button-group .cancel-button {
-    background-color: #FF867C;
-    color: white;
+.cancel-button {
+    background: #FF867C;
+}
+
+.start-button:hover,
+.submit-button:hover,
+.cancel-button:hover {
+    opacity: 0.8;
+}
+
+.error-message {
+    color: #FF867C;
+    margin-bottom: 1rem;
 }
 
 .submitted-message {
-    color: #28a745;
-    text-align: center;
-    margin-top: 20px;
-    font-weight: bold;
+    color: #4CAF50;
+    margin-top: 1rem;
 }
