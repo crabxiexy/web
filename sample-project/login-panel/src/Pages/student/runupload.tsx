@@ -53,8 +53,8 @@ export const RunUpload: React.FC = () => {
     const handleSubmit = async () => {
         if (startTime && finishTime && distance && uploadedImageUrl) {
             const studentIdNumber = parseInt(Id);
-            const distanceNumber = parseFloat(distance);
-            const submitMessage = new SubmitRunningMessage(studentIdNumber, startTime, finishTime, distanceNumber, uploadedImageUrl);
+            const distanceNumber = parseFloat(distance)*10;
+            const submitMessage = new SubmitRunningMessage(studentIdNumber, startTime.getTime().toString(), finishTime.getTime().toString(), distanceNumber, uploadedImageUrl);
 
             try {
                 const response = await sendPostRequest(submitMessage);

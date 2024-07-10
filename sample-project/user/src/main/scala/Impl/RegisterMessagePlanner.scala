@@ -8,9 +8,7 @@ import Common.API.{PlanContext, Planner}
 import Common.DBAPI.*
 import Common.Object.{ParameterList, SqlParameter}
 import Common.ServiceUtils.schemaName
-import APIs.PatientAPI.PatientQueryMessage
-import cats.effect.IO
-import io.circe.generic.auto.*
+
 
 case class RegisterMessagePlanner(student_id: Int, name: String, password: String, identity: Int, override val planContext: PlanContext) extends Planner[String] {
   override def plan(using planContext: PlanContext): IO[String] = {

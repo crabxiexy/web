@@ -21,9 +21,9 @@ object SqlParameter {
         case "int" => SqlParameter("Int", value)
         case "boolean" => SqlParameter("Boolean", value)
         case "datetime" => SqlParameter("DateTime", value) // Add case for DateTime
-        case "timestamp" => SqlParameter("Timestamp", value)
-        case "bytea" => SqlParameter("Bytea", value)
-
+        case "double" => SqlParameter("Double", value)
+        case "timestamp" => SqlParameter("Timestamp",value)
+        
         // Add more type cases as needed
         case _ => throw new Exception("Unsupported data type")
       }
