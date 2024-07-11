@@ -10,6 +10,7 @@ import { dashboard } from 'Pages/student/dashboard'
 import { RunUpload } from 'Pages/student/runupload'
 import {TA_dashboard} from 'Pages/ta/ta_dashboard'
 import {AssignTA} from 'Pages/ta/student_management'
+import {RunningCheck} from 'Pages/ta/running_check'
 const Layout = () => {
     return (
         <HashRouter>
@@ -23,6 +24,8 @@ const Layout = () => {
                 <Route path="/student_runupload" exact component={RunUpload}/>
                 <Route path="/ta_dashboard" exact component={TA_dashboard} />
                 <Route path="/ta_student_management" exact component={AssignTA} />
+                <Route path="/ta_running_check" exact component={RunningCheck} />
+
             </Switch>
         </HashRouter>
     )
