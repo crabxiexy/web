@@ -12,7 +12,6 @@ import org.http4s.dsl.io.*
 import java.util.Date
 import java.util.Base64
 import io.circe.{Decoder, HCursor}
-import io.circe.generic.auto._
 
 implicit val dateDecoder: Decoder[Date] = Decoder.decodeLong.map(l => new Date(l))
 
@@ -22,6 +21,16 @@ object Routes:
     messageType match {
       case "SubmitRunningMessage" =>
         IO(decode[SubmitRunningPlanner](str).getOrElse(throw new Exception("Invalid JSON for SubmitRunningMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "CheckRunningMessage" =>
+        IO(decode[CheckRunningPlanner](str).getOrElse(throw new Exception("Invalid JSON for SubmitRunningMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "TAQueryMessage" =>
+        IO(decode[TAQueryPlanner](str).getOrElse(throw new Exception("Invalid JSON for SubmitRunningMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }

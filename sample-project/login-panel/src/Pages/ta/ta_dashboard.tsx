@@ -19,6 +19,9 @@ export function TA_dashboard() {
     const handleStudentManagement = () => {
         history.push("/ta_student_management");
     };
+    const handleRunningCheck = () => {
+        history.push("/ta_running_check");
+    };
 
     const handleLogout = () => {
         setId('');
@@ -43,6 +46,10 @@ export function TA_dashboard() {
                 <div className="square-block" onClick={handleStudentManagement}>
                     学生管理
                 </div>
+                <div className="square-block" onClick={handleRunningCheck}>
+                    阳光长跑审批
+                </div>
+
                 {/* Add other sections or components here */}
             </main>
         </div>
