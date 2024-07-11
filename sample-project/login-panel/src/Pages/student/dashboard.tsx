@@ -23,7 +23,9 @@ export function dashboard() {
     const handleRunUpload = () => {
         history.push("/student_runupload");
     };
-
+    const CheckRecord = () => {
+        history.push("/student_check");
+    };
     const handleLogout = () => {
         setId('');
         history.push("/");
@@ -56,6 +58,9 @@ export function dashboard() {
 
                 <div className="square-block" onClick={handleRunUpload}>
                     阳光长跑登记
+                </div>
+                <div className="square-block" onClick={CheckRecord}>
+                    锻炼记录查询
                 </div>
 
                 <section className="activities">

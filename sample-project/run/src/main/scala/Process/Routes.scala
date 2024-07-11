@@ -25,16 +25,20 @@ object Routes:
             m.fullPlan.map(_.asJson.toString)
           }
       case "CheckRunningMessage" =>
-        IO(decode[CheckRunningPlanner](str).getOrElse(throw new Exception("Invalid JSON for SubmitRunningMessage")))
+        IO(decode[CheckRunningPlanner](str).getOrElse(throw new Exception("Invalid JSON for CheckRunningMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
       case "TAQueryRunningMessage" =>
-        IO(decode[TAQueryPlanner](str).getOrElse(throw new Exception("Invalid JSON for SubmitRunningMessage")))
-          .flatMap{m=>
+        IO(decode[TAQueryPlanner](str).getOrElse(throw new Exception("Invalid JSON for TAQueryRunningMessage")))
+          .flatMap(m =>
             m.fullPlan.map(_.asJson.toString)
-          }
-
+          )
+      case "StudentQueryRunningMessage" =>
+        IO(decode[StudentQueryPlanner](str).getOrElse(throw new Exception("Invalid JSON for StudentQueryRunningMessage")))
+          .flatMap(m =>
+            m.fullPlan.map(_.asJson.toString)
+          )
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }
