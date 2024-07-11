@@ -3,6 +3,15 @@ import { useHistory } from 'react-router';
 import useIdStore from 'Pages/IdStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { SubmitRunningMessage } from 'Plugins/RunAPI/SubmitRunningMessage';
+import * as Minio from 'minio'; // 导入 MinIO 客户端库
+
+const minioClient = new Minio.Client({
+    endPoint: '183.172.236.220', // 替换为您的 MinIO 服务器地址
+    port: 9004,
+    useSSL: false,
+    accessKey: '0z6MIh37MRHwNAHlD61L', // 替换为您的 MinIO Access Key
+    secretKey: 'WTrjlAOluMvOhS9ztr9pXoOrrlk1U292tXx6RaLN', // 替换为您的 MinIO Secret Key
+});
 
 export const RunUpload: React.FC = () => {
     const history = useHistory();
@@ -17,6 +26,7 @@ export const RunUpload: React.FC = () => {
     const [runId, setRunId] = useState<string>('');
 
     // State for uploaded image
+    const [uploadedImage, setUploadedImage] = useState<File | null>(null);
     const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
@@ -34,30 +44,43 @@ export const RunUpload: React.FC = () => {
         const files = event.target.files;
         if (files && files.length > 0) {
             const file = files[0];
+            setUploadedImage(file);
+
             const reader = new FileReader();
-
-            reader.onloadend = () => {
-                setUploadedImageUrl(reader.result as string);
+            reader.onload = () => {
+                const imageUrl = reader.result as string;
+                setUploadedImageUrl(imageUrl);
             };
-
             reader.readAsDataURL(file);
         }
     };
 
     const handleSubmit = async () => {
-        if (startTime && finishTime && distance && uploadedImageUrl) {
-            const studentIdNumber = parseInt(Id);
-            const distanceNumber = parseFloat(distance)*10;
-            const submitMessage = new SubmitRunningMessage(studentIdNumber, startTime.getTime().toString(), finishTime.getTime().toString(), distanceNumber, uploadedImageUrl);
+        if (startTime && finishTime && distance && uploadedImage) {
+            const filename = uploadedImage.name;
 
             try {
+                await minioClient.fPutObject('proof', filename, uploadedImage.path, {});
+
+                const studentIdNumber = parseInt(Id);
+                const distanceNumber = parseFloat(distance) * 10;
+                const submitMessage = new SubmitRunningMessage(
+                    studentIdNumber,
+                    startTime.getTime().toString(),
+                    finishTime.getTime().toString(),
+                    distanceNumber,
+                    `http://183.172.236.220:9005/proof/${filename}`
+                );
+
                 const response = await sendPostRequest(submitMessage);
                 console.log('Submit Running Message Response:', response);
                 setSubmitted(true);
                 setError(null);
+                // 提交成功后自动回到上一个页面
+                history.goBack();
             } catch (error) {
-                console.error('Error submitting run data:', error.message);
-                setError('提交跑步数据时出错，请稍后再试。');
+                console.error('Error handling image upload and submission:', error);
+                setError('处理上传和提交时出错，请稍后再试。');
             }
         }
     };
@@ -66,11 +89,12 @@ export const RunUpload: React.FC = () => {
         setStartTime(null);
         setFinishTime(null);
         setDistance('');
+        setUploadedImage(null);
         setUploadedImageUrl(null);
         setClickCount(0);
         setError(null);
         setSubmitted(false);
-        history.push("/student_dashboard");
+        history.push('/student_dashboard');
     };
 
     const handleDistanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -106,14 +130,14 @@ export const RunUpload: React.FC = () => {
                     accept="image/*"
                 />
                 {uploadedImageUrl && (
-                    <img src={uploadedImageUrl} alt="Uploaded" style={{ maxWidth: '100%', marginTop: '10px' }} />
+                    <img src={uploadedImageUrl} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '400px', marginTop: '10px' }} />
                 )}
             </div>
             <div className="button-group">
                 <button className="start-button" onClick={handleStartFinishRunning} disabled={clickCount >= 2}>
                     {clickCount === 0 ? 'Start Running' : 'Finish Running'}
                 </button>
-                <button className="submit-button" onClick={handleSubmit} disabled={!startTime || !finishTime || !distance || !uploadedImageUrl || submitted}>
+                <button className="submit-button" onClick={handleSubmit} disabled={!startTime || !finishTime || !distance || !uploadedImage || submitted}>
                     Submit
                 </button>
                 <button className="cancel-button" onClick={handleCancel}>

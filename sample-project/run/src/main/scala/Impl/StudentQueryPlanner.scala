@@ -20,7 +20,7 @@ case class StudentQueryPlanner(
       s"""
          |SELECT run_id, student_id, ta_id, startTime, finishTime, submitTime, distance, imgUrl, is_checked, response
          |FROM ${schemaName}.run
-         |WHERE student_id = ? 
+         |WHERE student_id = ?
        """.stripMargin
 
     // Execute the query using readDBRows

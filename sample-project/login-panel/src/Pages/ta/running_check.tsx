@@ -4,6 +4,9 @@ import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils'; // 根据项目�
 import { TAQueryRunningMessage } from 'Plugins/RunAPI/TAQueryRunningMessage'; // 根据项目结构调整导入路径
 import useIdStore from 'Pages/IdStore'; // 根据项目结构调整导入路径
 import { CheckRunningMessage } from 'Plugins/RunAPI/CheckRunningMessage'; // 根据项目结构调整导入路径
+import Modal from 'react-modal'; // 引入 react-modal 组件
+
+Modal.setAppElement('#root');
 
 // 定义每个 run 对象的接口
 interface Run {
@@ -22,6 +25,8 @@ export const RunningCheck = () => {
     const [error, setError] = useState<string>('');
     const [result, setResult] = useState<Run[]>([]); // 使用 Run 接口定义结果状态
     const [editData, setEditData] = useState<{ [key: number]: { response: string } }>({}); // 存储编辑数据的状态
+    const [modalIsOpen, setModalIsOpen] = useState<boolean>(false); // 控制弹窗显示状态
+    const [selectedImageUrl, setSelectedImageUrl] = useState<string>(''); // 保存选中的图片 URL
 
     // 从 Zustand hook 获取 ta_id
     const { Id } = useIdStore(); // 假设 Zustand hook 的导入方式是这样的，根据实际情况调整
@@ -71,6 +76,18 @@ export const RunningCheck = () => {
                 [fieldName]: value,
             },
         }));
+    };
+
+    // 处理点击图片按钮
+    const handleImageClick = (imageUrl: string) => {
+        setSelectedImageUrl(imageUrl);
+        setModalIsOpen(true);
+    };
+
+    // 处理关闭弹窗
+    const closeModal = () => {
+        setModalIsOpen(false);
+        setSelectedImageUrl('');
     };
 
     // 处理通过按钮点击
@@ -133,7 +150,7 @@ export const RunningCheck = () => {
                             <th>结束时间</th>
                             <th>提交时间</th>
                             <th>距离</th>
-                            <th>图片 URL</th>
+                            <th>查看图片</th>
                             <th>回复</th>
                             <th>速度 (km/h)</th>
                             <th>操作</th>
@@ -145,13 +162,22 @@ export const RunningCheck = () => {
                                 <td>{decodeTimestamp(run.starttime)}</td>
                                 <td>{decodeTimestamp(run.finishtime)}</td>
                                 <td>{decodeTimestamp(run.submittime)}</td>
-                                <td>{run.distance}</td>
-                                <td>{run.imgurl}</td>
+                                <td>{run.distance / 10}</td>
+                                <td>
+                                    <button
+                                        className="button"
+                                        onClick={() => handleImageClick(run.imgurl)}
+                                    >
+                                        查看图片
+                                    </button>
+                                </td>
                                 <td>
                                     <input
                                         type="text"
                                         value={editData[run.runID]?.response ?? run.response}
-                                        onChange={(e) => handleFieldChange(run.runID, 'response', e.target.value)}
+                                        onChange={(e) =>
+                                            handleFieldChange(run.runID, 'response', e.target.value)
+                                        }
                                     />
                                 </td>
                                 <td>{run.speed.toFixed(2)}</td>
@@ -169,6 +195,27 @@ export const RunningCheck = () => {
                     </table>
                 </div>
             )}
+            {/* 弹窗显示图片 */}
+            <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                contentLabel="Image Modal"
+                className="image-modal"
+                overlayClassName="image-modal-overlay"
+            >
+                <div className="modal-header">
+                    <button className="close-button" onClick={closeModal}>
+                        &times;
+                    </button>
+                </div>
+                <div className="modal-body">
+                    <img
+                        src={selectedImageUrl}
+                        alt="Selected"
+                        style={{ maxWidth: '100%', maxHeight: '100%' }}
+                    />
+                </div>
+            </Modal>
         </div>
     );
 };
