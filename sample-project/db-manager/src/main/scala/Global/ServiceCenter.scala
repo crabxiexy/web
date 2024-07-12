@@ -39,7 +39,7 @@ object ServiceCenter {
     "TA" -> "127.0.0.1:10006",
     "Run" -> "127.0.0.1:10007",
     "Admin" -> "127.0.0.1:10008",
-    "Leader" -> "127.0.0.1:10009"
+    "Groupex" -> "127.0.0.1:10009"
   )
 
   def getURI(serviceCode: String): IO[Uri] =

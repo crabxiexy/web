@@ -1,0 +1,48 @@
+import React from 'react';
+
+interface ExerciseCardProps {
+    groupexID: number;
+    startTime: string;
+    finishTime: string;
+    location: string;
+    exName: string;
+    status: number;
+}
+
+const ExerciseCard: React.FC<ExerciseCardProps> = ({
+                                                       groupexID,
+                                                       startTime,
+                                                       finishTime,
+                                                       location,
+                                                       exName,
+                                                       status
+                                                   }) => {
+    const formatStatus = (status: number) => {
+        switch (status) {
+            case 0:
+                return '签到未开始';
+            case 1:
+                return '签到已开始';
+            case 2:
+                return '签到已结束';
+            case 3:
+                return '签退已开始';
+            case 4:
+                return '已结束';
+            default:
+                return '状态未知';
+        }
+    };
+
+    return (
+        <div className="exercise-card">
+            <h4>{exName}</h4>
+            <p>开始时间: {new Date(parseInt(startTime)).toLocaleString()}</p>
+            <p>结束时间: {new Date(parseInt(finishTime)).toLocaleString()}</p>
+            <p>地点: {location}</p>
+            <p>状态: {formatStatus(status)}</p>
+        </div>
+    );
+};
+
+export default ExerciseCard;

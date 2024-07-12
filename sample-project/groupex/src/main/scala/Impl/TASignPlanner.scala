@@ -13,9 +13,8 @@ import java.util.Date
 case class TASignPlanner(
                                         groupex_id: Int,
                                         TA_id: Int,
-                                        sign_in: Int,
-                                        sign_out:Int,
-                                        token: Int,
+                                        status: Int,
+                                        token:String,
                                         override val planContext: PlanContext
                                       ) extends Planner[String] {
   override def plan(using planContext: PlanContext): IO[String] = {
@@ -38,11 +37,10 @@ case class TASignPlanner(
               IO.raiseError(new Exception("groupex does not belong to TA!"))
             } else {
               val changeSignStatus = writeDB(
-                s"UPDATE groupex.groupex SET sign_in = ? AND sign_out =? AND token WHERE groupex_id = ?".stripMargin,
+                s"UPDATE groupex.groupex SET status =? , token=?  WHERE groupex_id = ?".stripMargin,
                 List(
-                  SqlParameter("Int", sign_in.toString),
-                  SqlParameter("Int", sign_out.toString),
-                  SqlParameter("Int", token.toString),
+                  SqlParameter("Int", status.toString),
+                  SqlParameter("String", token.toString),
                   SqlParameter("Int", groupex_id.toString)
                 )
               )

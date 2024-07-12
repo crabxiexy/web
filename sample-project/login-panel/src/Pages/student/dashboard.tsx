@@ -26,6 +26,9 @@ export function dashboard() {
     const CheckRecord = () => {
         history.push("/student_check");
     };
+    const CheckGroupEx = () => {
+        history.push("/student_checkgroupex");
+    };
     const handleLogout = () => {
         setId('');
         history.push("/");
@@ -61,6 +64,9 @@ export function dashboard() {
                 </div>
                 <div className="square-block" onClick={CheckRecord}>
                     锻炼记录查询
+                </div>
+                <div className="square-block" onClick={CheckGroupEx}>
+                    集体锻炼查询
                 </div>
 
                 <section className="activities">

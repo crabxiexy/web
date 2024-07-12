@@ -22,6 +22,9 @@ export function TA_dashboard() {
     const handleRunningCheck = () => {
         history.push("/ta_running_check");
     };
+    const handleGroupexManagement = () => {
+        history.push("/groupex_management");
+    };
 
     const handleLogout = () => {
         setId('');
@@ -48,6 +51,9 @@ export function TA_dashboard() {
                 </div>
                 <div className="square-block" onClick={handleRunningCheck}>
                     阳光长跑审批
+                </div>
+                <div className="square-block" onClick={handleGroupexManagement}>
+                    集体锻炼管理
                 </div>
 
                 {/* Add other sections or components here */}

@@ -10,7 +10,7 @@ import Common.Object.{ParameterList, SqlParameter}
 case class SigninPlanner(
                            student_id: Int,
                            groupex_id: Int,
-                           token: Int,
+                           token: String,
                            override val planContext: PlanContext
                          ) extends Planner[String] {
   override def plan(using planContext: PlanContext): IO[String] = {
@@ -49,7 +49,7 @@ case class SigninPlanner(
                   case false =>
                     val checkToken = readDBBoolean(
                       s"SELECT EXISTS(SELECT 1 FROM groupex.groupex WHERE groupex_id = ? AND token = ?)",
-                      List(SqlParameter("Int", groupex_id.toString), SqlParameter("Int", token.toString))
+                      List(SqlParameter("Int", groupex_id.toString), SqlParameter("Text", token.toString))
                     )
 
                     checkToken.flatMap {
