@@ -3,7 +3,7 @@ import { useHistory } from 'react-router';
 import './dashboard.css'; // Import the CSS file
 import useIdStore from 'Pages/IdStore'; // Adjust the path based on your file structure
 
-export function dashboard() {
+export function Dashboard() { // Renamed first letter to uppercase to follow component naming conventions.
     const history = useHistory();
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const { setId } = useIdStore();
@@ -23,12 +23,15 @@ export function dashboard() {
     const handleRunUpload = () => {
         history.push("/student_runupload");
     };
-    const CheckRecord = () => {
+
+    const checkRecord = () => {
         history.push("/student_check");
     };
-    const CheckGroupEx = () => {
+
+    const checkGroupEx = () => {
         history.push("/student_checkgroupex");
     };
+
     const handleLogout = () => {
         setId('');
         history.push("/");
@@ -58,33 +61,18 @@ export function dashboard() {
                         <p>Friday Cycling Event has been rescheduled to 8 AM.</p>
                     </div>
                 </section>
-
                 <div className="square-block" onClick={handleRunUpload}>
                     阳光长跑登记
                 </div>
-                <div className="square-block" onClick={CheckRecord}>
+                <div className="square-block" onClick={checkRecord}>
                     锻炼记录查询
                 </div>
-                <div className="square-block" onClick={CheckGroupEx}>
+                <div className="square-block" onClick={checkGroupEx}>
                     集体锻炼查询
                 </div>
-
-                <section className="activities">
-                    <h2>Activities for Department Team</h2>
-                    <div className="button-group">
-                        {/* Add your activity buttons here */}
-                    </div>
-                </section>
-
-                <section className="common-exercises">
-                    <h2>Common Exercises</h2>
-                    <div className="button-group">
-                        {/* Add your exercise buttons here */}
-                    </div>
-                </section>
             </main>
         </div>
     );
 }
 
-export default dashboard;
+export default Dashboard;

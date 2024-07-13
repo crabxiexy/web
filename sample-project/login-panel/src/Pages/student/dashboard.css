@@ -1,5 +1,3 @@
-
-
 .App {
     text-align: center;
     background: linear-gradient(135deg, #FFDEE9, #B5FFFC);
@@ -15,14 +13,13 @@
     background-color: #34495e;
     padding: 20px;
     color: white;
-    width: 100%; /* Ensure the header spans the full width */
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: fixed; /* Fixes the header at the top */
+    position: fixed;
     top: 0;
-
 }
 
 .App-header h1 {
@@ -63,24 +60,24 @@
 }
 
 .dropdown-menu p:last-child {
-    border-bottom: none; /* Remove border from last item */
+    border-bottom: none;
 }
 
 .dropdown-menu p:hover {
-    background: #FFD3E8; /* Light background for hover */
+    background: #FFD3E8;
 }
 
 main {
     width: 90%;
     max-width: 1000px;
-    margin-top: 100px; /* Adjusted to give space for the fixed header */
+    margin-top: 100px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-section {
+section.notifications {
     background: rgba(255, 255, 255, 0.9);
     margin: 20px 0;
     padding: 20px;
@@ -90,7 +87,7 @@ section {
     text-align: left;
 }
 
-section h2 {
+section.notifications h2 {
     border-bottom: 2px solid #63D1FF;
     padding-bottom: 10px;
     margin-bottom: 20px;
@@ -110,15 +107,23 @@ section h2 {
     margin-bottom: 10px;
 }
 
-.button-group {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    width: 100%;
+.square-block {
+    background: linear-gradient(to right, #8e44ad, #3498db);
+    color: white;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(142, 68, 173, 0.25);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-align: center;
+    width: 80%;
+    max-width: 400px;
 }
 
-.button-group button {
-    margin: 10px;
+.square-block:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(142, 68, 173, 0.35);
 }
 
 .btn {
@@ -128,6 +133,7 @@ section h2 {
     border-radius: 10px;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
+    outline: none; /* Remove the blue outline on focus */
 }
 
 .login-btn {
