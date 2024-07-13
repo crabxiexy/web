@@ -24,6 +24,11 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "CreateAppMessage" =>
+        IO(decode[CreateAppPlanner](str).getOrElse(throw new Exception("Invalid JSON for AssignScoreMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }
