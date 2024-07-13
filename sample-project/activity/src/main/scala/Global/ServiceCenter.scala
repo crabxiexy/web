@@ -18,6 +18,7 @@ object ServiceCenter {
   val adminServiceCode = "A00008"
   val leaderServiceCode = "A00009"
   val clubServiceCode = "A00015"
+  val activityServiceCode = "A00016"
 
   val fullNameMap: Map[String, String] = Map(
     dbManagerServiceCode -> "数据库管理（DB_Manager）",
@@ -29,7 +30,8 @@ object ServiceCenter {
     runServiceCode -> "阳光长跑（Run）",
     adminServiceCode -> "管理员（Admin）",
     leaderServiceCode -> "队长（Leader）",
-    clubServiceCode -> "俱乐部（Club）"
+    clubServiceCode -> "俱乐部（Club）",
+    activityServiceCode -> "社团活动（activity）"
   )
 
   val address: Map[String, String] = Map(
@@ -42,6 +44,7 @@ object ServiceCenter {
     "Run" -> "127.0.0.1:10007",
     "Admin" -> "127.0.0.1:10008",
     "Leader" -> "127.0.0.1:10009",
-    "Club" -> "127.0.0.1:10015"
+    "Club" -> "127.0.0.1:10015",
+    "Activity" -> "127.0.0.1:10016"
   )
 }

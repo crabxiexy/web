@@ -12,22 +12,22 @@ import org.http4s.dsl.io.*
 
 
 object Routes:
-  private def executePlan(messageType:String, str: String): IO[String]=
+  private def executePlan(messageType: String, str: String): IO[Either[String, List[String]]] =
     messageType match {
       case "PatientLoginMessage" =>
         IO(decode[PatientLoginMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for PatientLoginMessage")))
-          .flatMap{m=>
-            m.fullPlan.map(_.asJson.toString)
+          .flatMap { m =>
+            m.fullPlan.map(result => Left(result.asJson.toString))
           }
       case "PatientQueryMessage" =>
         IO(decode[PatientQueryMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for PatientQueryMessage")))
-          .flatMap{m=>
-            m.fullPlan.map(_.asJson.toString)
+          .flatMap { m =>
+            m.fullPlan.map(resultList => Right(resultList.toList.map(_.asJson.toString)))
           }
       case "PatientRegisterMessage" =>
         IO(decode[PatientRegisterMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for PatientRegisterMessage")))
-          .flatMap{m=>
-            m.fullPlan.map(_.asJson.toString)
+          .flatMap { m =>
+            m.fullPlan.map(result => Left(result.asJson.toString))
           }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
