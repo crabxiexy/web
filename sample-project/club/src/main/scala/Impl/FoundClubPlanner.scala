@@ -12,7 +12,7 @@ import io.circe.generic.auto.*
 import java.security.MessageDigest
 import java.util.Base64
 
-case class FoundClubPlanner(club_name: String, leader_name: String, club_intro: String, club_depart: String, override val planContext: PlanContext) extends Planner[String] {
+case class FoundClubPlanner(club_name: String, leader_id: Int, club_intro: String, club_depart: String, override val planContext: PlanContext) extends Planner[String] {
   override def plan(using planContext: PlanContext): IO[String] = {
     val checkClubExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.info WHERE name = ?)",
       List(SqlParameter("String", club_name))
@@ -33,7 +33,7 @@ case class FoundClubPlanner(club_name: String, leader_name: String, club_intro: 
        """.stripMargin,
           List(
             SqlParameter("String", club_name),
-            SqlParameter("String", leader_name),
+            SqlParameter("Int", leader_id.toString),
             SqlParameter("String", club_intro),
             SqlParameter("String", club_depart)
           )

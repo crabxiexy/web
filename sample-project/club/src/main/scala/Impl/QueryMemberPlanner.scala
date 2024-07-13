@@ -16,7 +16,7 @@ case class QueryMemberPlanner(club_name: String, override val planContext: PlanC
   override def plan(using planContext: PlanContext): IO[List[Json]] = {
     val sqlQuery =
       s"""
-         |SELECT member_name
+         |SELECT member
          |FROM ${schemaName}.member
          |WHERE club_name = ?
        """.stripMargin
