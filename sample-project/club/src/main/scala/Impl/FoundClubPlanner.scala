@@ -40,7 +40,7 @@ case class FoundClubPlanner(club_name: String, leader_name: String, club_intro: 
         )
         // Chain the insertUser operation after the insertIdentity operation
         insertClub.flatMap { _ =>
-          IO.pure("User registered successfully")
+          IO.pure("Club registered successfully")
         }
       }
     }
