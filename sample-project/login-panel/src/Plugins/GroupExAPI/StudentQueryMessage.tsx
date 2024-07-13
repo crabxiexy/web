@@ -1,10 +1,10 @@
 import { GroupexMessage } from 'Plugins/GroupExAPI/GroupexMessage';
 
 export class StudentQueryMessage extends GroupexMessage {
-    TA_id: number;
+    student_id: number;
 
-    constructor(TA_id: number) {
+    constructor(student_id: number) {
         super();
-        this.TA_id = TA_id;
+        this.student_id = student_id;
     }
 }
