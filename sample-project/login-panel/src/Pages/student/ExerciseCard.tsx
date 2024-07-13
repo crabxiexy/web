@@ -7,6 +7,8 @@ interface ExerciseCardProps {
     location: string;
     exName: string;
     status: number;
+    onSignin: (groupexID: number, token: string) => void;
+    onSignout: (groupexID: number, token: string) => void;
 }
 
 const ExerciseCard: React.FC<ExerciseCardProps> = ({
@@ -15,8 +17,12 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
                                                        finishTime,
                                                        location,
                                                        exName,
-                                                       status
+                                                       status,
+                                                       onSignin,
+                                                       onSignout,
                                                    }) => {
+    const [token, setToken] = React.useState<string>('');
+
     const formatStatus = (status: number) => {
         switch (status) {
             case 0:
@@ -41,6 +47,28 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
             <p>结束时间: {new Date(parseInt(finishTime)).toLocaleString()}</p>
             <p>地点: {location}</p>
             <p>状态: {formatStatus(status)}</p>
+            {status === 1 && (
+                <div className="signin-section">
+                    <input
+                        type="text"
+                        placeholder="请输入Token"
+                        value={token}
+                        onChange={(e) => setToken(e.target.value)}
+                    />
+                    <button onClick={() => onSignin(groupexID, token)}>签到</button>
+                </div>
+            )}
+            {status === 3 && (
+                <div className="signout-section">
+                    <input
+                        type="text"
+                        placeholder="请输入Token"
+                        value={token}
+                        onChange={(e) => setToken(e.target.value)}
+                    />
+                    <button onClick={() => onSignout(groupexID, token)}>签退</button>
+                </div>
+            )}
         </div>
     );
 };

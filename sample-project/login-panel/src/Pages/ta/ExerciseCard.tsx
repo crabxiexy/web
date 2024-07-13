@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import useIdStore from 'Pages/IdStore';
 import { TASignMessage } from 'Plugins/GroupExAPI/TASignMessage';
+import { ExQueryMessage } from 'Plugins/GroupExAPI/ExQueryMessage'; // Import your ExQueryMessage
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 
 interface ExerciseCardProps {
@@ -10,6 +11,7 @@ interface ExerciseCardProps {
     location: string;
     exName: string;
     status: number;
+    updateStatus: (newStatus: number) => void; // Function to update the status
 }
 
 const ExerciseCard: React.FC<ExerciseCardProps> = ({
@@ -19,16 +21,15 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
                                                        location,
                                                        exName,
                                                        status,
+                                                       updateStatus,
                                                    }) => {
     const { Id } = useIdStore(); // Get TA ID from Zustand store
     const taId = parseInt(Id);
     const [token, setToken] = useState('');
     const [error, setError] = useState<string>('');
-    const [canEndSignIn, setCanEndSignIn] = useState<boolean>(false);
-    const [canSignOut, setCanSignOut] = useState<boolean>(false);
-    const [canEndSignOut, setCanEndSignOut] = useState<boolean>(false);
     const [inProcess, setInProcess] = useState<boolean>(false);
-    const isOngoing = (Date.now() >= parseInt(startTime) && Date.now() <= parseInt(finishTime))&&(status==4);
+    const [queryResult, setQueryResult] = useState<any[]>([]); // State to hold query results
+    const isOngoing = (Date.now() >= parseInt(startTime) && Date.now() <= parseInt(finishTime) && status !== 4);
 
     const handleSignIn = async () => {
         if (!token) {
@@ -38,10 +39,10 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
         setError('');
 
         try {
-            const response = await sendPostRequest(new TASignMessage(groupexID, taId, 1,  token));
+            const response = await sendPostRequest(new TASignMessage(groupexID, taId, 1, token));
             if (response.status === 200) {
                 setError('签到成功！');
-                setCanEndSignIn(true);
+                updateStatus(1); // Update status to 1 (end sign in)
             } else {
                 setError('签到失败，请重试。');
             }
@@ -54,11 +55,10 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
         setError('');
 
         try {
-            const response = await sendPostRequest(new TASignMessage(groupexID, taId, 2,  ''));
+            const response = await sendPostRequest(new TASignMessage(groupexID, taId, 2, ''));
             if (response.status === 200) {
                 setError('结束签到成功！');
-                setCanEndSignIn(false);
-                setCanSignOut(true);
+                updateStatus(2); // Update status to 2 (start sign out)
             } else {
                 setError('结束签到失败，请重试。');
             }
@@ -78,8 +78,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
             const response = await sendPostRequest(new TASignMessage(groupexID, taId, 3, token));
             if (response.status === 200) {
                 setError('签退成功！');
-                setCanSignOut(false);
-                setCanEndSignOut(true);
+                updateStatus(3); // Update status to 3 (end sign out)
             } else {
                 setError('签退失败，请重试。');
             }
@@ -92,10 +91,11 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
         setError('');
 
         try {
-            const response = await sendPostRequest(new TASignMessage(groupexID, taId, 4,  ''));
+            const response = await sendPostRequest(new TASignMessage(groupexID, taId, 4, ''));
             if (response.status === 200) {
                 setError('结束签退成功！');
                 setInProcess(true);
+                updateStatus(4); // Update status to 4 (completed)
             } else {
                 setError('结束签退失败，请重试。');
             }
@@ -105,14 +105,36 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
     };
 
     const handleAction = async () => {
-        if (canEndSignIn) {
-            await handleEndSignIn();
-        } else if (canSignOut) {
-            await handleSignOut();
-        } else if (canEndSignOut) {
-            await handleEndSignOut();
-        } else {
-            await handleSignIn();
+        switch (status) {
+            case 0:
+                await handleSignIn();
+                break;
+            case 1:
+                await handleEndSignIn();
+                break;
+            case 2:
+                await handleSignOut();
+                break;
+            case 3:
+                await handleEndSignOut();
+                break;
+            default:
+                setError('无效的操作。');
+        }
+    };
+
+    const handleQueryStatus = async (queryType: number) => {
+        setError(''); // Clear previous errors
+
+        try {
+            const response = await sendPostRequest(new ExQueryMessage(groupexID, queryType));
+            if (response.status === 200) {
+                setQueryResult(response.data); // Set the results to state
+            } else {
+                setError('查询失败，请重试。');
+            }
+        } catch {
+            setError('查询失败，请重试。');
         }
     };
 
@@ -131,14 +153,36 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
                         placeholder="输入token"
                         value={token}
                         onChange={(e) => setToken(e.target.value)}
+                        disabled={status === 1 || status === 3} // Disable input for sign-out and end sign-out
                     />
                     <button onClick={handleAction} disabled={inProcess}>
-                        {canEndSignIn ? '结束签到' : canSignOut ? '开始签退' : canEndSignOut ? '结束签退' : '开始签到'}
+                        {status === 0 ? '开始签到' :
+                            status === 1 ? '结束签到' :
+                                status === 2 ? '开始签退' :
+                                    status === 3 ? '结束签退' :
+                                        '无效操作'}
                     </button>
                 </div>
             )}
 
             {inProcess && <p>签到和签退已完成</p>}
+
+            <div className="query-buttons">
+                <button onClick={() => handleQueryStatus(1)}>显示签到情况</button>
+                <button onClick={() => handleQueryStatus(0)}>显示签退情况</button>
+                <button onClick={() => handleQueryStatus(2)}>显示整体情况</button>
+            </div>
+
+            {queryResult.length > 0 && (
+                <div className="query-results">
+                    <h5>查询结果:</h5>
+                    <ul>
+                        {queryResult.map((item) => (
+                            <li key={item.studentID}>{item.studentID}</li> // Use studentID from response
+                        ))}
+                    </ul>
+                </div>
+            )}
         </div>
     );
 };

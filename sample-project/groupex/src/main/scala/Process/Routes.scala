@@ -45,8 +45,18 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "ExQueryMessage" =>
+        IO(decode[ExQueryPlanner](str).getOrElse(throw new Exception("Invalid JSON for ExQueryPlanner")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case "SignoutMessage" =>
         IO(decode[SignoutPlanner](str).getOrElse(throw new Exception("Invalid JSON for SignoutPlanner")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "StudentRecordQueryMessage" =>
+        IO(decode[StudentRecordQueryPlanner](str).getOrElse(throw new Exception("Invalid JSON for SignoutPlanner")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }

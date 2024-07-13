@@ -79,6 +79,9 @@ export const GroupexManagement: React.FC = () => {
         try {
             await sendPostRequest(groupexMessage);
             closeModal();
+            // Fetch updated data after creating a new exercise
+            const response: AxiosResponse<TAQueryResult[]> = await sendPostRequest(new TAQueryMessage(parseInt(Id)));
+            setTaQueryResult(response.data);
         } catch (error) {
             setError('创建失败，请重试。');
         }
@@ -89,7 +92,7 @@ export const GroupexManagement: React.FC = () => {
     const ongoing = taQueryResult.filter(item =>
         parseInt(item.starttime) <= currentTime &&
         parseInt(item.finishtime) > currentTime &&
-        (item.status === 4)
+        (item.status !== 4)
     );
     const ended = taQueryResult.filter(item =>
         parseInt(item.finishtime) <= currentTime ||
@@ -121,6 +124,13 @@ export const GroupexManagement: React.FC = () => {
                             location={item.location}
                             exName={item.ex_name}
                             status={item.status}
+                            updateStatus={(newStatus) => {
+                                setTaQueryResult(prev =>
+                                    prev.map(exercise =>
+                                        exercise.groupexID === item.groupexID ? { ...exercise, status: newStatus } : exercise
+                                    )
+                                );
+                            }} // Update local status
                         />
                     ))}
                 </div>
