@@ -15,27 +15,42 @@ object Routes:
   private def executePlan(messageType:String, str: String): IO[String]=
     messageType match {
       case "FoundClubMessage" =>
-        IO(decode[FoundClubPlanner](str).getOrElse(throw new Exception("Invalid JSON for AssignScoreMessage")))
+        IO(decode[FoundClubPlanner](str).getOrElse(throw new Exception("Invalid JSON for FoundClubMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
       case "AddMemberMessage" =>
-        IO(decode[AddMemberPlanner](str).getOrElse(throw new Exception("Invalid JSON for AssignScoreMessage")))
+        IO(decode[AddMemberPlanner](str).getOrElse(throw new Exception("Invalid JSON for AddMemberMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
       case "CreateAppMessage" =>
-        IO(decode[CreateAppPlanner](str).getOrElse(throw new Exception("Invalid JSON for AssignScoreMessage")))
+        IO(decode[CreateAppPlanner](str).getOrElse(throw new Exception("Invalid JSON for CreateAppMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
       case "QueryMemberMessage" =>
-        IO(decode[QueryMemberPlanner](str).getOrElse(throw new Exception("Invalid JSON for AssignScoreMessage")))
+        IO(decode[QueryMemberPlanner](str).getOrElse(throw new Exception("Invalid JSON for QueryMemberMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
       case "UpdateIntroMessage" =>
-        IO(decode[UpdateIntroPlanner](str).getOrElse(throw new Exception("Invalid JSON for AssignScoreMessage")))
+        IO(decode[UpdateIntroPlanner](str).getOrElse(throw new Exception("Invalid JSON for UpdateIntroMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "AdminQueryAppMessage" =>
+        IO(decode[AdminQueryAppPlanner](str).getOrElse(throw new Exception("Invalid JSON for AdminQueryAppMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "LeaderQueryAppMessage" =>
+        IO(decode[LeaderQueryAppPlanner](str).getOrElse(throw new Exception("Invalid JSON for LeaderQueryAppMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "ReplyAppMessage" =>
+        IO(decode[ReplyAppPlanner](str).getOrElse(throw new Exception("Invalid JSON for ReplyAppMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
