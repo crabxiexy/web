@@ -8,6 +8,7 @@ import Common.ServiceUtils.schemaName
 import cats.effect.IO
 import io.circe.Json
 import io.circe.generic.auto.*
+import APIs.ClubAPI.CheckClubMessage
 
 import java.security.MessageDigest
 import java.util.Base64
@@ -15,9 +16,10 @@ import java.util.Base64
 case class CreateActivityPlanner(club_name:String, activity_name:String, intro:String, startTime:String , finishTime:String, organizor_id :Int, lowLimit:Int, upLimit :Int, num:Int
 , override val planContext: PlanContext) extends Planner[String] {
   override def plan(using planContext: PlanContext): IO[String] = {
-    val checkClubExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM club.info WHERE name = ?)",
-      List(SqlParameter("String", club_name))
-    )
+    val checkClubExists = CheckClubMessage(club_name).send
+//    val checkClubExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM club.info WHERE name = ?)",
+//      List(SqlParameter("String", club_name))
+//    )
     checkClubExists.flatMap { exists =>
       if (!exists) {
         IO.raiseError(new Exception("This club does not exist!"))
