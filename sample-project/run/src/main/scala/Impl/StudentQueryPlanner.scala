@@ -9,11 +9,7 @@ import io.circe.Json
 import io.circe.parser._
 import io.circe.generic.auto._
 
-case class StudentQueryPlanner(
-                           student_id: Int,
-                           override val planContext: PlanContext
-                         ) extends Planner[List[Json]] {
-
+case class StudentQueryPlanner(student_id: Int, override val planContext: PlanContext) extends Planner[List[Json]] {
   override def plan(using planContext: PlanContext): IO[List[Json]] = {
     // Construct the SQL query with schemaName to fetch all fields
     val sqlQuery =
@@ -22,7 +18,6 @@ case class StudentQueryPlanner(
          |FROM ${schemaName}.run
          |WHERE student_id = ?
        """.stripMargin
-
     // Execute the query using readDBRows
     readDBRows(sqlQuery, List(SqlParameter("Int", student_id.toString)))
   }
