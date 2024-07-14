@@ -12,7 +12,7 @@ import Common.Object.SqlParameter
 import Common.ServiceUtils.schemaName
 import cats.effect.IO
 import io.circe.generic.auto._
-
+import APIs.StudentAPI.GetTAMessage
 
 
 case class SubmitRunningPlanner(
@@ -28,17 +28,19 @@ case class SubmitRunningPlanner(
 
     val submitTime = new Date()
     // Fetch ta_id for the given student_id and startTime
-    val getTAId: IO[Int] = readDBInt(
-      s"""
-         |SELECT ta_id
-         |FROM student.student
-         |WHERE student_id = ?
-       """.stripMargin,
-      List(
-        SqlParameter("Int", student_id.toString),
-
-      )
-    )
+//    val getTAId: IO[Int] = readDBInt(
+//      s"""
+//         |SELECT ta_id
+//         |FROM student.student
+//         |WHERE student_id = ?
+//       """.stripMargin,
+//      List(
+//        SqlParameter("Int", student_id.toString),
+//
+//      )
+//    )
+    
+    val getTAId = GetTAMessage(student_id).send
 
     // Use flatMap to ensure proper sequencing of database operations
     getTAId.flatMap { ta_id =>
