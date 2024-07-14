@@ -1,6 +1,7 @@
 package Global
 
 import Global.GlobalVariables.serviceCode
+import Global.ServiceCenter.notificationServiceCode
 import cats.effect.IO
 import com.comcast.ip4s.Port
 import org.http4s.Uri
@@ -16,7 +17,10 @@ object ServiceCenter {
   val TAServiceCode = "A000006"
   val runServiceCode = "A000007"
   val adminServiceCode = "A00008"
-  val leaderServiceCode = "A00009"
+  val groupexServiceCode = "A00009"
+  val notificationServiceCode = "A00010"
+  val clubServiceCode = "A00015"
+  val activityServiceCode = "A00016"
 
   val fullNameMap: Map[String, String] = Map(
     dbManagerServiceCode -> "数据库管理（DB_Manager）",
@@ -27,7 +31,10 @@ object ServiceCenter {
     TAServiceCode -> "助教（TA）",
     runServiceCode -> "阳光长跑（Run）",
     adminServiceCode -> "管理员（Admin）",
-    leaderServiceCode -> "队长（Leader）"
+    groupexServiceCode -> "集体锻炼（Groupex）",
+    clubServiceCode -> "俱乐部（Club）",
+    activityServiceCode -> "社团活动（activity）",
+    notificationServiceCode -> "通知（Notification）"
   )
 
   val address: Map[String, String] = Map(
@@ -39,35 +46,9 @@ object ServiceCenter {
     "TA" -> "127.0.0.1:10006",
     "Run" -> "127.0.0.1:10007",
     "Admin" -> "127.0.0.1:10008",
-    "Groupex" -> "127.0.0.1:10009"
+    "Groupex" -> "127.0.0.1:10009",
+    "Notification" -> "127.0.0.1:10010",
+    "Club" -> "127.0.0.1:10015",
+    "Activity" -> "127.0.0.1:10016"
   )
-
-  def getURI(serviceCode: String): IO[Uri] =
-      IO.fromEither(Uri.fromString(
-        "http://localhost:" + getPort(serviceCode).value.toString + "/"
-      ))
-
-  def getPort(serviceCode: String): Port =
-    Port.fromInt(portMap(serviceCode)).getOrElse(
-      throw new IllegalArgumentException(s"Invalid port for serviceCode: $serviceCode")
-    )
-
-
-  def serviceName(serviceCode: String): String = {
-    val fullName = fullNameMap(serviceCode)
-    val start = fullName.indexOf("（")
-    val end = fullName.indexOf("）")
-    fullNameMap(serviceCode).substring(start + 1, end).toLowerCase
-  }
-
-  def portMap(serviceCode: String): Int = {
-    serviceCode.drop(1).toInt +
-      (if (serviceCode.head == 'A') 10000 else if (serviceCode.head == 'D') 20000 else 30000)
-  }
-
-
-  lazy val servicePort: Int = portMap(serviceCode)
-  lazy val serviceFullName: String = fullNameMap(serviceCode)
-  lazy val serviceShortName: String = serviceName(serviceCode)
-  lazy val schemaName: String = serviceName(serviceCode)
 }
