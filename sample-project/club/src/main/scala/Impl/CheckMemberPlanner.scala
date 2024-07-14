@@ -12,10 +12,10 @@ import io.circe.generic.auto.*
 import java.security.MessageDigest
 import java.util.Base64
 
-case class CheckClubPlanner(club_name: String, student_id: Int, override val planContext: PlanContext) extends Planner[Boolean] {
+case class CheckMemberPlanner(club_name: String, override val planContext: PlanContext) extends Planner[Boolean] {
   override def plan(using planContext: PlanContext): IO[Boolean] = {
-    val checkClubExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.member WHERE club_name = ? AND member = ?)",
-      List(SqlParameter("String", club_name), SqlParameter("Int", student_id.toString))
+    val checkClubExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.info WHERE name = ?)",
+      List(SqlParameter("String", club_name))
     )
     checkClubExists
   }

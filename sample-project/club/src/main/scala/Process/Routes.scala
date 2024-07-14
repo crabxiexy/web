@@ -59,6 +59,11 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "CheckMemberMessage" =>
+        IO(decode[CheckMemberPlanner](str).getOrElse(throw new Exception("Invalid JSON for ReplyAppMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }
