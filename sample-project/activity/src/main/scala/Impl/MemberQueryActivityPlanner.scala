@@ -8,6 +8,7 @@ import Common.ServiceUtils.schemaName
 import cats.effect.IO
 import io.circe.Json
 import io.circe.generic.auto.*
+import APIs.ClubAPI.CheckMemberMessage
 
 import java.security.MessageDigest
 import java.util.Base64
@@ -15,10 +16,11 @@ import java.util.Base64
 case class MemberQueryActivityPlanner(member_id: Int, club_name: String, currentTime: String, status1: Int, status2: Int, status3: Int, override val planContext: PlanContext) extends Planner[List[Json]] {
   override def plan(using planContext: PlanContext): IO[List[Json]] = {
     // 先检查是不是俱乐部成员
-    val checkMemberExists = readDBBoolean(
-      s"SELECT EXISTS(SELECT 1 FROM club.member WHERE member_id = ? AND club_name = ?)",
-      List(SqlParameter("Int", member_id.toString), SqlParameter("String", club_name))
-    )
+    val checkMemberExists = CheckMemberMessage(club_name, member_id).send
+//    val checkMemberExists = readDBBoolean(
+//      s"SELECT EXISTS(SELECT 1 FROM club.member WHERE member_id = ? AND club_name = ?)",
+//      List(SqlParameter("Int", member_id.toString), SqlParameter("String", club_name))
+//    )
 
     checkMemberExists.flatMap { exists =>
       if (!exists) {
