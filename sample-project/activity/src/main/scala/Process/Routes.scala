@@ -14,13 +14,28 @@ import org.http4s.dsl.io.*
 object Routes:
   private def executePlan(messageType:String, str: String): IO[String]=
     messageType match {
-      case "FoundClubMessage" =>
-        IO(decode[FoundClubPlanner](str).getOrElse(throw new Exception("Invalid JSON for AssignScoreMessage")))
+      case "CreateActivityMessage" =>
+        IO(decode[CreateActivityPlanner](str).getOrElse(throw new Exception("Invalid JSON for CreateActivityMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
-      case "AddMemberMessage" =>
-        IO(decode[AddMemberPlanner](str).getOrElse(throw new Exception("Invalid JSON for AssignScoreMessage")))
+      case "JoinActivityMessage" =>
+        IO(decode[JoinActivityPlanner](str).getOrElse(throw new Exception("Invalid JSON for JoinActivityMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "MemberQueryActivityMessage" =>
+        IO(decode[MemberQueryActivityPlanner](str).getOrElse(throw new Exception("Invalid JSON for MemberQueryActivityMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "OrganizorQueryActivityMessage" =>
+        IO(decode[OrganizorQueryActivityPlanner](str).getOrElse(throw new Exception("Invalid JSON for OrganizorQueryActivityMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "OrganizorQueryMemberMessage" =>
+        IO(decode[OrganizorQueryMemberPlanner](str).getOrElse(throw new Exception("Invalid JSON for OrganizorQueryMemberMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }

@@ -22,30 +22,37 @@ case class CreateActivityPlanner(club_name:String, activity_name:String, intro:S
       if (!exists) {
         IO.raiseError(new Exception("This club does not exist!"))
       } else {
-        // Use SQL to get the new ID and insert the new user in one transaction
-        val insertActivity = writeDB(
-          s"""
-             |WITH new_id AS (
-             |  SELECT COALESCE(MAX(club_id), 0) + 1 AS id FROM activity.activity
-             |)
-             |INSERT INTO activity.activity (activity_id, club_name, activity_name, intro, startTime, finishTime, organizor_id, lowLimit, upLimit, num)
-             |SELECT new_id.activity_id, ?, ?, ?, ?, ?, ?, ?, ?, 0
-             |FROM new_id
-       """.stripMargin,
-          List(
-            SqlParameter("String", club_name),
-            SqlParameter("String", activity_name),
-            SqlParameter("String", intro),
-            SqlParameter("Datetime", startTime),
-            SqlParameter("Datetime", finishTime),
-            SqlParameter("Int", organizor_id.toString),
-            SqlParameter("Int", lowLimit.toString),
-            SqlParameter("Int", upLimit.toString),
-          )
+        val checkActivityExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM activity.activity WHERE activity_name = ?)",
+          List(SqlParameter("String", club_name))
         )
-        // Chain the insertUser operation after the insertIdentity operation
-        insertActivity.flatMap { _ =>
-          IO.pure("Activity created successfully")
+        checkClubExists.flatMap { exists =>
+          if (exists) {
+            IO.raiseError(new Exception("This activity already exists!"))
+          } else {
+            val insertActivity = writeDB(
+              s"""
+                 |WITH new_id AS (
+                 |  SELECT COALESCE(MAX(club_id), 0) + 1 AS id FROM activity.activity
+                 |)
+                 |INSERT INTO activity.activity (activity_id, club_name, activity_name, intro, startTime, finishTime, organizor_id, lowLimit, upLimit, num)
+                 |SELECT new_id.activity_id, ?, ?, ?, ?, ?, ?, ?, ?, 0
+                 |FROM new_id
+                   """.stripMargin,
+              List(
+                SqlParameter("String", club_name),
+                SqlParameter("String", activity_name),
+                SqlParameter("String", intro),
+                SqlParameter("Datetime", startTime),
+                SqlParameter("Datetime", finishTime),
+                SqlParameter("Int", organizor_id.toString),
+                SqlParameter("Int", lowLimit.toString),
+                SqlParameter("Int", upLimit.toString),
+              )
+            )
+            insertActivity.flatMap { _ =>
+              IO.pure("Activity created successfully")
+            }
+          }
         }
       }
     }
