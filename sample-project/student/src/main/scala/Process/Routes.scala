@@ -34,6 +34,11 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "RegisterMessage" =>
+        IO(decode[RegisterPlanner](str).getOrElse(throw new Exception("Invalid JSON for AssignDepartmentMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }
