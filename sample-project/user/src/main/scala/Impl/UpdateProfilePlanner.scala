@@ -28,7 +28,7 @@ case class UpdateProfilePlanner(studentId: Int, profile: String, override val pl
       } else {
         // Update the profile
         writeDB(
-          s"UPDATE ${schemaName}.students SET profile = ? WHERE student_id = ?",
+          s"UPDATE ${schemaName}.user SET profile = ? WHERE student_id = ?",
           List(
             SqlParameter("String", profile),
             SqlParameter("Int", studentId.toString)

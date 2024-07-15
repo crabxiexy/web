@@ -15,6 +15,7 @@ import {CheckRecord} from 'Pages/student/checkrecord'
 import {GroupexManagement} from 'Pages/ta/groupex_management'
 import {Checkgroupex} from 'Pages/student/checkgroupex'
 import {ViewClub} from 'Pages/student/viewclub'
+import {UploadProfilePage} from 'Pages/UpdateProfile'
 const Layout = () => {
     return (
         <HashRouter>
@@ -33,6 +34,7 @@ const Layout = () => {
                 <Route path="/groupex_management" exact component={GroupexManagement} />
                 <Route path="/student_checkgroupex" exact component={Checkgroupex} />
                 <Route path="/viewclub" exact component={ViewClub} />
+                <Route path="/update_profile" exact component={UploadProfilePage} />
 
 
             </Switch>

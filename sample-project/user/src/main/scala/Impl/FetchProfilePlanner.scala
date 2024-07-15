@@ -17,7 +17,7 @@ case class FetchProfilePlanner(studentId: Int, override val planContext: PlanCon
     // SQL query to fetch the profile based on student_id
     val query = s"""
       SELECT profile
-      FROM ${schemaName}.profiles
+      FROM ${schemaName}.user
       WHERE student_id = ?
     """
 

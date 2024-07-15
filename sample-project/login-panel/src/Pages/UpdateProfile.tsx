@@ -7,11 +7,11 @@ import { UpdateProfileMessage } from 'Plugins/DoctorAPI/UpdateProfileMessage';
 import * as Minio from 'minio'; // Import MinIO client
 
 const minioClient = new Minio.Client({
-    endPoint: '183.173.41.216',
-    port: 5000,
+    endPoint: '183.172.236.220', // 替换为您的 MinIO 服务器地址
+    port: 9005,
     useSSL: false,
-    accessKey: 'MdaJLsKGRlkxi6Ps8t77',
-    secretKey: 'VjMH2JcPbU4PIz5WBY58vHUE7ulK6BTF2ZseFWXh',
+    accessKey: 'tNkoF0m8vY1XEmq8TTIN', // 替换为您的 MinIO Access Key
+    secretKey: 'arlYGMeeBTAyDfPU8dl6nGwJAjSzmfpQaPqbsWQZ', // 替换为您的 MinIO Secret Key
 });
 
 export const UploadProfilePage: React.FC = () => {
@@ -28,7 +28,7 @@ export const UploadProfilePage: React.FC = () => {
             const fetchProfileMessage = new FetchProfileMessage(parseInt(Id));
             try {
                 const response = await sendPostRequest(fetchProfileMessage);
-                setCurrentProfileImage(response.data.profileImage); // Assuming the response contains the profileImage URL
+                setCurrentProfileImage(response.data); // Assuming the response contains the profileImage URL
             } catch (error) {
                 console.error('Error fetching profile:', error);
                 setError('Unable to fetch current profile image.');
@@ -62,7 +62,7 @@ export const UploadProfilePage: React.FC = () => {
 
                 const updateProfileMessage = new UpdateProfileMessage(
                     parseInt(Id),
-                    `http://183.173.41.216:5000/profile/${filename}`
+                    `http://183.172.236.220:9005/profile/${filename}`
                 );
 
                 const response = await sendPostRequest(updateProfileMessage);

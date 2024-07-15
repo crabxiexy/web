@@ -12,9 +12,7 @@ export function Dashboard() { // Renamed first letter to uppercase to follow com
         setDropdownVisible(!dropdownVisible);
     };
 
-    const handleProfile = () => {
-        history.push("/profile");
-    };
+
 
     const handleRename = () => {
         history.push("/rename");
@@ -31,6 +29,10 @@ export function Dashboard() { // Renamed first letter to uppercase to follow com
     const checkGroupEx = () => {
         history.push("/student_checkgroupex");
     };
+    const UpdateProfile = () => {
+        history.push("/update_profile");
+    };
+
 
     const handleLogout = () => {
         setId('');
@@ -51,6 +53,7 @@ export function Dashboard() { // Renamed first letter to uppercase to follow com
                     {dropdownVisible && (
                         <div className="dropdown-menu">
                             <p onClick={handleRename}>Rename</p>
+                            <p onClick={UpdateProfile}>Profile</p>
                         </div>
                     )}
                 </div>
