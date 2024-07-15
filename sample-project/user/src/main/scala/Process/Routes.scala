@@ -39,6 +39,11 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "FetchProfileMessage" =>
+        IO(decode[FetchProfilePlanner](str).getOrElse(throw new Exception("Invalid JSON for FetchProfileMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case "DeleteMessage" =>
         IO(decode[DeleteMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for DeleteMessage")))
           .flatMap{m=>
