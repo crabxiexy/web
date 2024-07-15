@@ -24,6 +24,11 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "UpdateProfileMessage" =>
+        IO(decode[UpdateProfilePlanner](str).getOrElse(throw new Exception("Invalid JSON for UpdateProfileMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case "RegisterMessage" =>
         IO(decode[RegisterMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for RegisterMessage")))
           .flatMap{m=>

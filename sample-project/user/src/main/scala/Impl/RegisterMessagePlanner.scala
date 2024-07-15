@@ -10,7 +10,7 @@ import Common.Object.{ParameterList, SqlParameter}
 import Common.ServiceUtils.schemaName
 import APIs.StudentAPI.RegisterMessage
 
-case class RegisterMessagePlanner(student_id: Int, name: String, password: String, identity: Int, override val planContext: PlanContext) extends Planner[String] {
+case class RegisterMessagePlanner(student_id: Int, name: String, password: String, identity: Int, profile:String, override val planContext: PlanContext) extends Planner[String] {
   override def plan(using planContext: PlanContext): IO[String] = {
 
     // Check if the identity is already registered
@@ -57,15 +57,16 @@ case class RegisterMessagePlanner(student_id: Int, name: String, password: Strin
              |WITH new_id AS (
              |  SELECT COALESCE(MAX(id), 0) + 1 AS id FROM ${schemaName}.user
              |)
-             |INSERT INTO ${schemaName}.user (id, name, password, student_id, identity)
-             |SELECT new_id.id, ?, ?, ?, ?
+             |INSERT INTO ${schemaName}.user (id, name, password, student_id, identity, profile)
+             |SELECT new_id.id, ?, ?, ?, ? , ?
              |FROM new_id
        """.stripMargin,
           List(
             SqlParameter("String", name),
             SqlParameter("String", hashedPassword),
             SqlParameter("Int", student_id.toString),
-            SqlParameter("Int", identity.toString)
+            SqlParameter("Int", identity.toString),
+            SqlParameter("String", profile.toString)
           )
         )
         // Chain the insertUser operation after the insertIdentity operation

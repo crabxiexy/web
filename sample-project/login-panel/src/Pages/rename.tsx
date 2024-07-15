@@ -16,7 +16,8 @@ export function Rename() {
     // Retrieve studentId from Zustand store
     const studentId = useIdStore(state => state.Id);
     const token = useTokenStore(state => state.Token); // Assuming you also store the token
-
+    const { setToken } = useTokenStore();
+    const {  setId} = useIdStore();
     const handleRename = async () => {
         try {
             // Convert studentId to number (if needed)
@@ -41,6 +42,8 @@ export function Rename() {
                 history.push('/admin/root');
             } else {
                 history.push("/login")
+                setId('');
+                setToken('');
                 setError("Token is invalid or expired."); // Handle invalid token case
             }
         } catch (error) {

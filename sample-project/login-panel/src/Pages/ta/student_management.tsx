@@ -34,7 +34,7 @@ export const AssignTA = () => {
                 const assignTAMessage = new AssignTAMessage(studentId, taIdNumber);
                 const response = await sendPostRequest(assignTAMessage);
 
-                if (response && response.data === 'TA assigned successfully') {
+                if (response && response.data === 'Success') {
                     history.push('/ta_dashboard');
                 } else {
                     setError('Assigning TA failed. Please try again.');

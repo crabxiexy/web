@@ -30,7 +30,7 @@ export function Login() {
 
             console.log('Login Response:', response);
 
-            if (response.status==200) {
+            if (response.status==200 && response.data !== 'Invalid user') {
                 // Update studentId and token in Zustand only if login succeeds
                 updateId(Id);
                 setToken(response.data); // Assuming the token is part of the response

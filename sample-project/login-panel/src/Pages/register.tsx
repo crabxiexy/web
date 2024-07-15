@@ -31,7 +31,7 @@ export function Register() {
 
         try {
             const identityNumber = identityMap[identity];
-            const message = new RegisterMessage(student_id, name, password, identityNumber);
+            const message = new RegisterMessage(student_id, name, password, identityNumber,"default");
             const response = await sendPostRequest(message);
 
             if (response.status === 200) {
