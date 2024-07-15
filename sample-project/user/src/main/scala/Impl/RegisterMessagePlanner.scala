@@ -13,12 +13,14 @@ import APIs.StudentAPI.RegisterMessage
 case class RegisterMessagePlanner(student_id: Int, name: String, password: String, identity: Int, override val planContext: PlanContext) extends Planner[String] {
   override def plan(using planContext: PlanContext): IO[String] = {
     // Check if the identity is already registered
+    /*
     val identityTable = identity.toString match {
       case "1" => "admin"
       case "2" => "student"
       case "3" => "TA"
       case _ => throw new Exception("Unknown user identity")
     }
+     */
 
     val checkUserExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.user WHERE student_id = ?)",
       List(SqlParameter("Int", student_id.toString))
