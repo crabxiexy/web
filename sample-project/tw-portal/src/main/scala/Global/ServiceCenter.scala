@@ -17,10 +17,15 @@ object ServiceCenter {
   val TAServiceCode = "A000006"
   val runServiceCode = "A000007"
   val adminServiceCode = "A00008"
+<<<<<<< HEAD
   val groupexServiceCode = "A00009"
   val notificationServiceCode = "A00010"
   val clubServiceCode = "A00015"
   val activityServiceCode = "A00016"
+=======
+  val leaderServiceCode = "A00009"
+  val clubServiceCode = "A00015"
+>>>>>>> refs/remotes/origin/main
 
   val fullNameMap: Map[String, String] = Map(
     dbManagerServiceCode -> "数据库管理（DB_Manager）",
@@ -31,10 +36,15 @@ object ServiceCenter {
     TAServiceCode -> "助教（TA）",
     runServiceCode -> "阳光长跑（Run）",
     adminServiceCode -> "管理员（Admin）",
+<<<<<<< HEAD
     groupexServiceCode -> "集体锻炼（Groupex）",
     clubServiceCode -> "俱乐部（Club）",
     activityServiceCode -> "社团活动（activity）",
     notificationServiceCode -> "通知（Notification）"
+=======
+    leaderServiceCode -> "队长（Leader）",
+    clubServiceCode -> "俱乐部（Club）"
+>>>>>>> refs/remotes/origin/main
   )
 
   val address: Map[String, String] = Map(
@@ -46,9 +56,14 @@ object ServiceCenter {
     "TA" -> "127.0.0.1:10006",
     "Run" -> "127.0.0.1:10007",
     "Admin" -> "127.0.0.1:10008",
+<<<<<<< HEAD
     "Groupex" -> "127.0.0.1:10009",
     "Notification" -> "127.0.0.1:10010",
     "Club" -> "127.0.0.1:10015",
     "Activity" -> "127.0.0.1:10016"
+=======
+    "Leader" -> "127.0.0.1:10009",
+    "Club" -> "127.0.0.1:10015"
+>>>>>>> refs/remotes/origin/main
   )
 }

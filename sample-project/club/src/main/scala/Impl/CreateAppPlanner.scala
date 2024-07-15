@@ -25,7 +25,7 @@ case class CreateAppPlanner(club_name: String, leader_id: Int, club_intro: Strin
         val insertApplication = writeDB(
           s"""
              |INSERT INTO ${schemaName}.application (name, leader, intro, department, is_checked, result, response)
-             |VALUES (?, ?, ?, ?, FALSE, FALSE, 'NONE')
+             |VALUES (?, ?, ?, ?, 0, 0, 'NONE')
        """.stripMargin,
           List(
             SqlParameter("String", club_name),
