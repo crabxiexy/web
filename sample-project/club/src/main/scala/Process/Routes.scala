@@ -60,12 +60,17 @@ object Routes:
             m.fullPlan.map(_.asJson.toString)
           }
       case "CheckClubMessage" =>
-        IO(decode[CheckClubPlanner](str).getOrElse(throw new Exception("Invalid JSON for ReplyAppMessage")))
+        IO(decode[CheckClubPlanner](str).getOrElse(throw new Exception("Invalid JSON for CheckClubMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "CheckAvailableMessage" =>
+        IO(decode[CheckAvailablePlanner](str).getOrElse(throw new Exception("Invalid JSON for CheckClubMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
       case "CheckMemberMessage" =>
-        IO(decode[CheckMemberPlanner](str).getOrElse(throw new Exception("Invalid JSON for ReplyAppMessage")))
+        IO(decode[CheckAvailablePlanner](str).getOrElse(throw new Exception("Invalid JSON for ReplyAppMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
