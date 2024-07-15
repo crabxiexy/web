@@ -16,20 +16,16 @@ case class CheckRunningPlanner(
                               ) extends Planner[String] {
 
   override def plan(using planContext: PlanContext): IO[String] = {
-    // Assuming submitTime is the current time
-    val submitTime = new Date()
-
     // Update the running data in the database
     val updateRunning = writeDB(
       s"""
          |UPDATE ${schemaName}.run
-         |SET is_checked = ?, response = ?, submitTime = ?
+         |SET is_checked = ?, response = ?
          |WHERE run_id = ?
        """.stripMargin,
       List(
         SqlParameter("Int", is_checked.toString),
         SqlParameter("String", response),
-        SqlParameter("Datetime", submitTime.getTime.toString),
         SqlParameter("Int", run_id.toString)
       )
     )

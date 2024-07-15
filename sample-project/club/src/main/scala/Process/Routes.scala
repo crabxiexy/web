@@ -55,12 +55,17 @@ object Routes:
             m.fullPlan.map(_.asJson.toString)
           }
       case "CheckClubMessage" =>
-        IO(decode[CheckClubPlanner](str).getOrElse(throw new Exception("Invalid JSON for ReplyAppMessage")))
+        IO(decode[CheckClubPlanner](str).getOrElse(throw new Exception("Invalid JSON for CheckClubMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
       case "CheckMemberMessage" =>
-        IO(decode[CheckMemberPlanner](str).getOrElse(throw new Exception("Invalid JSON for ReplyAppMessage")))
+        IO(decode[CheckMemberPlanner](str).getOrElse(throw new Exception("Invalid JSON for CheckMemberMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "CheckLeaderMessage" =>
+        IO(decode[CheckLeaderPlanner](str).getOrElse(throw new Exception("Invalid JSON for CheckLeaderMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
