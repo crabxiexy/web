@@ -14,7 +14,7 @@ case class QueryNamePlanner(studentId: Int, override val planContext: PlanContex
     val sqlQuery =
       s"""
          |SELECT name
-         |FROM "doctor"."user"
+         |FROM doctor.user
          |WHERE student_id = ?
        """.stripMargin
 
