@@ -6,11 +6,11 @@ import { SubmitRunningMessage } from 'Plugins/RunAPI/SubmitRunningMessage';
 import * as Minio from 'minio'; // 导入 MinIO 客户端库
 
 const minioClient = new Minio.Client({
-    endPoint: '183.172.236.220', // 替换为您的 MinIO 服务器地址
-    port: 9004,
+    endPoint: '183.173.41.216', // 替换为您的 MinIO 服务器地址
+    port: 5000,
     useSSL: false,
-    accessKey: '0z6MIh37MRHwNAHlD61L', // 替换为您的 MinIO Access Key
-    secretKey: 'WTrjlAOluMvOhS9ztr9pXoOrrlk1U292tXx6RaLN', // 替换为您的 MinIO Secret Key
+    accessKey: 'MdaJLsKGRlkxi6Ps8t77', // 替换为您的 MinIO Access Key
+    secretKey: 'VjMH2JcPbU4PIz5WBY58vHUE7ulK6BTF2ZseFWXh', // 替换为您的 MinIO Secret Key
 });
 
 export const RunUpload: React.FC = () => {
@@ -60,7 +60,7 @@ export const RunUpload: React.FC = () => {
             const filename = uploadedImage.name;
 
             try {
-                await minioClient.fPutObject('proof', filename, uploadedImage.path, {});
+                await minioClient.fPutObject('run', filename, uploadedImage.path, {});
 
                 const studentIdNumber = parseInt(Id);
                 const distanceNumber = parseFloat(distance) * 10;
@@ -69,7 +69,7 @@ export const RunUpload: React.FC = () => {
                     startTime.getTime().toString(),
                     finishTime.getTime().toString(),
                     distanceNumber,
-                    `http://183.172.236.220:9005/proof/${filename}`
+                    `http://183.173.41.216:5000/run/${filename}`
                 );
 
                 const response = await sendPostRequest(submitMessage);
