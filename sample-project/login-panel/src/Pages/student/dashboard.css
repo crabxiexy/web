@@ -168,3 +168,16 @@ section.notifications h2 {
     transform: scale(1.05);
     box-shadow: 0 8px 16px rgba(39, 174, 96, 0.35);
 }
+.user-avatar {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.avatar-image {
+    width: 50px; /* Set fixed width */
+    height: 50px; /* Set fixed height */
+    border-radius: 50%; /* Make it circular */
+    object-fit: cover; /* Ensure image covers the circle */
+    border: 2px solid #ccc; /* Optional: Add a border */
+}

@@ -1,18 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
 import './dashboard.css'; // Import the CSS file
 import useIdStore from 'Pages/IdStore'; // Adjust the path based on your file structure
-import useTokenStore from 'Pages/TokenStore'
-export function Dashboard() { // Renamed first letter to uppercase to follow component naming conventions.
+import useTokenStore from 'Pages/TokenStore';
+import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage'; // Import your fetch function
+import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils'; // Import your API utility
+
+export function Dashboard() {
     const history = useHistory();
     const [dropdownVisible, setDropdownVisible] = useState(false);
-    const { setId } = useIdStore();
-    const {setToken} =useTokenStore();
+    const { Id,setId } = useIdStore();
+    const { setToken } = useTokenStore();
+    const [profileImage, setProfileImage] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            const fetchProfileMessage = new FetchProfileMessage(parseInt(Id)); // Adjust as necessary
+            try {
+                const response = await sendPostRequest(fetchProfileMessage);
+                setProfileImage(response.data); // Assuming the response contains the profileImage URL
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+            }
+        };
+
+        fetchProfile();
+    }, []);
+
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
     };
-
-
 
     const handleRename = () => {
         history.push("/rename");
@@ -29,16 +46,17 @@ export function Dashboard() { // Renamed first letter to uppercase to follow com
     const checkGroupEx = () => {
         history.push("/student_checkgroupex");
     };
+
     const UpdateProfile = () => {
         history.push("/update_profile");
     };
-
 
     const handleLogout = () => {
         setId('');
         setToken('');
         history.push("/");
     };
+
     const ViewClub = () => {
         history.push("/ViewClub");
     };
@@ -49,7 +67,11 @@ export function Dashboard() { // Renamed first letter to uppercase to follow com
                 <h1>Physical Exercise System</h1>
                 <div className="user-section">
                     <button className="btn login-btn" onClick={handleLogout}>Logout</button>
-                    <div className="user-avatar" onClick={toggleDropdown}>👤</div>
+                    <div className="user-avatar" onClick={toggleDropdown}>
+                        {profileImage && (
+                            <img src={profileImage} alt="User Avatar" className="avatar-image" />
+                        )}
+                    </div>
                     {dropdownVisible && (
                         <div className="dropdown-menu">
                             <p onClick={handleRename}>Rename</p>
