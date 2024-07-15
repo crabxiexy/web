@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import './dashboard.css'; // Import the CSS file
 import useIdStore from 'Pages/IdStore'; // Adjust the path based on your file structure
-
+import useTokenStore from 'Pages/TokenStore'
 export function Dashboard() { // Renamed first letter to uppercase to follow component naming conventions.
     const history = useHistory();
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const { setId } = useIdStore();
-
+    const {setToken} =useTokenStore();
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
     };
@@ -34,6 +34,7 @@ export function Dashboard() { // Renamed first letter to uppercase to follow com
 
     const handleLogout = () => {
         setId('');
+        setToken('');
         history.push("/");
     };
     const ViewClub = () => {

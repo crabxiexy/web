@@ -39,6 +39,11 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "CheckTokenMessage" =>
+        IO(decode[CheckTokenPlanner](str).getOrElse(throw new Exception("Invalid JSON for CheckTokenMessage")))
+          .flatMap { m =>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case "QueryMessage" =>
         IO(decode[QueryMessagePlanner](str).getOrElse(throw new Exception("Invalid JSON for PatientQueryMessage")))
           .flatMap{m=>

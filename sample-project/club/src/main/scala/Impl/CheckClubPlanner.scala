@@ -1,28 +1,24 @@
 package Impl
 
-
 import Common.API.{PlanContext, Planner}
 import Common.DBAPI.{writeDB, *}
 import Common.Object.{ParameterList, SqlParameter}
 import Common.ServiceUtils.schemaName
 import cats.effect.IO
 import io.circe.Json
-import io.circe.generic.auto.*
+import io.circe.generic.auto._
 
-import java.security.MessageDigest
-import java.util.Base64
-
-<<<<<<< HEAD
-case class CheckClubPlanner(club_name: String, override val planContext: PlanContext) extends Planner[Boolean] {
+case class CheckClubPlanner(clubName: String, override val planContext: PlanContext) extends Planner[Boolean] {
   override def plan(using planContext: PlanContext): IO[Boolean] = {
-    val checkClubExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.info WHERE name = ?)",
-      List(SqlParameter("String", club_name))
-    )
-    checkClubExists
-=======
-case class CheckClubPlanner(studentId: Int, override val planContext: PlanContext) extends Planner[List[Json]] {
+    val checkClubExistsQuery =
+      s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.info WHERE name = ?)"
+
+    readDBBoolean(checkClubExistsQuery, List(SqlParameter("String", clubName)))
+  }
+}
+
+case class ClubMembersPlanner(studentId: Int, override val planContext: PlanContext) extends Planner[List[Json]] {
   override def plan(using planContext: PlanContext): IO[List[Json]] = {
-    // 查询与 student_id 相关的所有 club_name
     val clubNamesQuery =
       s"""
          |SELECT club_name
@@ -32,7 +28,6 @@ case class CheckClubPlanner(studentId: Int, override val planContext: PlanContex
 
     for {
       clubNames <- readDBRows(clubNamesQuery, List(SqlParameter("Int", studentId.toString)))
-      // 从查询结果中提取 club_name
       clubNamesList = clubNames.flatMap { json =>
         json.asObject.flatMap(_.apply("club_name").flatMap(_.asString))
       }
@@ -40,7 +35,6 @@ case class CheckClubPlanner(studentId: Int, override val planContext: PlanContex
       result <- if (clubNamesList.isEmpty) {
         IO.pure(List.empty[Json])
       } else {
-        // 使用 club_name 从 info 表中获取所有相关的完整信息
         val infoQuery =
           s"""
              |SELECT *
@@ -51,6 +45,5 @@ case class CheckClubPlanner(studentId: Int, override val planContext: PlanContex
         readDBRows(infoQuery, List.empty)
       }
     } yield result
->>>>>>> refs/remotes/origin/main
   }
 }

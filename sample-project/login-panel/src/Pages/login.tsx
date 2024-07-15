@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
-import { LoginMessage } from 'Plugins/DoctorAPI/LoginMessage'; // Assuming LoginMessage is correctly imported
+import { LoginMessage } from 'Plugins/DoctorAPI/LoginMessage';
 import './login.css';
-import useStudentIdStore from './IdStore'; // Adjust the path based on your file structure
-
+import useIdStore from './IdStore';
+import useTokenStore from './TokenStore';
 
 export function Login() {
     const history = useHistory();
     const [password, setPassword] = useState('');
     const [identity, setIdentity] = useState('student');
     const [error, setError] = useState('');
-
-    const { Id, setId, updateId } = useStudentIdStore();
+    const { Id, setId, updateId } = useIdStore();
+    const { setToken } = useTokenStore();
 
     const handleLogin = async () => {
         try {
@@ -22,20 +22,18 @@ export function Login() {
                 ta: 3,
             };
 
-            // Ensure student_id is parsed as needed (if it's used as a number)
-            const studentIdNumber = parseInt(Id); // Adjust parsing as necessary
+            const studentIdNumber = parseInt(Id);
 
-            // Construct the login message object
             const loginMessage = new LoginMessage(studentIdNumber, password, identityMap[identity]);
 
-            // Send the login request
             const response = await sendPostRequest(loginMessage);
 
             console.log('Login Response:', response);
 
-            if (response && response.data === "Valid user") {
-                // Update studentId in Zustand only if login succeeds
+            if (response.status==200) {
+                // Update studentId and token in Zustand only if login succeeds
                 updateId(Id);
+                setToken(response.data); // Assuming the token is part of the response
 
                 switch (identity) {
                     case 'admin':

@@ -12,7 +12,7 @@ import APIs.StudentAPI.RegisterMessage
 
 case class RegisterMessagePlanner(student_id: Int, name: String, password: String, identity: Int, override val planContext: PlanContext) extends Planner[String] {
   override def plan(using planContext: PlanContext): IO[String] = {
-<<<<<<< HEAD
+
     // Check if the identity is already registered
     /*
 =======

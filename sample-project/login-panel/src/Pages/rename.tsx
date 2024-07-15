@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { RenameMessage } from 'Plugins/DoctorAPI/RenameMessage';
+import { CheckTokenMessage } from 'Plugins/DoctorAPI/CheckTokenMessage'; // Adjust the path as necessary
 import './login.css';
-import useIdStore from './IdStore'; // Adjust the path based on your file structure
+import useIdStore from './IdStore';
+import useTokenStore from './TokenStore';
 
 export function Rename() {
     const history = useHistory();
@@ -13,23 +15,34 @@ export function Rename() {
 
     // Retrieve studentId from Zustand store
     const studentId = useIdStore(state => state.Id);
+    const token = useTokenStore(state => state.Token); // Assuming you also store the token
 
     const handleRename = async () => {
         try {
             // Convert studentId to number (if needed)
-            const idNumber = parseInt(studentId); // Ensure it matches the expected type
+            const idNumber = parseInt(studentId);
 
-            // Create RenameMessage object
-            const renameMessage = new RenameMessage(idNumber,old_password,new_password);
+            // Create CheckTokenMessage object
+            const checkTokenMessage = new CheckTokenMessage(idNumber, token);
 
-            // Send POST request with RenameMessage
-            const response = await sendPostRequest(renameMessage);
+            // Send POST request to check token
+            const tokenResponse = await sendPostRequest(checkTokenMessage);
 
-            console.log('Rename Response:', response);
+            if (tokenResponse.data === "Token is valid.") {
+                // Token is valid, proceed to create RenameMessage object
+                const renameMessage = new RenameMessage(idNumber, old_password, new_password);
 
-            // Handle successful response (example: redirect to root)
-            history.push('/admin/root');
+                // Send POST request with RenameMessage
+                const renameResponse = await sendPostRequest(renameMessage);
 
+                console.log('Rename Response:', renameResponse);
+
+                // Handle successful response (example: redirect to root)
+                history.push('/admin/root');
+            } else {
+                history.push("/login")
+                setError("Token is invalid or expired."); // Handle invalid token case
+            }
         } catch (error) {
             console.error('Rename Error:', error.message);
             setError(error.message); // Update state with error message

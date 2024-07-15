@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { AssignTAMessage } from 'Plugins/StudentAPI/AssignTAMessage';
+import { CheckTokenMessage } from 'Plugins/DoctorAPI/CheckTokenMessage'; // Import the CheckTokenMessage
 import useIdStore from 'Pages/IdStore';
+import useTokenStore from 'Pages/TokenStore'; // Assuming you store the token here
 import './student_management.css'; // Import the CSS file for styling
 
 export const AssignTA = () => {
     const history = useHistory();
     const { Id } = useIdStore();
+    const token = useTokenStore(state => state.Token); // Retrieve the token
     const [studentId, setStudentId] = useState(0);
     const [error, setError] = useState('');
     const [username, setUsername] = useState('Guest');
@@ -22,14 +25,23 @@ export const AssignTA = () => {
 
     const handleAssignTA = async () => {
         try {
+            // Check the token before proceeding
             const taIdNumber = parseInt(Id);
-            const assignTAMessage = new AssignTAMessage(studentId, taIdNumber);
-            const response = await sendPostRequest(assignTAMessage);
+            const checkTokenMessage = new CheckTokenMessage(taIdNumber, token);
+            const tokenResponse = await sendPostRequest(checkTokenMessage);
 
-            if (response && response.data === 'Success') {
-                history.push('/ta_dashboard');
+            if (tokenResponse.data === "Token is valid.") {
+                const assignTAMessage = new AssignTAMessage(studentId, taIdNumber);
+                const response = await sendPostRequest(assignTAMessage);
+
+                if (response && response.data === 'TA assigned successfully') {
+                    history.push('/ta_dashboard');
+                } else {
+                    setError('Assigning TA failed. Please try again.');
+                }
             } else {
-                setError('Assigning TA failed. Please try again.');
+                setError("Token is invalid or expired."); // Handle invalid token case
+                history.push("/login"); // Redirect to login
             }
         } catch (error) {
             setError('Assigning TA failed. Please try again.');
