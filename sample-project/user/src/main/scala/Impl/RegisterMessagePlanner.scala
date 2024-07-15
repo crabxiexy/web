@@ -8,18 +8,19 @@ import Common.API.{PlanContext, Planner}
 import Common.DBAPI.*
 import Common.Object.{ParameterList, SqlParameter}
 import Common.ServiceUtils.schemaName
-
+import APIs.StudentAPI.RegisterMessage
 
 case class RegisterMessagePlanner(student_id: Int, name: String, password: String, identity: Int, override val planContext: PlanContext) extends Planner[String] {
   override def plan(using planContext: PlanContext): IO[String] = {
     // Check if the identity is already registered
+    /*
     val identityTable = identity.toString match {
       case "1" => "admin"
       case "2" => "student"
       case "3" => "TA"
-      case "4" => "leader"
       case _ => throw new Exception("Unknown user identity")
     }
+     */
 
     val checkUserExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.user WHERE student_id = ?)",
       List(SqlParameter("Int", student_id.toString))
@@ -30,7 +31,14 @@ case class RegisterMessagePlanner(student_id: Int, name: String, password: Strin
       } else {
         // Hash the password
         val hashedPassword = hashPassword(password)
+        val insertIdentity = identity.toString match{
+          case "1" => IO.unit
+          case "2" => RegisterMessage(student_id).send
+          case "3" => IO.unit
+          case _=> throw new Exception("Unknown user identity")
+        }
         // Insert the identity first
+        /*
         val insertIdentity = writeDB(
           s"""
              INSERT INTO ${identityTable}.${identityTable} (${identityTable}_id) VALUES(?)
@@ -39,6 +47,7 @@ case class RegisterMessagePlanner(student_id: Int, name: String, password: Strin
             SqlParameter("Int", student_id.toString),
           )
         )
+         */
         // Use SQL to get the new ID and insert the new user in one transaction
         val insertUser = writeDB(
           s"""
