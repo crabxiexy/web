@@ -22,3 +22,4 @@ case class ApplyMemberPlanner(studentId: Int, clubName: String, override val pla
     )).map(_ => ()) // 忽略返回值并返回 Unit
   }
 }
+//学生入队申请

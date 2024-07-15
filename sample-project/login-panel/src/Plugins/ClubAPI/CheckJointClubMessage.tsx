@@ -1,6 +1,6 @@
 import { ClubMessage } from 'Plugins/ClubAPI/ClubMessage';
 
-export class CheckClubMessage extends ClubMessage {
+export class CheckJointClubMessage extends ClubMessage {
     studentId: number;
 
 

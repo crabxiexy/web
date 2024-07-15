@@ -19,8 +19,8 @@ implicit val dateDecoder: Decoder[Date] = Decoder.decodeLong.map(l => new Date(l
 object Routes:
   private def executePlan(messageType:String, str: String): IO[String]=
     messageType match {
-      case "ReleaseNotificationMessage" =>
-        IO(decode[ReleaseNotificationPlanner](str).getOrElse(throw new Exception("Invalid JSON for ReleaseNotificationMessage")))
+      case "QueryReceivedMessage" =>
+        IO(decode[QueryReceivedPlanner](str).getOrElse(throw new Exception("Invalid JSON for QueryReceivedMessage")))
           .flatMap(m =>
             m.fullPlan.map(_.asJson.toString)
           )
@@ -29,8 +29,13 @@ object Routes:
           .flatMap(m =>
             m.fullPlan.map(_.asJson.toString)
           )
-      case "FetchNotificationMessage" =>
-        IO(decode[FetchNotificationPlanner](str).getOrElse(throw new Exception("Invalid JSON for FetchNotificationMessage")))
+      case "QueryReceivedPlanner" =>
+          IO(decode[QueryReceivedPlanner](str).getOrElse(throw new Exception("Invalid JSON for QueryReceivedMessage")))
+          .flatMap(m =>
+            m.fullPlan.map(_.asJson.toString)
+          )
+      case "QuerySentPlanner" =>
+        IO(decode[QuerySentPlanner](str).getOrElse(throw new Exception("Invalid JSON for QuerySentMessage")))
           .flatMap(m =>
             m.fullPlan.map(_.asJson.toString)
           )

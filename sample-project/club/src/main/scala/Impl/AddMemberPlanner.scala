@@ -14,7 +14,7 @@ import java.util.Base64
 
 case class AddMemberPlanner(club_name: String, member_id: Int, override val planContext: PlanContext) extends Planner[String] {
   override def plan(using planContext: PlanContext): IO[String] = {
-    val checkMemberExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.member WHERE name = ? AND member_name = ?)",
+    val checkMemberExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.member WHERE club_name = ? AND  member = ?)",
       List(SqlParameter("String", club_name), SqlParameter("Int", member_id.toString))
     )
     checkMemberExists.flatMap { exists =>

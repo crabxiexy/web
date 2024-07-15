@@ -6,9 +6,9 @@ import { CreateAppMessage } from 'Plugins/ClubAPI/CreateAppMessage';
 import { LeaderQueryMessage } from 'Plugins/ClubAPI/LeaderQueryMessage';
 import useClubNameStore from 'Pages/student/ClubNameStore';
 import { CheckAvailableMessage } from 'Plugins/ClubAPI/CheckAvailableMessage';
-import { CheckClubMessage } from 'Plugins/ClubAPI/CheckClubMessage';
+import { CheckJointClubMessage } from 'Plugins/ClubAPI/CheckJointClubMessage';
 import { parseInt } from 'lodash';
-
+import './viewclub.css'
 export const ViewClub: React.FC = () => {
     const history = useHistory();
     const { Id } = useIdStore();
@@ -31,7 +31,7 @@ export const ViewClub: React.FC = () => {
 
     const fetchMyClubs = async () => {
         try {
-            const myClubsResponse = await sendPostRequest(new CheckClubMessage(parseInt(Id)));
+            const myClubsResponse = await sendPostRequest(new CheckJointClubMessage(parseInt(Id)));
             setMyClubs(myClubsResponse.data);
         } catch (error) {
             setError('加载我的俱乐部失败，请重试。');
@@ -74,23 +74,33 @@ export const ViewClub: React.FC = () => {
 
     const handleManagedClubClick = (club: any) => {
         setClubName(club.name);
-        history.push(`/managed_club/${club.id}`);
+        history.push(`/managed_club`); // Navigate to ManagedClubInfo page
     };
 
     const handleMyClubClick = (club: any) => {
         setClubName(club.name);
-        history.push(`/my_club/${club.id}`); // Navigate to my club page
+        history.push(`/my_club`);
     };
 
     const handleAvailableClubClick = (club: any) => {
         setClubName(club.name);
-        history.push(`/available_club/${club.id}`); // Navigate to available club page
+        history.push(`/available_club`);
     };
 
-    const ClubCard: React.FC<{ club: any; onClick: () => void }> = ({ club, onClick }) => (
+    const ClubCard: React.FC<{ club: any; onClick: () => void; actionText?: string; onActionClick?: () => void }> = ({ club, onClick, actionText, onActionClick }) => (
         <div className="club-card" onClick={onClick}>
+            <div className="club-image">
+                <img
+                    src={club.profile}
+                    alt={club.name}
+                    className="club-profile-img"
+                />
+            </div>
             <h3>{club.name}</h3>
             <p><strong>简介:</strong> {club.intro}</p>
+            {actionText && (
+                <button onClick={onActionClick} className="action-button">{actionText}</button>
+            )}
         </div>
     );
 
@@ -112,7 +122,12 @@ export const ViewClub: React.FC = () => {
                     <div>
                         {myClubs.length > 0 ? (
                             myClubs.map(club => (
-                                <ClubCard key={club.id} club={club} onClick={() => handleMyClubClick(club)} />
+                                <ClubCard
+                                    key={club.id}
+                                    club={club}
+                                    onClick={() => handleMyClubClick(club)}
+                                    actionText="查看俱乐部"
+                                />
                             ))
                         ) : (
                             <p>没有加入的俱乐部。</p>
@@ -123,7 +138,11 @@ export const ViewClub: React.FC = () => {
                     <div>
                         {availableClubs.length > 0 ? (
                             availableClubs.map(club => (
-                                <ClubCard key={club.id} club={club} onClick={() => handleAvailableClubClick(club)} />
+                                <ClubCard
+                                    key={club.id}
+                                    club={club}
+                                    onClick={() => handleAvailableClubClick(club)}
+                                />
                             ))
                         ) : (
                             <p>没有可以加入的俱乐部。</p>
@@ -134,7 +153,12 @@ export const ViewClub: React.FC = () => {
                     <div>
                         {managedClubs.length > 0 ? (
                             managedClubs.map(club => (
-                                <ClubCard key={club.id} club={club} onClick={() => handleManagedClubClick(club)} />
+                                <ClubCard
+                                    key={club.id}
+                                    club={club}
+                                    onClick={() => handleManagedClubClick(club)}
+                                    actionText="查看管理"
+                                />
                             ))
                         ) : (
                             <p>没有管理的俱乐部。</p>

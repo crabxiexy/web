@@ -34,8 +34,13 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
-      case "OrganizorQueryMemberMessage" =>
-        IO(decode[OrganizorQueryMemberPlanner](str).getOrElse(throw new Exception("Invalid JSON for OrganizorQueryMemberMessage")))
+      case "QueryMemberMessage" =>
+        IO(decode[QueryMemberPlanner](str).getOrElse(throw new Exception("Invalid JSON for OrganizorQueryMemberMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "ShowActivityPlanner" =>
+        IO(decode[QueryMemberPlanner](str).getOrElse(throw new Exception("Invalid JSON for OrganizorQueryMemberMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }

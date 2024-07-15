@@ -7,10 +7,8 @@ import Common.Object.{ParameterList, SqlParameter}
 import Common.ServiceUtils.schemaName
 import cats.effect.IO
 import io.circe.Json
-import io.circe.generic.auto.*
+import io.circe.generic.auto._
 
-import java.security.MessageDigest
-import java.util.Base64
 case class CheckAvailablePlanner(studentId: Int, override val planContext: PlanContext) extends Planner[List[Json]] {
   override def plan(using planContext: PlanContext): IO[List[Json]] = {
     // Step 1: Fetch the student's department
@@ -37,10 +35,10 @@ case class CheckAvailablePlanner(studentId: Int, override val planContext: PlanC
 
       // Extract club names from the result
       clubNamesList = clubNames.flatMap { json =>
-        json.asObject.flatMap(_.apply("club_name").flatMap(_.asString))
-      }
+        json.asObject.flatMap(_.apply("clubName").flatMap(_.asString))
+      }.toSet // Use Set for efficient look-up
 
-      // Step 3: Fetch all clubs from info table, filtering by department
+      // Step 3: Fetch all clubs from the info table, filtering by department
       infoQuery =
         s"""
            |SELECT *
@@ -51,9 +49,9 @@ case class CheckAvailablePlanner(studentId: Int, override val planContext: PlanC
       clubInfo <- readDBRows(infoQuery, List(SqlParameter("String", studentDepartment)))
 
       // Step 4: Filter out clubs the student is already a member of
-      results = clubInfo.filterNot { json =>
+      results = clubInfo.filter { json =>
         val clubName = json.asObject.flatMap(_.apply("name").flatMap(_.asString)).getOrElse("")
-        clubNamesList.contains(clubName)
+        !clubNamesList.contains(clubName) // Only keep clubs not in the clubNamesList
       }
 
     } yield results
