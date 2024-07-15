@@ -24,6 +24,11 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "LeaderQueryMessage" =>
+        IO(decode[LeaderQueryPlanner](str).getOrElse(throw new Exception("Invalid JSON for LeaderQueryMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case "CreateAppMessage" =>
         IO(decode[CreateAppPlanner](str).getOrElse(throw new Exception("Invalid JSON for CreateAppMessage")))
           .flatMap{m=>

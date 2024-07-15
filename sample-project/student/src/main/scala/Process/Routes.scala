@@ -28,7 +28,22 @@ object Routes:
         IO(decode[AssignDepartmentPlanner](str).getOrElse(throw new Exception("Invalid JSON for AssignDepartmentMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
-          }  
+          }
+      case "AssignClassMessage" =>
+        IO(decode[AssignClassPlanner](str).getOrElse(throw new Exception("Invalid JSON for AssignClassMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "QueryNameMessage" =>
+        IO(decode[QueryNamePlanner](str).getOrElse(throw new Exception("Invalid JSON for QueryClassMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "QueryDepartmentMessage" =>
+        IO(decode[QueryDepartmentPlanner](str).getOrElse(throw new Exception("Invalid JSON for QueryDepartmentMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }

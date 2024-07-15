@@ -12,14 +12,14 @@ import io.circe.generic.auto.*
 import java.security.MessageDigest
 import java.util.Base64
 
-case class AdminQueryAppPlanner(is_checked: Int, override val planContext: PlanContext) extends Planner[List[Json]] {
+case class LeaderQueryPlanner(leader_id: Int, override val planContext: PlanContext) extends Planner[List[Json]] {
   override def plan(using planContext: PlanContext): IO[List[Json]] = {
     val sqlQuery =
       s"""
          |SELECT name, leader, intro, department
-         |FROM ${schemaName}.application
-         |WHERE is_checked = ?
+         |FROM ${schemaName}.info
+         |WHERE leader = ?
        """.stripMargin
-    readDBRows(sqlQuery, List(SqlParameter("Int", is_checked.toString)))
+    readDBRows(sqlQuery, List(SqlParameter("Int", leader_id.toString)))
   }
 }

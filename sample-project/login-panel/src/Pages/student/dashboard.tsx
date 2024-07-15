@@ -36,6 +36,9 @@ export function Dashboard() { // Renamed first letter to uppercase to follow com
         setId('');
         history.push("/");
     };
+    const ViewClub = () => {
+        history.push("/ViewClub");
+    };
 
     return (
         <div className="App">
@@ -69,6 +72,9 @@ export function Dashboard() { // Renamed first letter to uppercase to follow com
                 </div>
                 <div className="square-block" onClick={checkGroupEx}>
                     集体锻炼查询
+                </div>
+                <div className="square-block" onClick={ViewClub}>
+                    俱乐部活动查询
                 </div>
             </main>
         </div>

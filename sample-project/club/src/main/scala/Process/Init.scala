@@ -18,7 +18,7 @@ object Init {
       _ <- initSchema(schemaName)
       _ <- writeDB(s"CREATE TABLE IF NOT EXISTS ${schemaName}.info (club_id INT, name TEXT, leader INT, intro TEXT, department TEXT)", List())
       _ <- writeDB(s"CREATE TABLE IF NOT EXISTS ${schemaName}.member (club_name TEXT, member INT)", List())
-      _ <- writeDB(s"CREATE TABLE IF NOT EXISTS ${schemaName}.application (name TEXT, leader INT, intro TEXT, department TEXT, is_checked BOOLEAN, result BOOLEAN, response TEXT)", List())
+      _ <- writeDB(s"CREATE TABLE IF NOT EXISTS ${schemaName}.application (name TEXT, leader INT, intro TEXT, department TEXT, is_checked INT, result INT, response TEXT)", List())
     } yield ()
 
 }

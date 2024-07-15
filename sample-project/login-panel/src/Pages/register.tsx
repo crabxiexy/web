@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { RegisterMessage } from 'Plugins/DoctorAPI/RegisterMessage';
+import { AssignDepartmentMessage } from 'Plugins/StudentAPI/AssignDepartmentMessage'; // Import AssignDepartmentMessage
+import { AssignClassMessage } from 'Plugins/StudentAPI/AssignClassMessage'; // Import AssignClassMessage
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { useHistory } from 'react-router';
 import './register.css';
@@ -12,12 +14,13 @@ export function Register() {
     const [repeatPassword, setRepeatPassword] = useState('');
     const [identity, setIdentity] = useState('student');
     const [error, setError] = useState('');
+    const [department, setDepartment] = useState('');
+    const [classname, setClassname] = useState('');
 
     const identityMap: Record<string, number> = {
         admin: 1,
         student: 2,
         ta: 3,
-
     };
 
     const handleRegister = async () => {
@@ -30,9 +33,17 @@ export function Register() {
             const identityNumber = identityMap[identity];
             const message = new RegisterMessage(student_id, name, password, identityNumber);
             const response = await sendPostRequest(message);
-            if (response.status === 200) {
-                    history.push('/admin/root');
 
+            if (response.status === 200) {
+                if (identity === 'student') {
+                    const assignDepartmentMessage = new AssignDepartmentMessage(student_id, department);
+                    const assignClassMessage = new AssignClassMessage(student_id, classname);
+
+                    // Send department and class assignment messages
+                    await sendPostRequest(assignDepartmentMessage);
+                    await sendPostRequest(assignClassMessage);
+                }
+                history.push('/admin/root'); // Redirect after successful registration
             }
         } catch (error) {
             setError(error.message);
@@ -96,7 +107,12 @@ export function Register() {
                     <div className="form-group">
                         <select
                             value={identity}
-                            onChange={e => setIdentity(e.target.value)}
+                            onChange={e => {
+                                setIdentity(e.target.value);
+                                // Reset additional fields when identity changes
+                                setDepartment('');
+                                setClassname('');
+                            }}
                             required
                         >
                             <option value="admin">Admin</option>
@@ -104,6 +120,30 @@ export function Register() {
                             <option value="ta">TA</option>
                         </select>
                     </div>
+
+                    {identity === 'student' && (
+                        <>
+                            <div className="form-group">
+                                <input
+                                    type="text"
+                                    value={department}
+                                    onChange={e => setDepartment(e.target.value)}
+                                    required
+                                    placeholder="Department"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <input
+                                    type="text"
+                                    value={classname}
+                                    onChange={e => setClassname(e.target.value)}
+                                    required
+                                    placeholder="Class Name"
+                                />
+                            </div>
+                        </>
+                    )}
+
                     <div className="button-group">
                         <button className="submit-button" onClick={handleRegister}>Submit</button>
                         <button className="back-button" onClick={() => navigateTo('/admin/root')}>Back</button>
