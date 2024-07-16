@@ -36,10 +36,9 @@ case class CheckJointClubPlanner(studentId: Int, override val planContext: PlanC
              |SELECT *
              |FROM ${schemaName}.info
              |WHERE name IN (${clubNamesList.map("'" + _ + "'").mkString(",")})
-             |AND leader NOT IN (SELECT member FROM ${schemaName}.member WHERE member = ?)
            """.stripMargin
 
-        readDBRows(infoQuery, List(SqlParameter("Int", studentId.toString)))
+        readDBRows(infoQuery, List())
       }
     } yield result
   }
