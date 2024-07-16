@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import Modal from 'react-modal';
 import useClubNameStore from 'Pages/student/ClubNameStore';
 import useIdStore from 'Pages/IdStore';
 import { FetchInfoMessage } from 'Plugins/ClubAPI/FetchInfoMessage';
@@ -35,7 +36,7 @@ interface Activity {
 }
 
 export const ManagedClubInfo: React.FC = () => {
-    const {Id } = useIdStore();
+    const { Id } = useIdStore();
     const studentIdNumber = parseInt(Id);
     const history = useHistory();
     const { ClubName } = useClubNameStore();
@@ -59,13 +60,11 @@ export const ManagedClubInfo: React.FC = () => {
         upLimit: undefined,
         num: 0,
     });
+    const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
 
     useEffect(() => {
         fetchClubInfo();
     }, [ClubName]);
-
-
-
 
     const fetchClubInfo = async () => {
         try {
@@ -206,6 +205,7 @@ export const ManagedClubInfo: React.FC = () => {
                     upLimit: 0,
                     num: 0,
                 });
+                setModalIsOpen(false); // 关闭模态框
             } else {
                 setError('创建活动失败，请重试。');
             }
@@ -213,6 +213,9 @@ export const ManagedClubInfo: React.FC = () => {
             setError('创建活动失败，请重试。');
         }
     };
+
+    const openModal = () => setModalIsOpen(true);
+    const closeModal = () => setModalIsOpen(false);
 
     return (
         <div className="managed-club-info">
@@ -261,50 +264,7 @@ export const ManagedClubInfo: React.FC = () => {
 
             <div className="activity-section">
                 <h3>活动:</h3>
-                <div className="activity-form">
-                    <input
-                        type="text"
-                        placeholder="活动名称"
-                        value={newActivity.activityName}
-                        onChange={(e) => setNewActivity({ ...newActivity, activityName: e.target.value })}
-                    />
-                    <input
-                        type="text"
-                        placeholder="简介"
-                        value={newActivity.intro}
-                        onChange={(e) => setNewActivity({ ...newActivity, intro: e.target.value })}
-                    />
-                    <div>
-                        <label>开始时间:</label>
-                        <input
-                            type="datetime-local"
-                            value={newActivity.startTime}
-                            onChange={(e) => setNewActivity({ ...newActivity, startTime: e.target.value })}
-                        />
-                    </div>
-                    <div>
-                        <label>结束时间:</label>
-                        <input
-                            type="datetime-local"
-                            value={newActivity.finishTime}
-                            onChange={(e) => setNewActivity({ ...newActivity, finishTime: e.target.value })}
-                        />
-                    </div>
-
-                    <input
-                        type="number"
-                        placeholder="最低人数"
-                        value={newActivity.lowLimit}
-                        onChange={(e) => setNewActivity({ ...newActivity, lowLimit: parseInt(e.target.value) })}
-                    />
-                    <input
-                        type="number"
-                        placeholder="最高人数"
-                        value={newActivity.upLimit}
-                        onChange={(e) => setNewActivity({ ...newActivity, upLimit: parseInt(e.target.value) })}
-                    />
-                    <button onClick={handleCreateActivity}>创建活动</button>
-                </div>
+                <button onClick={openModal}>创建活动</button>
                 <div className="activity-list">
                     {activities.map((activity, index) => (
                         <div key={index} className="activity-details">
@@ -387,6 +347,70 @@ export const ManagedClubInfo: React.FC = () => {
                     </div>
                 </div>
             )}
+
+            <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                contentLabel="创建活动"
+                className="modal"
+                overlayClassName="modal-overlay"
+            >
+                <h2>创建活动</h2>
+                <form onSubmit={(e) => { e.preventDefault(); handleCreateActivity(); }}>
+                    <div>
+                        <label>活动名称:</label>
+                        <input
+                            type="text"
+                            value={newActivity.activityName}
+                            onChange={(e) => setNewActivity({ ...newActivity, activityName: e.target.value })}
+                        />
+                    </div>
+                    <div>
+                        <label>简介:</label>
+                        <input
+                            type="text"
+                            value={newActivity.intro}
+                            onChange={(e) => setNewActivity({ ...newActivity, intro: e.target.value })}
+                        />
+                    </div>
+                    <div>
+                        <label>开始时间:</label>
+                        <input
+                            type="datetime-local"
+                            value={newActivity.startTime}
+                            onChange={(e) => setNewActivity({ ...newActivity, startTime: e.target.value })}
+                        />
+                    </div>
+                    <div>
+                        <label>结束时间:</label>
+                        <input
+                            type="datetime-local"
+                            value={newActivity.finishTime}
+                            onChange={(e) => setNewActivity({ ...newActivity, finishTime: e.target.value })}
+                        />
+                    </div>
+                    <div>
+                        <label>最低人数:</label>
+                        <input
+                            type="number"
+                            placeholder="请输入最低人数"
+                            value={newActivity.lowLimit ?? ''}
+                            onChange={(e) => setNewActivity({ ...newActivity, lowLimit: e.target.value ? parseInt(e.target.value) : undefined })}
+                        />
+                    </div>
+                    <div>
+                        <label>最高人数:</label>
+                        <input
+                            type="number"
+                            placeholder="请输入最高人数"
+                            value={newActivity.upLimit ?? ''}
+                            onChange={(e) => setNewActivity({ ...newActivity, upLimit: e.target.value ? parseInt(e.target.value) : undefined })}
+                        />
+                    </div>
+                    <button type="submit">提交</button>
+                    <button type="button" onClick={closeModal}>取消</button>
+                </form>
+            </Modal>
         </div>
     );
 };
