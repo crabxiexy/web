@@ -6,6 +6,8 @@ import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage';
 import { QueryMemberMessage } from 'Plugins/ClubAPI/QueryMemberMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
+import { MemberQueryActivityMessage } from 'Plugins/ActivityAPI/MemberQueryActivityMessage';
+import { JoinActivityMessage } from 'Plugins/ActivityAPI/JoinActivityMessage'
 import './manageclub.css';
 import useIdStore from 'Pages/IdStore';
 
@@ -20,19 +22,35 @@ interface ClubInfo {
     leader: number;
 }
 
+interface Activity {
+    activityID: number;
+    clubName: string;
+    activityName: string;
+    intro: string;
+    starttime: string;
+    finishtime: string;
+    organizorID: number;
+    lowLimit: number;
+    upLimit: number;
+    num: number;
+}
+
 export const MyClubInfo: React.FC = () => {
     const history = useHistory();
     const { ClubName, setClubName } = useClubNameStore();
     const { Id } = useIdStore();
+    const studentIdNumber = parseInt(Id);
     const [clubInfo, setClubInfo] = useState<ClubInfo | null>(null);
     const [leaderInfo, setLeaderInfo] = useState<{ name: string; profile: string } | null>(null);
     const [members, setMembers] = useState<any[]>([]);
     const [showModal, setShowModal] = useState(false);
     const [allMembers, setAllMembers] = useState<any[]>([]);
+    const [activities, setActivities] = useState<Activity[]>([]);
     const [error, setError] = useState<string>('');
 
     useEffect(() => {
         fetchClubInfo();
+        fetchActivities();
     }, [ClubName]);
 
     const fetchClubInfo = async () => {
@@ -70,6 +88,27 @@ export const MyClubInfo: React.FC = () => {
             setMembers(membersWithNames);
         } catch (error) {
             setError('加载俱乐部信息失败，请重试。');
+        }
+    };
+
+    const fetchActivities = async () => {
+        try {
+            const currentTime = new Date().toISOString();
+            const currentTimestamp = new Date(currentTime).getTime();
+            const activitiesResponse = await sendPostRequest(new MemberQueryActivityMessage(studentIdNumber, ClubName, currentTimestamp.toString(), 3, 1, 1));
+            setActivities(activitiesResponse.data);
+        } catch (error) {
+            setError('加载活动信息失败，请重试。');
+        }
+    };
+
+    const handleJoinActivity = async (activityId: number) => {
+        try {
+            await sendPostRequest(new JoinActivityMessage(studentIdNumber, activityId));
+            alert('成功加入活动！');
+            fetchActivities(); // Refresh activities list
+        } catch (error) {
+            setError('加入活动失败，请重试。');
         }
     };
 
@@ -145,7 +184,20 @@ export const MyClubInfo: React.FC = () => {
 
             <div className="activity-section">
                 <h3>活动:</h3>
-                <p>活动信息将在这里显示。</p>
+                {activities.length > 0 ? (
+                    activities.map(activity => (
+                        <div key={activity.activityID} className="activity-details">
+                            <h4>{activity.activityName}</h4>
+                            <p>{activity.intro}</p>
+                            <p><strong>开始时间:</strong> {new Date(parseInt(activity.starttime)).toLocaleString()}</p>
+                            <p><strong>结束时间:</strong> {new Date(parseInt(activity.finishtime)).toLocaleString()}</p>
+                            <p><strong>当前人数:</strong> {activity.num}/{activity.upLimit}</p>
+                            <button onClick={() => handleJoinActivity(activity.activityID)}>加入活动</button>
+                        </div>
+                    ))
+                ) : (
+                    <p>没有可加入的活动。</p>
+                )}
             </div>
 
             {showModal && (

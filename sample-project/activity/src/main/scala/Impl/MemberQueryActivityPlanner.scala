@@ -17,25 +17,26 @@ case class MemberQueryActivityPlanner(member_id: Int, club_name: String, current
   override def plan(using planContext: PlanContext): IO[List[Json]] = {
     // 先检查是不是俱乐部成员
     val checkMemberExists = CheckMemberMessage(club_name, member_id).send
-//    val checkMemberExists = readDBBoolean(
-//      s"SELECT EXISTS(SELECT 1 FROM club.member WHERE member_id = ? AND club_name = ?)",
-//      List(SqlParameter("Int", member_id.toString), SqlParameter("String", club_name))
-//    )
 
     checkMemberExists.flatMap { exists =>
       if (!exists) {
         IO.raiseError(new Exception("You are not in this club!"))
       } else {
-        // status1 = 0查询还未开始的活动，1查询进行中的活动，2查询已经结束的活动
+        // status1 = 0查询还未开始的活动，1查询进行中的活动，2查询已经结束的活动，3查询未结束的活动
         val (operatorStart, operatorFinish) = status1 match {
           case 0 => (">", ">")
-          case 1 => (">=", "<")
+          case 1 => ("<", ">")
           case 2 => ("<", "<")
+          case 3 => ("", ">")
           case _ => throw new IllegalArgumentException("Invalid status1 value")
         }
 
         // 构建时间条件
-        val timeCondition = s"startTime $operatorStart ?${if (status1 != 0) s" AND finishTime $operatorFinish ?" else ""}"
+        val timeCondition = status1 match {
+          case 0 | 1 | 2 => s"a.startTime $operatorStart ? AND a.finishTime $operatorFinish ?"
+          case 3 => s"a.finishTime $operatorFinish ?"
+          case _ => throw new IllegalArgumentException("Invalid status1 value")
+        }
 
         // 构建加入条件
         val joinCondition = status2 match {
@@ -48,7 +49,7 @@ case class MemberQueryActivityPlanner(member_id: Int, club_name: String, current
         // 构建status3的条件
         val status3Condition = status3 match {
           case 0 => "" // status3 = 0返回所有结果
-          case 1 => "AND NOT EXISTS (SELECT 1 FROM activity.member am WHERE am.activity_id = a.activity_id AND am.member_id = ?) AND a.num < a.upLimit AND ? < a.startTime" // status3 = 1返回还没有报名且还可以报名的activity
+          case 1 => "AND NOT EXISTS (SELECT 1 FROM activity.member am WHERE am.activity_id = a.activity_id AND am.member_id = ?) AND a.num < a.upLimit AND ? < a.finishTime" // status3 = 1返回还没有报名且还可以报名的activity
           case _ => throw new IllegalArgumentException("Invalid status3 value")
         }
 
@@ -61,14 +62,14 @@ case class MemberQueryActivityPlanner(member_id: Int, club_name: String, current
              |AND $joinCondition (
              |  SELECT 1 FROM ${schemaName}.member am
              |  WHERE am.activity_id = a.activity_id AND am.member_id = ?
-             |)$status3Condition
+             |) $status3Condition
              """.stripMargin
 
         // 准备查询参数
         val parameters = List(SqlParameter("String", club_name), SqlParameter("DateTime", currentTime)) ++
-          (if (status1 != 0) List(SqlParameter("DateTime", currentTime)) else Nil) ++
+          (if (status1 != 0 && status1 != 3) List(SqlParameter("DateTime", currentTime)) else Nil) ++
           List(SqlParameter("Int", member_id.toString)) ++
-          (if (status3 == 1) List(SqlParameter("DateTime", currentTime)) else Nil)
+          (if (status3 == 1) List(SqlParameter("Int", member_id.toString), SqlParameter("DateTime", currentTime)) else Nil)
 
         // 执行查询
         readDBRows(sqlQuery, parameters)
@@ -76,3 +77,4 @@ case class MemberQueryActivityPlanner(member_id: Int, club_name: String, current
     }
   }
 }
+
