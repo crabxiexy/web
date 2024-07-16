@@ -29,8 +29,18 @@ object Routes:
           .flatMap(m =>
             m.fullPlan.map(_.asJson.toString)
           )
+      case "ReleaseNotificationMessage" =>
+        IO(decode[ReleaseNotificationPlanner](str).getOrElse(throw new Exception("Invalid JSON for ReleaseNotificationMessage")))
+          .flatMap(m =>
+            m.fullPlan.map(_.asJson.toString)
+          )
       case "QueryReceivedPlanner" =>
           IO(decode[QueryReceivedPlanner](str).getOrElse(throw new Exception("Invalid JSON for QueryReceivedMessage")))
+          .flatMap(m =>
+            m.fullPlan.map(_.asJson.toString)
+          )
+      case "CheckNotificationPlanner" =>
+        IO(decode[QueryReceivedPlanner](str).getOrElse(throw new Exception("Invalid JSON for QueryReceivedMessage")))
           .flatMap(m =>
             m.fullPlan.map(_.asJson.toString)
           )

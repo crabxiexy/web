@@ -8,10 +8,10 @@ import * as Minio from 'minio'; // Import MinIO client
 
 const minioClient = new Minio.Client({
     endPoint: '183.172.236.220', // 替换为您的 MinIO 服务器地址
-    port: 9005,
+    port: 9004,
     useSSL: false,
-    accessKey: 'tNkoF0m8vY1XEmq8TTIN', // 替换为您的 MinIO Access Key
-    secretKey: 'arlYGMeeBTAyDfPU8dl6nGwJAjSzmfpQaPqbsWQZ', // 替换为您的 MinIO Secret Key
+    accessKey: '12345678', // 替换为您的 MinIO Access Key
+    secretKey: '12345678', // 替换为您的 MinIO Secret Key
 });
 
 export const UploadProfilePage: React.FC = () => {
@@ -62,7 +62,7 @@ export const UploadProfilePage: React.FC = () => {
 
                 const updateProfileMessage = new UpdateProfileMessage(
                     parseInt(Id),
-                    `http://183.172.236.220:9005/profile/${filename}`
+                    `http://183.172.236.220:9004/profile/${filename}`
                 );
 
                 const response = await sendPostRequest(updateProfileMessage);

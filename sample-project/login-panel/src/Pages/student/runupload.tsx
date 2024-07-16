@@ -3,29 +3,28 @@ import { useHistory } from 'react-router';
 import useIdStore from 'Pages/IdStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { SubmitRunningMessage } from 'Plugins/RunAPI/SubmitRunningMessage';
-import * as Minio from 'minio'; // 导入 MinIO 客户端库
+import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
+import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
+import { GetTAMessage } from 'Plugins/StudentAPI/GetTAMessage'; // Import your getTA message
+import * as Minio from 'minio';
 
 const minioClient = new Minio.Client({
-    endPoint: '183.173.41.216', // 替换为您的 MinIO 服务器地址
-    port: 5000,
+    endPoint: '183.172.236.220',
+    port: 9004,
     useSSL: false,
-    accessKey: 'MdaJLsKGRlkxi6Ps8t77', // 替换为您的 MinIO Access Key
-    secretKey: 'VjMH2JcPbU4PIz5WBY58vHUE7ulK6BTF2ZseFWXh', // 替换为您的 MinIO Secret Key
+    accessKey: '12345678',
+    secretKey: '12345678',
 });
 
 export const RunUpload: React.FC = () => {
     const history = useHistory();
     const { Id } = useIdStore();
 
-    // States for tracking run data
     const [startTime, setStartTime] = useState<Date | null>(null);
     const [finishTime, setFinishTime] = useState<Date | null>(null);
     const [distance, setDistance] = useState<string>('');
     const [clickCount, setClickCount] = useState<number>(0);
     const [submitted, setSubmitted] = useState<boolean>(false);
-    const [runId, setRunId] = useState<string>('');
-
-    // State for uploaded image
     const [uploadedImage, setUploadedImage] = useState<File | null>(null);
     const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -60,29 +59,59 @@ export const RunUpload: React.FC = () => {
             const filename = uploadedImage.name;
 
             try {
-                await minioClient.fPutObject('run', filename, uploadedImage.path, {});
+                // Upload image to MinIO
+                await minioClient.fPutObject('proof', filename, uploadedImage.path, {});
 
                 const studentIdNumber = parseInt(Id);
                 const distanceNumber = parseFloat(distance) * 10;
+
                 const submitMessage = new SubmitRunningMessage(
                     studentIdNumber,
                     startTime.getTime().toString(),
                     finishTime.getTime().toString(),
                     distanceNumber,
-                    `http://183.173.41.216:5000/run/${filename}`
+                    `http://183.172.236.220:9004/proof/${filename}`
                 );
 
+                // Send the running data
                 const response = await sendPostRequest(submitMessage);
                 console.log('Submit Running Message Response:', response);
                 setSubmitted(true);
                 setError(null);
-                // 提交成功后自动回到上一个页面
+
+                // Fetch the student's name for the notification
+                const studentName = await fetchStudentName(studentIdNumber);
+                const taId = await fetchTAId(studentIdNumber); // Fetch TA ID based on student ID
+                const notificationMessage = new ReleaseNotificationMessage(
+                    studentName,
+                    studentIdNumber,
+                    taId,
+                    `有待审核的跑步记录，来自学生 ${studentName}`
+                );
+
+                // Send the notification
+                await sendPostRequest(notificationMessage);
+                console.log('Release Notification Response:', response);
+
+                // Navigate back to the previous page
                 history.goBack();
             } catch (error) {
                 console.error('Error handling image upload and submission:', error);
                 setError('处理上传和提交时出错，请稍后再试。');
             }
         }
+    };
+
+    const fetchStudentName = async (studentId: number) => {
+        const fetchMessage = new FetchNameMessage(studentId);
+        const response = await sendPostRequest(fetchMessage);
+        return response.data; // Adjust according to the actual response structure
+    };
+
+    const fetchTAId = async (studentId: number) => {
+        const fetchMessage = new GetTAMessage(studentId); // Use GetTAMessage to fetch TA ID
+        const response = await sendPostRequest(fetchMessage);
+        return response.data; // Adjust according to the actual response structure
     };
 
     const handleCancel = () => {

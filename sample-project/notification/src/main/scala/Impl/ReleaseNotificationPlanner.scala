@@ -13,36 +13,29 @@ case class ReleaseNotificationPlanner(
                                        releaserName: String,
                                        senderId: Int,
                                        receiverId: Int,
-                                       content: String // Assuming content is provided for the notification
+                                       content: String
                                      ) extends Planner[Unit] {
 
   override def plan(using planContext: PlanContext): IO[Unit] = {
-    // Step 1: Generate a notification_id
-    val notificationIdQuery =
+    // 使用单个查询生成 notification_id 并插入通知
+    val query =
       s"""
-         |SELECT COALESCE(MAX(notification_id), 0) + 1 AS next_id
-         |FROM ${schemaName}.${schemaName}
+         |WITH new_id AS (
+         |  SELECT COALESCE(MAX(notification_id), 0) + 1 AS notification_id
+         |  FROM ${schemaName}.${schemaName}
+         |)
+         |INSERT INTO ${schemaName}.${schemaName} (notification_id, releaser_name, release_time, content, sender_id, receiver_id, checked)
+         |SELECT new_id.notification_id, ?, NOW(), ?, ?, ?, 0
+         |FROM new_id
        """.stripMargin
 
     for {
-      notificationIdResult <- readDBRows(notificationIdQuery, List())
-      notificationId = notificationIdResult.headOption.flatMap(_.asObject.flatMap(_.apply("next_id").flatMap(_.asNumber).map(_.toInt))).getOrElse(1)
-
-      // Step 2: Insert the notification into the database
-      insertQuery =
-        s"""
-           |INSERT INTO ${schemaName}.${schemaName} (notification_id, releaser_name, release_time, content, sender_id, receiver_id, checked)
-           |VALUES (?, ?, NOW(), ?, ?, ?, 0)
-         """.stripMargin
-
-      _ <- writeDB(insertQuery, List(
-        SqlParameter("Int", notificationId.toString),
+      _ <- writeDB(query, List(
         SqlParameter("String", releaserName),
         SqlParameter("String", content),
         SqlParameter("Int", senderId.toString),
         SqlParameter("Int", receiverId.toString)
       ))
-
     } yield ()
   }
 }

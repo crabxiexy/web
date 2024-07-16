@@ -1,6 +1,6 @@
 package Global
 
-import Global.ServiceCenter.runServiceCode
+import Global.ServiceCenter.notificationServiceCode
 
 object GlobalVariables:
-  val serviceCode:String= runServiceCode
+  val serviceCode:String= notificationServiceCode

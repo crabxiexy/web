@@ -5,13 +5,15 @@ import useIdStore from 'Pages/IdStore'; // Adjust the path based on your file st
 import useTokenStore from 'Pages/TokenStore';
 import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage'; // Import your fetch function
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils'; // Import your API utility
+import { QueryReceivedMessage } from 'Plugins/NotificationAPI/QueryReceivedMessage'; // Import your fetch notifications function
 
 export function Dashboard() {
     const history = useHistory();
     const [dropdownVisible, setDropdownVisible] = useState(false);
-    const { Id,setId } = useIdStore();
+    const { Id, setId } = useIdStore();
     const { setToken } = useTokenStore();
     const [profileImage, setProfileImage] = useState<string | null>(null);
+    const [notifications, setNotifications] = useState<{ content: string; releaserName: string }[]>([]); // State to hold notifications
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -24,8 +26,19 @@ export function Dashboard() {
             }
         };
 
+        const fetchNotifications = async () => {
+            const fetchNotificationsMessage = new QueryReceivedMessage(parseInt(Id)); // Pass the student ID
+            try {
+                const response = await sendPostRequest(fetchNotificationsMessage);
+                setNotifications(response.data); // Assuming the response is a JSON array
+            } catch (error) {
+                console.error('Error fetching notifications:', error);
+            }
+        };
+
         fetchProfile();
-    }, []);
+        fetchNotifications(); // Fetch notifications on mount
+    }, [Id]); // Add Id as a dependency
 
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
@@ -84,10 +97,15 @@ export function Dashboard() {
                 <section className="notifications">
                     <h2>Notifications</h2>
                     <div className="notification-board">
-                        <p>Don't forget to warm up before exercising!</p>
-                        <p>Drink plenty of water.</p>
-                        <p>Team Yoga session at 10 AM tomorrow.</p>
-                        <p>Friday Cycling Event has been rescheduled to 8 AM.</p>
+                        {notifications.length === 0 ? (
+                            <p>No notifications available.</p>
+                        ) : (
+                            notifications.map((notification, index) => (
+                                <div key={index} className="notification-item">
+                                    <p><strong>{notification.releaserName}</strong>: {notification.content}</p>
+                                </div>
+                            ))
+                        )}
                     </div>
                 </section>
                 <div className="square-block" onClick={handleRunUpload}>
