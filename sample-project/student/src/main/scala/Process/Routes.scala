@@ -34,6 +34,11 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "TAQueryMessage" =>
+        IO(decode[TAQueryPlanner](str).getOrElse(throw new Exception("Invalid JSON for TAQueryMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case "RegisterMessage" =>
         IO(decode[RegisterPlanner](str).getOrElse(throw new Exception("Invalid JSON for RegisterMessage")))
           .flatMap { m =>

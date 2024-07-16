@@ -1,0 +1,22 @@
+.image-modal {
+    max-width: 800px;
+    max-height: 600px;
+    margin: auto;
+}
+
+.image-modal-overlay {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: white;
+}

@@ -1,73 +1,72 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils'; // 根据项目结构调整导入路径
-import { TAQueryRunningMessage } from 'Plugins/RunAPI/TAQueryRunningMessage'; // 根据项目结构调整导入路径
-import useIdStore from 'Pages/IdStore'; // 根据项目结构调整导入路径
-import { CheckRunningMessage } from 'Plugins/RunAPI/CheckRunningMessage'; // 根据项目结构调整导入路径
-import Modal from 'react-modal'; // 引入 react-modal 组件
+import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
+import { TAQueryRunningMessage } from 'Plugins/RunAPI/TAQueryRunningMessage';
+import useIdStore from 'Pages/IdStore';
+import { CheckRunningMessage } from 'Plugins/RunAPI/CheckRunningMessage';
+import Modal from 'react-modal';
+import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
+import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
 
 Modal.setAppElement('#root');
 
-// 定义每个 run 对象的接口
 interface Run {
     runID: number;
+    studentID: number;
     starttime: string;
     finishtime: string;
     submittime: string;
     distance: number;
     imgurl: string;
     response: string;
-    speed: number; // 根据需求添加 speed 属性
+    speed: number;
+    studentName:string;
 }
 
 export const RunningCheck = () => {
     const history = useHistory();
     const [error, setError] = useState<string>('');
-    const [result, setResult] = useState<Run[]>([]); // 使用 Run 接口定义结果状态
-    const [editData, setEditData] = useState<{ [key: number]: { response: string } }>({}); // 存储编辑数据的状态
-    const [modalIsOpen, setModalIsOpen] = useState<boolean>(false); // 控制弹窗显示状态
-    const [selectedImageUrl, setSelectedImageUrl] = useState<string>(''); // 保存选中的图片 URL
+    const [result, setResult] = useState<Run[]>([]);
+    const [editData, setEditData] = useState<{ [key: number]: { response?: string } }>({});
+    const [modalOpen, setModalOpen] = useState<{ [key: number]: boolean }>({});
+    const [selectedImageUrl, setSelectedImageUrl] = useState<string>('');
+    const { Id } = useIdStore();
 
-    // 从 Zustand hook 获取 ta_id
-    const { Id } = useIdStore(); // 假设 Zustand hook 的导入方式是这样的，根据实际情况调整
-
-    // 函数用于解码时间戳为可读格式
     const decodeTimestamp = (timestamp: string): string => {
         const date = new Date(parseInt(timestamp));
-        return date.toLocaleString(); // 根据需要调整格式
+        return date.toLocaleString();
     };
 
-    // 处理 TA 查询
     const handleTAQuery = async () => {
         try {
             const taQueryMessage = new TAQueryRunningMessage(parseInt(Id));
             const response = await sendPostRequest(taQueryMessage);
-            console.log('TA 查询响应:', response);
-
             if (response && response.data) {
-                setResult(response.data.map((run: Run) => ({
-                    ...run,
-                    speed: calculateSpeed(run.distance, run.starttime, run.finishtime),
-                })));
+                const enrichedResults = await Promise.all(response.data.map(async (run: Run) => {
+                    const studentName = await fetchStudentName(run.studentID);
+                    return {
+                        ...run,
+                        speed: calculateSpeed(run.distance, run.starttime, run.finishtime),
+                        studentName,
+                    };
+                }));
+                setResult(enrichedResults);
                 setError('');
             } else {
                 setError('TA 查询失败，请重试。');
             }
         } catch (error) {
-            console.error('TA 查询错误:', error.message);
             setError('TA 查询失败，请重试。');
         }
     };
 
-    // 根据提供的公式计算速度
     const calculateSpeed = (distance: number, startTime: string, finishTime: string): number => {
         const startTimestamp = parseInt(startTime);
         const finishTimestamp = parseInt(finishTime);
-        const timeDifference = (finishTimestamp - startTimestamp) / 1000; // 转换为秒
-        return distance / 10 / (timeDifference / 60); // km/h
+        const timeDifference = (finishTimestamp - startTimestamp) / 1000;
+        return distance / 10 / (timeDifference / 60);
     };
 
-    // 处理 response 的更改
     const handleFieldChange = (runId: number, fieldName: 'response', value: string) => {
         setEditData((prevData) => ({
             ...prevData,
@@ -78,52 +77,57 @@ export const RunningCheck = () => {
         }));
     };
 
-    // 处理点击图片按钮
-    const handleImageClick = (imageUrl: string) => {
+    const handleImageClick = (imageUrl: string, runId: number) => {
         setSelectedImageUrl(imageUrl);
-        setModalIsOpen(true);
+        setModalOpen((prev) => ({ ...prev, [runId]: true }));
     };
 
-    // 处理关闭弹窗
-    const closeModal = () => {
-        setModalIsOpen(false);
+    const closeModal = (runId: number) => {
+        setModalOpen((prev) => ({ ...prev, [runId]: false }));
         setSelectedImageUrl('');
     };
 
-    // 处理通过按钮点击
+    const sendNotification = async (studentId: number, taName: string, status: 'approved' | 'rejected', response: string) => {
+        const message = status === 'approved'
+            ? `你提交的跑步记录被批准，回复是: ${response}`
+            : `你提交的跑步记录被驳回，回复是: ${response}`;
+
+        const notificationMessage = new ReleaseNotificationMessage(taName, parseInt(Id), studentId, message);
+        await sendPostRequest(notificationMessage);
+    };
+
+    const fetchStudentName = async (studentId: number) => {
+        const fetchMessage = new FetchNameMessage(studentId);
+        const response = await sendPostRequest(fetchMessage);
+        return response.data; // Adjust based on your API response structure
+    };
+
     const handleCheck = async (runId: number) => {
-        const { response } = editData[runId];
-        const checkRunningMessage = new CheckRunningMessage(runId, 1, response); // 设置 is_checked 为 1 表示通过
+        const { response = '' } = editData[runId] || {}; // Default to empty string if undefined
+        const checkRunningMessage = new CheckRunningMessage(runId, 1, response);
 
         try {
-            const response = await sendPostRequest(checkRunningMessage);
-            console.log('提交响应:', response);
-
-            // 从结果状态中移除已提交的行
+            await sendPostRequest(checkRunningMessage);
             setResult((prevResult) => prevResult.filter((run) => run.runID !== runId));
-
-            // 可选：处理提交成功后的消息或界面更新
+            // Send notification after approval
+            const taName = await fetchStudentName(parseInt(Id)); // Fetch TA name based on the runId or your logic
+            await sendNotification(runId, taName, 'approved', response); // Use studentID here
         } catch (error) {
-            console.error('提交错误:', error.message);
             setError('提交失败，请重试。');
         }
     };
 
-    // 处理拒绝按钮点击
     const handleReject = async (runId: number) => {
-        const { response } = editData[runId];
-        const checkRunningMessage = new CheckRunningMessage(runId, 2, response); // 设置 is_checked 为 2 表示拒绝
+        const { response = '' } = editData[runId] || {}; // Default to empty string if undefined
+        const checkRunningMessage = new CheckRunningMessage(runId, 2, response);
 
         try {
-            const response = await sendPostRequest(checkRunningMessage);
-            console.log('提交响应:', response);
-
-            // 从结果状态中移除已提交的行
+            await sendPostRequest(checkRunningMessage);
             setResult((prevResult) => prevResult.filter((run) => run.runID !== runId));
-
-            // 可选：处理提交成功后的消息或界面更新
+            // Send notification after rejection
+            const taName = await fetchStudentName(runId); // Fetch TA name based on the runId or your logic
+            await sendNotification(runId, taName, 'rejected', response); // Use studentID here
         } catch (error) {
-            console.error('提交错误:', error.message);
             setError('提交失败，请重试。');
         }
     };
@@ -140,12 +144,13 @@ export const RunningCheck = () => {
                     执行 TA 查询
                 </button>
             </div>
-            {result && (
+            {result.length > 0 && (
                 <div className="query-result">
                     <h3>TA 查询结果:</h3>
                     <table className="table">
                         <thead>
                         <tr>
+                            <th>学生姓名</th> {/* New column for student name */}
                             <th>开始时间</th>
                             <th>结束时间</th>
                             <th>提交时间</th>
@@ -157,16 +162,17 @@ export const RunningCheck = () => {
                         </tr>
                         </thead>
                         <tbody>
-                        {result.map((run: Run, index: number) => (
-                            <tr key={index}>
+                        {result.map((run) => (
+                            <tr key={run.runID}>
+                                <td>{run.studentName}</td> {/* Display student name */}
                                 <td>{decodeTimestamp(run.starttime)}</td>
                                 <td>{decodeTimestamp(run.finishtime)}</td>
                                 <td>{decodeTimestamp(run.submittime)}</td>
-                                <td>{run.distance / 10}</td>
+                                <td>{(run.distance / 10).toFixed(2)}</td>
                                 <td>
                                     <button
                                         className="button"
-                                        onClick={() => handleImageClick(run.imgurl)}
+                                        onClick={() => handleImageClick(run.imgurl, run.runID)}
                                     >
                                         查看图片
                                     </button>
@@ -195,27 +201,29 @@ export const RunningCheck = () => {
                     </table>
                 </div>
             )}
-            {/* 弹窗显示图片 */}
-            <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                contentLabel="Image Modal"
-                className="image-modal"
-                overlayClassName="image-modal-overlay"
-            >
-                <div className="modal-header">
-                    <button className="close-button" onClick={closeModal}>
-                        &times;
-                    </button>
-                </div>
-                <div className="modal-body">
-                    <img
-                        src={selectedImageUrl}
-                        alt="Selected"
-                        style={{ maxWidth: '100%', maxHeight: '100%' }}
-                    />
-                </div>
-            </Modal>
+            {result.map((run) => (
+                <Modal
+                    key={run.runID}
+                    isOpen={modalOpen[run.runID] || false}
+                    onRequestClose={() => closeModal(run.runID)}
+                    contentLabel="Image Modal"
+                    className="image-modal"
+                    overlayClassName="image-modal-overlay"
+                >
+                    <div className="modal-header">
+                        <button className="close-button" onClick={() => closeModal(run.runID)}>
+                            &times;
+                        </button>
+                    </div>
+                    <div className="modal-body">
+                        <img
+                            src={run.imgurl}
+                            alt="Selected"
+                            style={{ maxWidth: '100%', maxHeight: '100%' }}
+                        />
+                    </div>
+                </Modal>
+            ))}
         </div>
     );
 };

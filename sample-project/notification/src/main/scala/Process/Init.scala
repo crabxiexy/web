@@ -16,7 +16,7 @@ object Init {
     for{
       _ <- API.init(config.maximumClientConnection)
       _ <- initSchema(schemaName)
-      _ <- writeDB(s"CREATE TABLE IF NOT EXISTS ${schemaName}.${schemaName} (notification_id INT PRIMARY KEY , releaser_name TEXT, release_time DATETIME, content TEXT,sender_id INT, receiver_id INT， checked INT)", List())
+      _ <- writeDB(s"CREATE TABLE IF NOT EXISTS notification.notification (notification_id INT PRIMARY KEY , releaser_name TEXT, release_time TIMESTAMPTZ, content TEXT,sender_id INT, receiver_id INT, checked INT)", List())
     } yield ()
 
 }
