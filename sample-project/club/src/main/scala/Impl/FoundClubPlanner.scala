@@ -8,6 +8,7 @@ import Common.ServiceUtils.schemaName
 import cats.effect.IO
 import io.circe.Json
 import io.circe.generic.auto.*
+import APIs.ClubAPI.AddMemberMessage
 
 import java.security.MessageDigest
 import java.util.Base64
@@ -38,9 +39,13 @@ case class FoundClubPlanner(club_name: String, leader_id: Int, club_intro: Strin
             SqlParameter("String", club_depart)
           )
         )
+        addmember = AddMemberMessage(club_name, student_id).send
         // Chain the insertUser operation after the insertIdentity operation
         insertClub.flatMap { _ =>
-          IO.pure("Club registered successfully")
+          addmember.flapMap { _ =>
+            IO.pure("Club registered successfully")
+          }
+          
         }
       }
     }
