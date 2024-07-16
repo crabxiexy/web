@@ -11,6 +11,7 @@ import { QueryApplyMessage } from 'Plugins/ClubAPI/QueryApplyMessage';
 import { ResponseStudentApplyMessage } from 'Plugins/ClubAPI/ResponseStudentApplyMessage';
 import { AddMemberMessage } from 'Plugins/ClubAPI/AddMemberMessage';
 import { CreateActivityMessage } from 'Plugins/ActivityAPI/CreateActivityMessage';
+import { SubmitHWMessage } from 'Plugins/HWAPI/SubmitHWMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import './manageclub.css';
 
@@ -39,6 +40,7 @@ export const ManagedClubInfo: React.FC = () => {
     const { Id } = useIdStore();
     const studentIdNumber = parseInt(Id);
     const history = useHistory();
+    const [memberId, setMemberId] = useState('');
     const { ClubName } = useClubNameStore();
     const [clubInfo, setClubInfo] = useState<any>(null);
     const [leaderInfo, setLeaderInfo] = useState<any>(null);
@@ -61,6 +63,16 @@ export const ManagedClubInfo: React.FC = () => {
         num: 0,
     });
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+    const [hwModalIsOpen, setHWModalIsOpen] = useState<boolean>(false);
+    const [newHW, setNewHW] = useState({
+        startTime: new Date().toISOString().slice(0, 16),
+        finishTime: '',
+        HWName: '',
+        studentId: studentIdNumber,
+        leaderId: leaderInfo?.id || 0,
+        clubName: ClubName,
+        imgUrl: '',
+    });
 
     useEffect(() => {
         fetchClubInfo();
@@ -78,6 +90,7 @@ export const ManagedClubInfo: React.FC = () => {
                 const leaderProfileResponse = await sendPostRequest(new FetchProfileMessage(leaderId));
 
                 setLeaderInfo({
+                    id: leaderId,
                     name: leaderNameResponse.data,
                     profile: leaderProfileResponse.data
                 });
@@ -214,8 +227,36 @@ export const ManagedClubInfo: React.FC = () => {
         }
     };
 
+    const handleSubmitHW = async () => {
+        if (!newHW.startTime || !newHW.finishTime || !newHW.HWName || !newHW.imgUrl) {
+            setError('请填写作业基本信息！');
+            return;
+        }
+        try {
+            const startTimestamp = new Date(newHW.startTime).getTime();
+            const finishTimestamp = new Date(newHW.finishTime).getTime();
+
+            const response = await sendPostRequest(new SubmitHWMessage(
+                startTimestamp.toString(),
+                finishTimestamp.toString(),
+                newHW.HWName,
+                parseInt(memberId),
+                studentIdNumber,  // 使用当前用户的 student_id
+                newHW.clubName,
+                newHW.imgUrl
+            ));
+
+            // 处理提交作业成功的逻辑
+        } catch (error) {
+            setError('提交作业失败，请重试。');
+        }
+    };
+
     const openModal = () => setModalIsOpen(true);
     const closeModal = () => setModalIsOpen(false);
+
+    const openHWModal = () => setHWModalIsOpen(true);
+    const closeHWModal = () => setHWModalIsOpen(false);
 
     return (
         <div className="managed-club-info">
@@ -265,6 +306,7 @@ export const ManagedClubInfo: React.FC = () => {
             <div className="activity-section">
                 <h3>活动:</h3>
                 <button onClick={openModal}>创建活动</button>
+                <button onClick={openHWModal}>提交作业</button>
                 <div className="activity-list">
                     {activities.map((activity, index) => (
                         <div key={index} className="activity-details">
@@ -409,6 +451,63 @@ export const ManagedClubInfo: React.FC = () => {
                     </div>
                     <button type="submit">提交</button>
                     <button type="button" onClick={closeModal}>取消</button>
+                </form>
+            </Modal>
+
+            <Modal
+                isOpen={hwModalIsOpen}
+                onRequestClose={closeHWModal}
+                contentLabel="提交作业"
+                className="modal"
+                overlayClassName="modal-overlay"
+            >
+                <h2>提交作业</h2>
+                <form onSubmit={(e) => {
+                    e.preventDefault();
+                    handleSubmitHW();
+                }}>
+                    <div>
+                        <label>作业名称:</label>
+                        <input
+                            type="text"
+                            value={newHW.HWName}
+                            onChange={(e) => setNewHW({ ...newHW, HWName: e.target.value })}
+                        />
+                    </div>
+                    <div>
+                        <label>成员ID:</label>
+                        <input
+                            type="text"
+                            value={memberId}
+                            onChange={(e) => setMemberId(e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <label>开始时间:</label>
+                        <input
+                            type="datetime-local"
+                            value={newHW.startTime}
+                            onChange={(e) => setNewHW({ ...newHW, startTime: e.target.value })}
+                        />
+                    </div>
+                    <div>
+                        <label>结束时间:</label>
+                        <input
+                            type="datetime-local"
+                            value={newHW.finishTime}
+                            onChange={(e) => setNewHW({ ...newHW, finishTime: e.target.value })}
+                        />
+                    </div>
+                    <div>
+                        <label>图片链接:</label>
+                        <input
+                            type="text"
+                            value={newHW.imgUrl}
+                            onChange={(e) => setNewHW({ ...newHW, imgUrl: e.target.value })}
+                        />
+                    </div>
+                    <button type="submit">提交</button>
+                    <button type="button" onClick={closeHWModal}>取消</button>
                 </form>
             </Modal>
         </div>

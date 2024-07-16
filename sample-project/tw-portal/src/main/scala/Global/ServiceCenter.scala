@@ -1,7 +1,7 @@
 package Global
 
 import Global.GlobalVariables.serviceCode
-import Global.ServiceCenter.notificationServiceCode
+import Global.ServiceCenter.{hwServiceCode, notificationServiceCode}
 import cats.effect.IO
 import com.comcast.ip4s.Port
 import org.http4s.Uri
@@ -21,6 +21,7 @@ object ServiceCenter {
   val notificationServiceCode = "A00010"
   val clubServiceCode = "A00015"
   val activityServiceCode = "A00016"
+  val hwServiceCode = "A00017"
 
 
   val fullNameMap: Map[String, String] = Map(
@@ -35,7 +36,8 @@ object ServiceCenter {
     groupexServiceCode -> "集体锻炼（Groupex）",
     clubServiceCode -> "俱乐部（Club）",
     activityServiceCode -> "社团活动（activity）",
-    notificationServiceCode -> "通知（Notification）"
+    notificationServiceCode -> "通知（Notification）" ,
+    hwServiceCode -> "体育活动作业（hw）"
   )
 
   val address: Map[String, String] = Map(
@@ -50,6 +52,7 @@ object ServiceCenter {
     "Groupex" -> "127.0.0.1:10009",
     "Notification" -> "127.0.0.1:10010",
     "Club" -> "127.0.0.1:10015",
-    "Activity" -> "127.0.0.1:10016"
+    "Activity" -> "127.0.0.1:10016",
+    "HW" -> "127.0.0.1:10017"
   )
 }

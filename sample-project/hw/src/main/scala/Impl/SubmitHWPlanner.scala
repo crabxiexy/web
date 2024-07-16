@@ -18,7 +18,6 @@ import APIs.ClubAPI.CheckLeaderMessage
 
 
 case class SubmitHWPlanner(
-                            HW_id:Int,
                             startTime:String ,
                             finishTime:String,
                             HW_name:String,
