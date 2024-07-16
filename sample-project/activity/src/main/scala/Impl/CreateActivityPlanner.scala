@@ -34,10 +34,10 @@ case class CreateActivityPlanner(club_name:String, activity_name:String, intro:S
             val insertActivity = writeDB(
               s"""
                  |WITH new_id AS (
-                 |  SELECT COALESCE(MAX(club_id), 0) + 1 AS id FROM activity.activity
+                 |  SELECT COALESCE(MAX(activity_id), 0) + 1 AS id FROM activity.activity
                  |)
                  |INSERT INTO activity.activity (activity_id, club_name, activity_name, intro, startTime, finishTime, organizor_id, lowLimit, upLimit, num)
-                 |SELECT new_id.activity_id, ?, ?, ?, ?, ?, ?, ?, ?, 0
+                 |SELECT new_id.id, ?, ?, ?, ?, ?, ?, ?, ?, 0
                  |FROM new_id
                    """.stripMargin,
               List(

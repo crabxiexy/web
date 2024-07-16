@@ -174,13 +174,19 @@ export const ManagedClubInfo: React.FC = () => {
     };
 
     const handleCreateActivity = async () => {
+        if (!newActivity.startTime || !newActivity.finishTime || !newActivity.activityName || !newActivity.lowLimit || !newActivity.upLimit) {
+            setError('请填写活动基本信息！');
+            return;
+        }
         try {
+            const startTimestamp = new Date(newActivity.startTime).getTime();
+            const finishTimestamp = new Date(newActivity.finishTime).getTime();
             const response = await sendPostRequest(new CreateActivityMessage(
                 newActivity.clubName,
                 newActivity.activityName,
                 newActivity.intro,
-                newActivity.startTime,
-                newActivity.finishTime,
+                startTimestamp.toString(),
+                finishTimestamp.toString(),
                 studentIdNumber,  // 使用当前用户的 student_id
                 newActivity.lowLimit,
                 newActivity.upLimit,
