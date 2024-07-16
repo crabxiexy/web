@@ -121,7 +121,8 @@ export function root() {
                     selectedApplication.name,
                     selectedApplication.leader,
                     selectedApplication.intro,
-                    selectedApplication.department
+                    selectedApplication.department,
+                "http://183.172.236.220:9005/proof/test.jpg"
                 );
                 await sendPostRequest(foundClubMessage);
 

@@ -65,12 +65,37 @@ object Routes:
             m.fullPlan.map(_.asJson.toString)
           }
       case "CheckAvailableMessage" =>
-        IO(decode[CheckAvailablePlanner](str).getOrElse(throw new Exception("Invalid JSON for CheckClubMessage")))
+        IO(decode[CheckAvailablePlanner](str).getOrElse(throw new Exception("Invalid JSON for CheckAvailableMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "CheckJointClubMessage" =>
+        IO(decode[CheckJointClubPlanner](str).getOrElse(throw new Exception("Invalid JSON for CheckJointClubMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "FetchInfoMessage" =>
+        IO(decode[FetchInfoPlanner](str).getOrElse(throw new Exception("Invalid JSON for FetchInfoMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
       case "CheckMemberMessage" =>
         IO(decode[CheckMemberPlanner](str).getOrElse(throw new Exception("Invalid JSON for CheckMemberMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "ResponseStudentApplyMessage" =>
+        IO(decode[ResponseStudentApplyPlanner](str).getOrElse(throw new Exception("Invalid JSON for ResponseStudentApplyMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "ApplyMemberMessage" =>
+        IO(decode[ApplyMemberPlanner](str).getOrElse(throw new Exception("Invalid JSON for ApplyMemberMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "QueryApplyMessage" =>
+        IO(decode[QueryApplyPlanner](str).getOrElse(throw new Exception("Invalid JSON for QueryApplyMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }

@@ -1,43 +1,48 @@
 package Impl
 
-import java.sql.Timestamp
-import java.util.Date
+import cats.effect.IO
 import Common.API.{PlanContext, Planner}
 import Common.DBAPI._
 import Common.Object.SqlParameter
 import Common.ServiceUtils.schemaName
-import cats.effect.IO
+import io.circe.Json
+import io.circe.parser._
 import io.circe.generic.auto._
 
 case class ReleaseNotificationPlanner(
                                        releaserName: String,
-                                       releaseTime: String,
-                                       content: String,
-                                       override val planContext: PlanContext
-                                     ) extends Planner[String] {
+                                       senderId: Int,
+                                       receiverId: Int,
+                                       content: String // Assuming content is provided for the notification
+                                     ) extends Planner[Unit] {
 
-  override def plan(using planContext: PlanContext): IO[String] = {
-
-    // Insert the release notification data into the database
-    val submitNotification = writeDB(
+  override def plan(using planContext: PlanContext): IO[Unit] = {
+    // Step 1: Generate a notification_id
+    val notificationIdQuery =
       s"""
-         |WITH new_id AS (
-         |  SELECT COALESCE(MAX(notification_id), 0) + 1 AS notification_id FROM notification.notification
-         |)
-         |INSERT INTO ${schemaName}.notification (notification_id, releaser_name, release_time, content)
-         |SELECT new_id.notification_id, ?, ?, ?
-         |FROM new_id
-       """.stripMargin,
-      List(
-        SqlParameter("String", releaserName),
-        SqlParameter("Datetime", releaseTime),
-        SqlParameter("String", content)
-      )
-    )
+         |SELECT COALESCE(MAX(notification_id), 0) + 1 AS next_id
+         |FROM ${schemaName}.${schemaName}
+       """.stripMargin
 
-    // Return the result of the database insertion
-    submitNotification.map { _ =>
-      "Notification released successfully!"
-    }
+    for {
+      notificationIdResult <- readDBRows(notificationIdQuery, List())
+      notificationId = notificationIdResult.headOption.flatMap(_.asObject.flatMap(_.apply("next_id").flatMap(_.asNumber).map(_.toInt))).getOrElse(1)
+
+      // Step 2: Insert the notification into the database
+      insertQuery =
+        s"""
+           |INSERT INTO ${schemaName}.${schemaName} (notification_id, releaser_name, release_time, content, sender_id, receiver_id, checked)
+           |VALUES (?, ?, NOW(), ?, ?, ?, 0)
+         """.stripMargin
+
+      _ <- writeDB(insertQuery, List(
+        SqlParameter("Int", notificationId.toString),
+        SqlParameter("String", releaserName),
+        SqlParameter("String", content),
+        SqlParameter("Int", senderId.toString),
+        SqlParameter("Int", receiverId.toString)
+      ))
+
+    } yield ()
   }
 }

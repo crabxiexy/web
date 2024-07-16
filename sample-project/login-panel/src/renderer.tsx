@@ -16,6 +16,9 @@ import {GroupexManagement} from 'Pages/ta/groupex_management'
 import {Checkgroupex} from 'Pages/student/checkgroupex'
 import {ViewClub} from 'Pages/student/viewclub'
 import {UploadProfilePage} from 'Pages/UpdateProfile'
+import {ManagedClubInfo} from 'Pages/student/manageclub'
+import {AvailableClubInfo} from 'Pages/student/availableclub'
+import {MyClubInfo} from 'Pages/student/myclub'
 const Layout = () => {
     return (
         <HashRouter>
@@ -35,8 +38,9 @@ const Layout = () => {
                 <Route path="/student_checkgroupex" exact component={Checkgroupex} />
                 <Route path="/viewclub" exact component={ViewClub} />
                 <Route path="/update_profile" exact component={UploadProfilePage} />
-
-
+                <Route path="/managed_club" exact component={ManagedClubInfo} />
+                <Route path="/available_club" exact component={AvailableClubInfo} />
+                <Route path="/my_club" exact component={MyClubInfo} />
             </Switch>
         </HashRouter>
     )

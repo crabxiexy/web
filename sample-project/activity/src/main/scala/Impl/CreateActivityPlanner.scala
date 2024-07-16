@@ -25,9 +25,9 @@ case class CreateActivityPlanner(club_name:String, activity_name:String, intro:S
         IO.raiseError(new Exception("This club does not exist!"))
       } else {
         val checkActivityExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM activity.activity WHERE activity_name = ?)",
-          List(SqlParameter("String", club_name))
+          List(SqlParameter("String", activity_name))
         )
-        checkClubExists.flatMap { exists =>
+        checkActivityExists.flatMap { exists =>
           if (exists) {
             IO.raiseError(new Exception("This activity already exists!"))
           } else {
