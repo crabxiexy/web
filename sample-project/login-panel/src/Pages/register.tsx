@@ -1,152 +1,163 @@
 import React, { useState } from 'react';
 import { RegisterMessage } from 'Plugins/DoctorAPI/RegisterMessage';
-import { AssignDepartmentMessage } from 'Plugins/StudentAPI/AssignDepartmentMessage'; // Import AssignDepartmentMessage
-import { AssignClassMessage } from 'Plugins/StudentAPI/AssignClassMessage'; // Import AssignClassMessage
+import { AssignDepartmentMessage } from 'Plugins/StudentAPI/AssignDepartmentMessage';
+import { AssignClassMessage } from 'Plugins/StudentAPI/AssignClassMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { useHistory } from 'react-router';
 import './register.css';
 
+interface Student {
+    student_id: string;
+    name: string;
+    password: string;
+    department: string;
+    classname: string;
+}
+
 export function Register() {
     const history = useHistory();
-    const [student_id, setStudentId] = useState(0);
-    const [name, setName] = useState('');
-    const [password, setPassword] = useState('');
-    const [repeatPassword, setRepeatPassword] = useState('');
-    const [identity, setIdentity] = useState('student');
-    const [error, setError] = useState('');
-    const [department, setDepartment] = useState('');
-    const [classname, setClassname] = useState('');
+    const [students, setStudents] = useState<Student[]>([
+        { student_id: '', name: '', password: '', department: '', classname: '' }
+    ]);
+    const [error, setError] = useState<string>('');
 
-    const identityMap: Record<string, number> = {
-        admin: 1,
-        student: 2,
-        ta: 3,
+    // State for bulk inputs
+    const [bulkDepartment, setBulkDepartment] = useState<string>('');
+    const [bulkClassname, setBulkClassname] = useState<string>('');
+    const [bulkPassword, setBulkPassword] = useState<string>('');
+
+    const addStudentField = () => {
+        setStudents([...students, { student_id: '', name: '', password: '', department: '', classname: '' }]);
+    };
+
+    const handleChange = (index: number, field: keyof Student, value: string) => {
+        const updatedStudents = [...students];
+        updatedStudents[index][field] = value;
+        setStudents(updatedStudents);
+    };
+
+    const handleBulkUpdate = (field: keyof Student, value: string) => {
+        const updatedStudents = students.map(student => ({
+            ...student,
+            [field]: value,
+        }));
+        setStudents(updatedStudents);
     };
 
     const handleRegister = async () => {
-        if (password !== repeatPassword) {
-            setError("Passwords do not match");
-            return;
-        }
-
         try {
-            const identityNumber = identityMap[identity];
-            const message = new RegisterMessage(student_id, name, password, identityNumber,"http://183.172.236.220:9005/proof/test.jpg");
-            const response = await sendPostRequest(message);
+            for (const student of students) {
+                const { student_id, name, password, department, classname } = student;
+                const message = new RegisterMessage(
+                    parseInt(student_id),
+                    name,
+                    password,
+                    2,
+                    "http://183.172.236.220:9005/proof/test.jpg"
+                );
+                const response = await sendPostRequest(message);
 
-            if (response.status === 200) {
-                if (identity === 'student') {
-                    const assignDepartmentMessage = new AssignDepartmentMessage(student_id, department);
-                    const assignClassMessage = new AssignClassMessage(student_id, classname);
-
-                    // Send department and class assignment messages
+                if (response.status === 200) {
+                    const assignDepartmentMessage = new AssignDepartmentMessage(parseInt(student_id), department);
+                    const assignClassMessage = new AssignClassMessage(parseInt(student_id), classname);
                     await sendPostRequest(assignDepartmentMessage);
                     await sendPostRequest(assignClassMessage);
+                } else {
+                    setError(`Error registering student ID ${student_id}: ${response.data}`);
+                    return;
                 }
-                history.push('/admin/root'); // Redirect after successful registration
             }
+            history.push('/admin/root'); // Redirect after successful registration
         } catch (error) {
             setError(error.message);
         }
     };
 
-    const navigateTo = (path: string) => {
-        history.push(path);
-    };
-
     return (
         <div className="register-container">
             <header className="register-header">
-                <div className="logo" onClick={() => navigateTo('/home')}>MyApp</div>
+                <div className="logo" onClick={() => history.push('/home')}>MyApp</div>
                 <nav>
                     <ul>
-                        <li onClick={() => navigateTo('/')}>Home</li>
+                        <li onClick={() => history.push('/')}>Home</li>
                     </ul>
                 </nav>
             </header>
             <main className="main-content">
                 <div className="form-container">
-                    <h2>Create an Account</h2>
+                    <h2>Batch Register Students</h2>
                     {error && <p className="error-message">{error}</p>}
-                    <div className="form-group">
-                        <input
-                            type="number"
-                            value={student_id}
-                            onChange={e => setStudentId(parseInt(e.target.value))}
-                            required
-                            placeholder="Student ID"
-                        />
-                    </div>
-                    <div className="form-group">
+
+                    {/* Bulk input fields */}
+                    <div className="bulk-inputs">
                         <input
                             type="text"
-                            value={name}
-                            onChange={e => setName(e.target.value)}
-                            required
-                            placeholder="Username"
+                            value={bulkDepartment}
+                            onChange={e => setBulkDepartment(e.target.value)}
+                            placeholder="Set Department for All"
                         />
-                    </div>
-                    <div className="form-group">
+                        <button onClick={() => handleBulkUpdate('department', bulkDepartment)}>Apply to All</button>
+
+                        <input
+                            type="text"
+                            value={bulkClassname}
+                            onChange={e => setBulkClassname(e.target.value)}
+                            placeholder="Set Class Name for All"
+                        />
+                        <button onClick={() => handleBulkUpdate('classname', bulkClassname)}>Apply to All</button>
+
                         <input
                             type="password"
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                            required
-                            placeholder="Password"
+                            value={bulkPassword}
+                            onChange={e => setBulkPassword(e.target.value)}
+                            placeholder="Set Password for All"
                         />
-                    </div>
-                    <div className="form-group">
-                        <input
-                            type="password"
-                            value={repeatPassword}
-                            onChange={e => setRepeatPassword(e.target.value)}
-                            required
-                            placeholder="Repeat Password"
-                        />
-                    </div>
-                    <div className="form-group">
-                        <select
-                            value={identity}
-                            onChange={e => {
-                                setIdentity(e.target.value);
-                                // Reset additional fields when identity changes
-                                setDepartment('');
-                                setClassname('');
-                            }}
-                            required
-                        >
-                            <option value="admin">Admin</option>
-                            <option value="student">Student</option>
-                            <option value="ta">TA</option>
-                        </select>
+                        <button onClick={() => handleBulkUpdate('password', bulkPassword)}>Apply to All</button>
                     </div>
 
-                    {identity === 'student' && (
-                        <>
-                            <div className="form-group">
-                                <input
-                                    type="text"
-                                    value={department}
-                                    onChange={e => setDepartment(e.target.value)}
-                                    required
-                                    placeholder="Department"
-                                />
-                            </div>
-                            <div className="form-group">
-                                <input
-                                    type="text"
-                                    value={classname}
-                                    onChange={e => setClassname(e.target.value)}
-                                    required
-                                    placeholder="Class Name"
-                                />
-                            </div>
-                        </>
-                    )}
-
+                    {students.map((student, index) => (
+                        <div key={index} className="student-form">
+                            <input
+                                type="number"
+                                value={student.student_id}
+                                onChange={e => handleChange(index, 'student_id', e.target.value)}
+                                required
+                                placeholder="Student ID"
+                            />
+                            <input
+                                type="text"
+                                value={student.name}
+                                onChange={e => handleChange(index, 'name', e.target.value)}
+                                required
+                                placeholder="Username"
+                            />
+                            <input
+                                type="password"
+                                value={student.password}
+                                onChange={e => handleChange(index, 'password', e.target.value)}
+                                required
+                                placeholder="Password"
+                            />
+                            <input
+                                type="text"
+                                value={student.department}
+                                onChange={e => handleChange(index, 'department', e.target.value)}
+                                required
+                                placeholder="Department"
+                            />
+                            <input
+                                type="text"
+                                value={student.classname}
+                                onChange={e => handleChange(index, 'classname', e.target.value)}
+                                required
+                                placeholder="Class Name"
+                            />
+                        </div>
+                    ))}
                     <div className="button-group">
-                        <button className="submit-button" onClick={handleRegister}>Submit</button>
-                        <button className="back-button" onClick={() => navigateTo('/admin/root')}>Back</button>
+                        <button className="add-student-button" onClick={addStudentField}>Add Student</button>
+                        <button className="submit-button" onClick={handleRegister}>Submit All</button>
+                        <button className="back-button" onClick={() => history.push('/admin/root')}>Back</button>
                     </div>
                 </div>
             </main>

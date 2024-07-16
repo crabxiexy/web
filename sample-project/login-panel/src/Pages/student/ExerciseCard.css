@@ -1,0 +1,45 @@
+/* ExerciseCard.css */
+.exercise-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.exercise-card:hover {
+    transform: scale(1.02);
+}
+
+.exercise-card h4 {
+    margin: 0 0 8px;
+    font-size: 1.5em;
+}
+
+.exercise-card p {
+    margin: 4px 0;
+    color: #555;
+}
+
+.exercise-card input {
+    padding: 8px;
+    margin-right: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.exercise-card button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.exercise-card button:hover {
+    background-color: #0056b3;
+}

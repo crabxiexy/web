@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import useIdStore from 'Pages/IdStore';
 import { TASignMessage } from 'Plugins/GroupExAPI/TASignMessage';
-import { ExQueryMessage } from 'Plugins/GroupExAPI/ExQueryMessage'; // Import your ExQueryMessage
+import { ExQueryMessage } from 'Plugins/GroupExAPI/ExQueryMessage';
+import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage'; // Import the FetchNameMessage
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 
 interface ExerciseCardProps {
@@ -11,7 +12,8 @@ interface ExerciseCardProps {
     location: string;
     exName: string;
     status: number;
-    updateStatus: (newStatus: number) => void; // Function to update the status
+    updateStatus: (newStatus: number) => void;
+    studentIDs: number[]; // Accept student IDs as a prop
 }
 
 const ExerciseCard: React.FC<ExerciseCardProps> = ({
@@ -22,14 +24,30 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
                                                        exName,
                                                        status,
                                                        updateStatus,
+                                                       studentIDs, // Include studentIDs here
                                                    }) => {
-    const { Id } = useIdStore(); // Get TA ID from Zustand store
+    const { Id } = useIdStore();
     const taId = parseInt(Id);
     const [token, setToken] = useState('');
     const [error, setError] = useState<string>('');
     const [inProcess, setInProcess] = useState<boolean>(false);
-    const [queryResult, setQueryResult] = useState<any[]>([]); // State to hold query results
+    const [queryResult, setQueryResult] = useState<any[]>([]);
+    const [studentNames, setStudentNames] = useState<{ [key: number]: string }>({}); // Store names by ID
+
     const isOngoing = (Date.now() >= parseInt(startTime) && Date.now() <= parseInt(finishTime) && status !== 4);
+
+    const fetchStudentNames = async () => {
+        const names: { [key: number]: string } = {};
+        for (const studentID of studentIDs) {
+            try {
+                const response = await sendPostRequest(new FetchNameMessage(studentID));
+                names[studentID] = response.data;
+            } catch {
+                names[studentID] = '未知'; // Default if name fetch fails
+            }
+        }
+        setStudentNames(names);
+    };
 
     const handleSignIn = async () => {
         if (!token) {
@@ -124,12 +142,14 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
     };
 
     const handleQueryStatus = async (queryType: number) => {
-        setError(''); // Clear previous errors
+        setError('');
 
         try {
             const response = await sendPostRequest(new ExQueryMessage(groupexID, queryType));
             if (response.status === 200) {
-                setQueryResult(response.data); // Set the results to state
+                setQueryResult(response.data);
+                studentIDs = response.data;// Set the results to state
+                await fetchStudentNames(); // Fetch student names after getting query results
             } else {
                 setError('查询失败，请重试。');
             }
@@ -178,7 +198,9 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
                     <h5>查询结果:</h5>
                     <ul>
                         {queryResult.map((item) => (
-                            <li key={item.studentID}>{item.studentID}</li> // Use studentID from response
+                            <li key={item}>
+                                {studentNames[item]} {/* Display student name */}
+                            </li>
                         ))}
                     </ul>
                 </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useId } from 'react'
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import useClubNameStore from 'Pages/student/ClubNameStore';
 import { FetchInfoMessage } from 'Plugins/ClubAPI/FetchInfoMessage';
@@ -7,21 +7,26 @@ import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage';
 import { QueryMemberMessage } from 'Plugins/ClubAPI/QueryMemberMessage';
 import { ApplyMemberMessage } from 'Plugins/ClubAPI/ApplyMemberMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
+import { ShowActivityMessage } from 'Plugins/ActivityAPI/ShowActivityMessage';
 import './manageclub.css';
 import useIdStore from 'Pages/IdStore';
+
 export const AvailableClubInfo: React.FC = () => {
     const history = useHistory();
     const { ClubName } = useClubNameStore();
-    const {Id}=useIdStore();
+    const { Id } = useIdStore();
     const [clubInfo, setClubInfo] = useState<any>(null);
     const [leaderInfo, setLeaderInfo] = useState<any>(null);
     const [members, setMembers] = useState<any[]>([]);
+    const [activities, setActivities] = useState<any[]>([]);
     const [showModal, setShowModal] = useState(false);
     const [allMembers, setAllMembers] = useState<any[]>([]);
     const [error, setError] = useState<string>('');
+    const [showMoreActivities, setShowMoreActivities] = useState(false);
 
     useEffect(() => {
         fetchClubInfo();
+        fetchActivities();
     }, [ClubName]);
 
     const fetchClubInfo = async () => {
@@ -37,21 +42,48 @@ export const AvailableClubInfo: React.FC = () => {
 
                 setLeaderInfo({
                     name: leaderNameResponse.data,
-                    profile: leaderProfileResponse.data
+                    profile: leaderProfileResponse.data,
                 });
             }
 
             const membersResponse = await sendPostRequest(new QueryMemberMessage(ClubName));
-            setMembers(membersResponse.data);
+            const memberDetails = await Promise.all(membersResponse.data.map(async (member: any) => {
+                const nameResponse = await sendPostRequest(new FetchNameMessage(member.member));
+                const profileResponse = await sendPostRequest(new FetchProfileMessage(member.member));
+                return {
+                    ...member,
+                    name: nameResponse.data,
+                    profile: profileResponse.data,
+                };
+            }));
+            setMembers(memberDetails);
         } catch (error) {
             setError('加载俱乐部信息失败，请重试。');
+        }
+    };
+
+    const fetchActivities = async () => {
+        try {
+            const activitiesResponse = await sendPostRequest(new ShowActivityMessage(ClubName));
+            setActivities(activitiesResponse.data);
+        } catch (error) {
+            setError('加载活动信息失败，请重试。');
         }
     };
 
     const handleViewMoreMembers = async () => {
         setShowModal(true);
         const allMembersResponse = await sendPostRequest(new QueryMemberMessage(ClubName));
-        setAllMembers(allMembersResponse.data);
+        const allMemberDetails = await Promise.all(allMembersResponse.data.map(async (member: any) => {
+            const nameResponse = await sendPostRequest(new FetchNameMessage(member.member));
+            const profileResponse = await sendPostRequest(new FetchProfileMessage(member.member));
+            return {
+                ...member,
+                name: nameResponse.data,
+                profile: profileResponse.data,
+            };
+        }));
+        setAllMembers(allMemberDetails);
     };
 
     const handleBack = () => {
@@ -66,6 +98,10 @@ export const AvailableClubInfo: React.FC = () => {
         } catch (error) {
             setError('申请加入俱乐部失败，请重试。');
         }
+    };
+
+    const toggleShowMoreActivities = () => {
+        setShowMoreActivities(!showMoreActivities);
     };
 
     return (
@@ -115,7 +151,19 @@ export const AvailableClubInfo: React.FC = () => {
 
             <div className="activity-section">
                 <h3>活动:</h3>
-                <p>活动信息将在这里显示。</p>
+                {activities.slice(0, showMoreActivities ? activities.length : 2).map(activity => (
+                    <div key={activity.activityID} className="activity-details">
+                        <p><strong>活动名称:</strong> {activity.activityName}</p>
+                        <p><strong>介绍:</strong> {activity.intro}</p>
+                        <p><strong>开始时间:</strong> {new Date(parseInt(activity.starttime)).toLocaleString()}</p>
+                        <p><strong>结束时间:</strong> {new Date(parseInt(activity.finishtime)).toLocaleString()}</p>
+                    </div>
+                ))}
+                {activities.length > 2 && (
+                    <button onClick={toggleShowMoreActivities}>
+                        {showMoreActivities ? '显示更少' : '显示更多'}
+                    </button>
+                )}
             </div>
 
             {showModal && (
@@ -124,7 +172,7 @@ export const AvailableClubInfo: React.FC = () => {
                         <span className="close" onClick={() => setShowModal(false)}>&times;</span>
                         <h2>所有成员</h2>
                         {allMembers.map(member => (
-                            <div key={member.student_id} className="member-details">
+                            <div key={member.member} className="member-details">
                                 <div className="profile-circle">
                                     <img
                                         src={member.profile}
