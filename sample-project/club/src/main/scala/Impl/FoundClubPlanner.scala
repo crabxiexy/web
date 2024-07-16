@@ -39,13 +39,13 @@ case class FoundClubPlanner(club_name: String, leader_id: Int, club_intro: Strin
             SqlParameter("String", club_depart)
           )
         )
-        addmember = AddMemberMessage(club_name, student_id).send
+        val addmember = AddMemberMessage(club_name, leader_id).send
         // Chain the insertUser operation after the insertIdentity operation
         insertClub.flatMap { _ =>
-          addmember.flapMap { _ =>
+          addmember.flatMap { _ =>
             IO.pure("Club registered successfully")
           }
-          
+
         }
       }
     }
