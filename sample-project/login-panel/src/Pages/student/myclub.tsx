@@ -7,7 +7,7 @@ import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage';
 import { QueryMemberMessage } from 'Plugins/ClubAPI/QueryMemberMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { MemberQueryActivityMessage } from 'Plugins/ActivityAPI/MemberQueryActivityMessage';
-import { JoinActivityMessage } from 'Plugins/ActivityAPI/JoinActivityMessage'
+import { JoinActivityMessage } from 'Plugins/ActivityAPI/JoinActivityMessage';
 import './manageclub.css';
 import useIdStore from 'Pages/IdStore';
 
@@ -47,10 +47,11 @@ export const MyClubInfo: React.FC = () => {
     const [allMembers, setAllMembers] = useState<any[]>([]);
     const [activities, setActivities] = useState<Activity[]>([]);
     const [error, setError] = useState<string>('');
+    const [viewMode, setViewMode] = useState<'available' | 'joined'>('available');
 
     useEffect(() => {
         fetchClubInfo();
-        fetchActivities();
+        fetchActivities('available');
     }, [ClubName]);
 
     const fetchClubInfo = async () => {
@@ -91,11 +92,16 @@ export const MyClubInfo: React.FC = () => {
         }
     };
 
-    const fetchActivities = async () => {
+    const fetchActivities = async (mode: 'available' | 'joined') => {
         try {
             const currentTime = new Date().toISOString();
             const currentTimestamp = new Date(currentTime).getTime();
-            const activitiesResponse = await sendPostRequest(new MemberQueryActivityMessage(studentIdNumber, ClubName, currentTimestamp.toString(), 3, 1, 1));
+            let activitiesResponse;
+            if (mode === 'available') {
+                activitiesResponse = await sendPostRequest(new MemberQueryActivityMessage(studentIdNumber, ClubName, currentTimestamp.toString(), 3, 1, 1));
+            } else {
+                activitiesResponse = await sendPostRequest(new MemberQueryActivityMessage(studentIdNumber, ClubName, currentTimestamp.toString(), 3, 0, 0));
+            }
             setActivities(activitiesResponse.data);
         } catch (error) {
             setError('加载活动信息失败，请重试。');
@@ -106,7 +112,7 @@ export const MyClubInfo: React.FC = () => {
         try {
             await sendPostRequest(new JoinActivityMessage(studentIdNumber, activityId));
             alert('成功加入活动！');
-            fetchActivities(); // Refresh activities list
+            fetchActivities(viewMode); // Refresh activities list
         } catch (error) {
             setError('加入活动失败，请重试。');
         }
@@ -135,6 +141,16 @@ export const MyClubInfo: React.FC = () => {
     const handleBack = () => {
         setClubName(''); // Clear ClubName
         history.goBack();
+    };
+
+    const handleViewAvailableActivities = () => {
+        setViewMode('available');
+        fetchActivities('available');
+    };
+
+    const handleViewJoinedActivities = () => {
+        setViewMode('joined');
+        fetchActivities('joined');
     };
 
     return (
@@ -184,6 +200,10 @@ export const MyClubInfo: React.FC = () => {
 
             <div className="activity-section">
                 <h3>活动:</h3>
+                <div className="activity-buttons">
+                    <button onClick={handleViewAvailableActivities}>可参加的活动</button>
+                    <button onClick={handleViewJoinedActivities}>已参加的活动</button>
+                </div>
                 {activities.length > 0 ? (
                     activities.map(activity => (
                         <div key={activity.activityID} className="activity-details">
@@ -192,11 +212,13 @@ export const MyClubInfo: React.FC = () => {
                             <p><strong>开始时间:</strong> {new Date(parseInt(activity.starttime)).toLocaleString()}</p>
                             <p><strong>结束时间:</strong> {new Date(parseInt(activity.finishtime)).toLocaleString()}</p>
                             <p><strong>当前人数:</strong> {activity.num}/{activity.upLimit}</p>
-                            <button onClick={() => handleJoinActivity(activity.activityID)}>加入活动</button>
+                            {viewMode === 'available' && (
+                                <button onClick={() => handleJoinActivity(activity.activityID)}>加入活动</button>
+                            )}
                         </div>
                     ))
                 ) : (
-                    <p>没有可加入的活动。</p>
+                    <p>没有活动。</p>
                 )}
             </div>
 
