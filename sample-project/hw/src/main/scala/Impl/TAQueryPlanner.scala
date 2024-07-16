@@ -18,7 +18,7 @@ case class TAQueryPlanner(
     // Construct the SQL query with schemaName to fetch all fields
     val sqlQuery =
       s"""
-         |SELECT HW_id, startTime, finishTime, submitTime, activity_name, student_id, leader_id, TA_id, club_name, imgUrl, is_checked, response
+         |SELECT HW_id, startTime, finishTime, submitTime, HW_name, student_id, leader_id, TA_id, club_name, imgUrl, is_checked, response
          |FROM ${schemaName}.HW
          |WHERE TA_id = ? AND is_checked = 0
        """.stripMargin
