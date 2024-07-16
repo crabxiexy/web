@@ -101,7 +101,6 @@ object Routes:
           }
       case "CheckLeaderMessage" =>
         IO(decode[CheckLeaderPlanner](str).getOrElse(throw new Exception("Invalid JSON for CheckLeaderMessage")))
-        IO(decode[CheckAvailablePlanner](str).getOrElse(throw new Exception("Invalid JSON for ReplyAppMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
