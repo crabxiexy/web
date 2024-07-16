@@ -34,6 +34,10 @@ export function TA_dashboard() {
         history.push("/groupex_management");
     };
 
+    const handleHWManagement = () => {
+        history.push("/HW_check");
+    };
+
     const handleLogout = () => {
         setId('');
         history.push("/");
@@ -102,6 +106,9 @@ export function TA_dashboard() {
                 </div>
                 <div className="square-block" onClick={handleGroupexManagement}>
                     集体锻炼管理
+                </div>
+                <div className="square-block" onClick={handleHWManagement}>
+                    俱乐部作业管理
                 </div>
                 <button className="btn publish-btn" onClick={openModal}>
                     发布公告

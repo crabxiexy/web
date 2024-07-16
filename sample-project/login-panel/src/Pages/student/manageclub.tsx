@@ -205,7 +205,7 @@ export const ManagedClubInfo: React.FC = () => {
                 newActivity.num
             ));
 
-            if (response.data === '成功') {
+            if (response.data === 'Activity created successfully') {
                 setActivities([...activities, { ...newActivity, organizorId: studentIdNumber }]);
                 setNewActivity({
                     clubName: ClubName,
@@ -219,6 +219,7 @@ export const ManagedClubInfo: React.FC = () => {
                     num: 0,
                 });
                 setModalIsOpen(false); // 关闭模态框
+                alert('活动创建成功！');
             } else {
                 setError('创建活动失败，请重试。');
             }
@@ -246,11 +247,29 @@ export const ManagedClubInfo: React.FC = () => {
                 newHW.imgUrl
             ));
 
-            // 处理提交作业成功的逻辑
+            if (response.data === 'HW submitted successfully!') {
+                // 处理提交作业成功的逻辑
+                // 例如更新状态、关闭模态框等
+                // 这里只是一个示例，您可以根据实际需求进行逻辑处理
+                setNewHW({
+                    startTime: '',
+                    finishTime: '',
+                    HWName:'',
+                    studentId: 0,
+                    leaderId: studentIdNumber,
+                    clubName: ClubName,
+                    imgUrl: '',
+                });
+                setModalIsOpen(false);// 关闭模态框
+                alert('作业提交成功！');
+            } else {
+                setError('提交作业失败，请重试。');
+            }
         } catch (error) {
             setError('提交作业失败，请重试。');
         }
     };
+
 
     const openModal = () => setModalIsOpen(true);
     const closeModal = () => setModalIsOpen(false);

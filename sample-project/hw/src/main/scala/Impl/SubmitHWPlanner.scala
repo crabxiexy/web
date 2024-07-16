@@ -61,7 +61,7 @@ case class SubmitHWPlanner(
                    |  SELECT COALESCE(MAX(HW_id), 0) + 1 AS HW_id FROM HW.HW
                    |)
                    |INSERT INTO ${schemaName}.HW ( HW_id,startTime, finishTime, submitTime,HW_name, student_id, leader_id, TA_id, club_name, imgUrl, is_checked, response)
-                   |SELECT new_id.HW_id, ?, ? , ? , ? , ? , ? , ? , ? , ?
+                   |SELECT new_id.HW_id, ?, ? , ? , ? , ? , ? , ? , ? , ?, ?, ?
                    |FROM new_id
                              """.stripMargin,
                 List(

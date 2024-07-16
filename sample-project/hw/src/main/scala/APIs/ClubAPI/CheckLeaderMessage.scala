@@ -1,3 +1,3 @@
 package APIs.ClubAPI
 
-case class CheckLeaderMessage(club_name: String, student_id: Int) extends ClubMessage[Boolean]
+case class CheckLeaderMessage(club_name: String, leader_id: Int) extends ClubMessage[Boolean]
