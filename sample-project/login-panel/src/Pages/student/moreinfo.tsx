@@ -8,7 +8,6 @@ import useIdStore from 'Pages/IdStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { QueryMemberMessage } from 'Plugins/ActivityAPI/QueryMemberMessage';
 import { SubmitHWMessage } from 'Plugins/ActivityAPI/SubmitHWMessage';
-import { GetTAMessage } from 'Plugins/StudentAPI/GetTAMessage';
 import * as Minio from 'minio';
 
 const minioClient = new Minio.Client({
