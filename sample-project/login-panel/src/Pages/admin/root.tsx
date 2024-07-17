@@ -6,7 +6,7 @@ import { AdminQueryAppMessage } from 'Plugins/ClubAPI/AdminQueryAppMessage';
 import { ReplyAppMessage } from 'Plugins/ClubAPI/ReplyAppMessage';
 import { QueryNameMessage } from 'Plugins/StudentAPI/QueryNameMessage';
 import { QueryDepartmentMessage } from 'Plugins/StudentAPI/QueryDepartmentMessage';
-import { FoundClubMessage } from 'Plugins/ClubAPI/FoundClubMessage'; // Import FoundClubMessage
+import { FoundClubMessage } from 'Plugins/ClubAPI/FoundClubMessage';
 import 'Pages/Main.css';
 
 interface Application {
@@ -22,7 +22,7 @@ interface StudentInfo {
     department: string;
 }
 
-export function root() {
+export function Root() {
     const history = useHistory();
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const { setId } = useIdStore();
@@ -43,12 +43,12 @@ export function root() {
         history.push("/");
     };
 
-    const handleRegister = () => {
-        history.push("/register");
-    };
-
     const handleRename = () => {
         history.push("/rename");
+    };
+
+    const handleRegister = () => {
+        history.push("/register");
     };
 
     useEffect(() => {
@@ -113,7 +113,7 @@ export function root() {
         const replyMessage = new ReplyAppMessage(selectedApplication.name, result, response);
         try {
             const replyResponse = await sendPostRequest(replyMessage);
-            if (replyResponse.status === 200&& result==1) {
+            if (replyResponse.status === 200 && result === 1) {
                 alert('回复成功！');
 
                 // Trigger FoundClubMessage
@@ -122,7 +122,7 @@ export function root() {
                     selectedApplication.leader,
                     selectedApplication.intro,
                     selectedApplication.department,
-                "http://183.172.236.220:9005/proof/test.jpg"
+                    "http://183.172.236.220:9005/proof/test.jpg"
                 );
                 await sendPostRequest(foundClubMessage);
 
@@ -146,7 +146,6 @@ export function root() {
                 <h1>Physical Exercise System</h1>
                 <div className="user-section">
                     <button className="btn login-btn" onClick={handleLogout}>Logout</button>
-                    <button className="btn login-btn" onClick={handleRegister}>Register</button>
                     <div className="user-avatar" onClick={toggleDropdown}>👤</div>
                     {dropdownVisible && (
                         <div className="dropdown-menu">
@@ -178,6 +177,8 @@ export function root() {
                         )}
                     </div>
                 </section>
+
+                <button className="btn register-btn" onClick={handleRegister}>注册</button>
 
                 {showModal && selectedApplication && (
                     <div className="modal">
@@ -230,4 +231,4 @@ export function root() {
     );
 }
 
-export default root;
+export default Root;

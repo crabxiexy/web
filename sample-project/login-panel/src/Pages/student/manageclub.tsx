@@ -127,6 +127,12 @@ export const ManagedClubInfo: React.FC = () => {
         history.goBack();
     };
 
+    const handleUpdate = () => {
+        history.push('/update_clubinfo');
+    };
+
+
+
     const handleOpenApplyModal = async () => {
         setShowApplyModal(true);
         await fetchApplications();
@@ -187,7 +193,7 @@ export const ManagedClubInfo: React.FC = () => {
                 newActivity.intro,
                 startTimestamp.toString(),
                 finishTimestamp.toString(),
-                studentIdNumber,  // 使用当前用户的 student_id
+                studentIdNumber,
                 newActivity.lowLimit,
                 newActivity.upLimit,
                 newActivity.num
@@ -206,7 +212,7 @@ export const ManagedClubInfo: React.FC = () => {
                     upLimit: 0,
                     num: 0,
                 });
-                setModalIsOpen(false); // 关闭模态框
+                setModalIsOpen(false);
             } else {
                 setError('创建活动失败，请重试。');
             }
@@ -219,7 +225,7 @@ export const ManagedClubInfo: React.FC = () => {
     const closeModal = () => setModalIsOpen(false);
 
     const handleMoreInfo = () => {
-        history.push('/moreinfo'); // Replace with your actual MoreInfo route
+        history.push('/moreinfo');
     };
 
     return (
@@ -245,6 +251,7 @@ export const ManagedClubInfo: React.FC = () => {
                             </div>
                         )}
                     </div>
+                    <button onClick={handleUpdate}>查看俱乐部信息</button> {/* New button */}
                 </div>
             )}
 
@@ -283,7 +290,7 @@ export const ManagedClubInfo: React.FC = () => {
                         </div>
                     ))}
                 </div>
-                <button onClick={handleMoreInfo}>显示更多活动</button> {/* New button */}
+                <button onClick={handleMoreInfo}>显示更多活动</button>
             </div>
 
             <div className="button-group">
