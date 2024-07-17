@@ -7,6 +7,8 @@ import { ReplyAppMessage } from 'Plugins/ClubAPI/ReplyAppMessage';
 import { QueryNameMessage } from 'Plugins/StudentAPI/QueryNameMessage';
 import { QueryDepartmentMessage } from 'Plugins/StudentAPI/QueryDepartmentMessage';
 import { FoundClubMessage } from 'Plugins/ClubAPI/FoundClubMessage'; // Import FoundClubMessage
+import { GetDepartmentStudentMessage } from 'Plugins/StudentAPI/GetDepartmentStudentMessage'
+import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
 import 'Pages/Main.css';
 
 interface Application {
@@ -113,7 +115,7 @@ export function root() {
         const replyMessage = new ReplyAppMessage(selectedApplication.name, result, response);
         try {
             const replyResponse = await sendPostRequest(replyMessage);
-            if (replyResponse.status === 200&& result==1) {
+            if (replyResponse.status === 200 && result === 1) {
                 alert('回复成功！');
 
                 // Trigger FoundClubMessage
@@ -122,9 +124,28 @@ export function root() {
                     selectedApplication.leader,
                     selectedApplication.intro,
                     selectedApplication.department,
-                "http://183.172.236.220:9005/proof/test.jpg"
+                    "http://183.172.236.220:9005/proof/test.jpg"
                 );
                 await sendPostRequest(foundClubMessage);
+
+                // Fetch department students
+                const departmentStudentsResponse = await sendPostRequest(new GetDepartmentStudentMessage(selectedApplication.department));
+                const departmentStudents = departmentStudentsResponse.data;
+
+                // Fetch the club leader's name
+                const leaderNameResponse = await sendPostRequest(new QueryNameMessage(selectedApplication.leader));
+                const leaderName = leaderNameResponse.data;
+
+                // Send notification to all department students
+                for (const student of departmentStudents) {
+                    const notificationMessage = new ReleaseNotificationMessage(
+                        leaderName,
+                        selectedApplication.leader,
+                        student.studentID,
+                        `俱乐部 ${selectedApplication.name} 已经成立，欢迎加入！`
+                    );
+                    await sendPostRequest(notificationMessage);
+                }
 
                 setShowModal(false);
                 setResponse('');
@@ -139,6 +160,7 @@ export function root() {
             setError('回复失败，请重试。');
         }
     };
+
 
     return (
         <div className="App">

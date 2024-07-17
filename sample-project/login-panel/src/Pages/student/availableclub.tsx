@@ -8,6 +8,7 @@ import { QueryMemberMessage } from 'Plugins/ClubAPI/QueryMemberMessage';
 import { ApplyMemberMessage } from 'Plugins/ClubAPI/ApplyMemberMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { ShowActivityMessage } from 'Plugins/ActivityAPI/ShowActivityMessage';
+import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
 import './manageclub.css';
 import useIdStore from 'Pages/IdStore';
 
@@ -95,10 +96,30 @@ export const AvailableClubInfo: React.FC = () => {
             const applyMessage = new ApplyMemberMessage(parseInt(Id), ClubName);
             await sendPostRequest(applyMessage);
             alert('申请加入成功！');
+
+            // Fetch the club leader's ID
+            const infoResponse = await sendPostRequest(new FetchInfoMessage(ClubName));
+            const leaderId = infoResponse.data[0]?.leader;
+
+            // Fetch the student's name
+            const studentNameResponse = await sendPostRequest(new FetchNameMessage(parseInt(Id)));
+            const studentName = studentNameResponse.data;
+
+            // Send notification to the club leader
+            if (leaderId) {
+                const notificationMessage = new ReleaseNotificationMessage(
+                    studentName,
+                    parseInt(Id),
+                    leaderId,
+                    `学生 ${studentName} 申请加入俱乐部 ${ClubName}`
+                );
+                await sendPostRequest(notificationMessage);
+            }
         } catch (error) {
             setError('申请加入俱乐部失败，请重试。');
         }
     };
+
 
     const toggleShowMoreActivities = () => {
         setShowMoreActivities(!showMoreActivities);

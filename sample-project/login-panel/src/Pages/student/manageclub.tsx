@@ -11,6 +11,7 @@ import { QueryApplyMessage } from 'Plugins/ClubAPI/QueryApplyMessage';
 import { ResponseStudentApplyMessage } from 'Plugins/ClubAPI/ResponseStudentApplyMessage';
 import { AddMemberMessage } from 'Plugins/ClubAPI/AddMemberMessage';
 import { CreateActivityMessage } from 'Plugins/ActivityAPI/CreateActivityMessage';
+import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
 import { SubmitHWMessage } from 'Plugins/HWAPI/SubmitHWMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import './manageclub.css';
@@ -179,11 +180,29 @@ export const ManagedClubInfo: React.FC = () => {
                 await sendPostRequest(new AddMemberMessage(ClubName, studentId));
             }
 
+            // Fetch the student's name
+            const studentNameResponse = await sendPostRequest(new FetchNameMessage(studentId));
+            const studentName = studentNameResponse.data;
+
+            // Fetch the club leader's name
+            const leaderNameResponse = await sendPostRequest(new FetchNameMessage(studentIdNumber));
+            const leaderName = leaderNameResponse.data;
+
+            // Send notification to the student
+            const notificationMessage = new ReleaseNotificationMessage(
+                leaderName,
+                studentIdNumber,
+                studentId,
+                `您的申请已${result === 1 ? '通过' : '被拒绝'}。`
+            );
+            await sendPostRequest(notificationMessage);
+
             await fetchApplications();
         } catch (error) {
             setError('处理申请失败，请重试。');
         }
     };
+
 
     const handleCreateActivity = async () => {
         if (!newActivity.startTime || !newActivity.finishTime || !newActivity.activityName || !newActivity.lowLimit || !newActivity.upLimit) {
@@ -220,6 +239,25 @@ export const ManagedClubInfo: React.FC = () => {
                 });
                 setModalIsOpen(false); // 关闭模态框
                 alert('活动创建成功！');
+
+                // Fetch all members
+                const membersResponse = await sendPostRequest(new QueryMemberMessage(ClubName));
+                const members = membersResponse.data;
+
+                // Fetch the club leader's name
+                const leaderNameResponse = await sendPostRequest(new FetchNameMessage(studentIdNumber));
+                const leaderName = leaderNameResponse.data;
+
+                // Send notification to all members
+                for (const member of members) {
+                    const notificationMessage = new ReleaseNotificationMessage(
+                        leaderName,
+                        studentIdNumber,
+                        member.member,
+                        `俱乐部 ${ClubName} 创建了一个新活动: ${newActivity.activityName}`
+                    );
+                    await sendPostRequest(notificationMessage);
+                }
             } else {
                 setError('创建活动失败，请重试。');
             }
@@ -269,7 +307,6 @@ export const ManagedClubInfo: React.FC = () => {
             setError('提交作业失败，请重试。');
         }
     };
-
 
     const openModal = () => setModalIsOpen(true);
     const closeModal = () => setModalIsOpen(false);

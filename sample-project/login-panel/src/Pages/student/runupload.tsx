@@ -9,11 +9,11 @@ import { GetTAMessage } from 'Plugins/StudentAPI/GetTAMessage'; // Import your g
 import * as Minio from 'minio';
 
 const minioClient = new Minio.Client({
-    endPoint: '183.172.236.220',
-    port: 9004,
+    endPoint: '183.173.41.216',
+    port: 5000,
     useSSL: false,
-    accessKey: '12345678',
-    secretKey: '12345678',
+    accessKey: 'MdaJLsKGRlkxi6Ps8t77',
+    secretKey: 'VjMH2JcPbU4PIz5WBY58vHUE7ulK6BTF2ZseFWXh',
 });
 
 export const RunUpload: React.FC = () => {
@@ -60,7 +60,7 @@ export const RunUpload: React.FC = () => {
 
             try {
                 // Upload image to MinIO
-                await minioClient.fPutObject('proof', filename, uploadedImage.path, {});
+                await minioClient.fPutObject('run', filename, uploadedImage.path, {});
 
                 const studentIdNumber = parseInt(Id);
                 const distanceNumber = parseFloat(distance) * 10;
@@ -70,7 +70,7 @@ export const RunUpload: React.FC = () => {
                     startTime.getTime().toString(),
                     finishTime.getTime().toString(),
                     distanceNumber,
-                    `http://183.172.236.220:9004/proof/${filename}`
+                    `http://183.173.41.216:5000/run/${filename}`
                 );
 
                 // Send the running data
