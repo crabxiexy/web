@@ -30,10 +30,10 @@ case class TAQueryHWPlanner(
           rows.toList.traverse { row =>
             for {
               //先把第一步查询的内容留下来
-              aid <- IO.fromOption(row.hcursor.get[Int]("activity_id").toOption)(new Exception("activity_id not found"))
-              sid <- IO.fromOption(row.hcursor.get[Int]("student_id").toOption)(new Exception("student_id not found"))
-              submitTime <- IO.fromOption(row.hcursor.get[String]("submitTime").toOption)(new Exception("submitTime not found"))
-              imgUrl <- IO.fromOption(row.hcursor.get[String]("imgUrl").toOption)(new Exception("imgUrl not found"))
+              aid <- IO.fromOption(row.hcursor.get[Int]("activityID").toOption)(new Exception("activity_id not found"))
+              sid <- IO.fromOption(row.hcursor.get[Int]("studentID").toOption)(new Exception("student_id not found"))
+              submitTime <- IO.fromOption(row.hcursor.get[String]("submittime").toOption)(new Exception("submitTime not found"))
+              imgUrl <- IO.fromOption(row.hcursor.get[String]("imgurl").toOption)(new Exception("imgUrl not found"))
               club_name <- readDBString(s"SELECT club_name FROM activity.activity WHERE activity_id = ?",List(SqlParameter("Int", aid.toString)))
               activity_name <- readDBString(s"SELECT activity_name FROM activity.activity WHERE activity_id = ?",List(SqlParameter("Int", aid.toString)))
               intro <- readDBString(s"SELECT intro FROM activity.activity WHERE activity_id = ?",List(SqlParameter("Int", aid.toString)))

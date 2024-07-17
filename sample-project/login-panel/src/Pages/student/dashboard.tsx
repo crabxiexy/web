@@ -7,7 +7,8 @@ import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { QueryReceivedMessage } from 'Plugins/NotificationAPI/QueryReceivedMessage';
 import { CountRunMessage } from 'Plugins/RunAPI/CountRunMessage';
 import { CountGroupexMessage } from 'Plugins/GroupExAPI/CountGroupexMessage';
-import Sidebar from 'Pages/Sidebar'; // Import the Sidebar component
+import Sidebar from 'Pages/Sidebar';
+import { CountHWMessage } from 'Plugins/ActivityAPI/CountHWMessage' // Import the Sidebar component
 
 export function Dashboard() {
     const history = useHistory();
@@ -16,7 +17,7 @@ export function Dashboard() {
     const [notifications, setNotifications] = useState<{ content: string; releaserName: string }[]>([]);
     const [runCount, setRunCount] = useState<number | null>(null);
     const [groupexCount, setGroupexCount] = useState<number | null>(null);
-
+    const[clubCount, setClubCount] = useState<number | null>(null);
     useEffect(() => {
         const fetchNotifications = async () => {
             const fetchNotificationsMessage = new QueryReceivedMessage(parseInt(Id));
@@ -38,6 +39,8 @@ export function Dashboard() {
 
                 const groupexResponse = await sendPostRequest(groupexMessage);
                 setGroupexCount(groupexResponse.data);
+                const clubResponse=await sendPostRequest(new CountHWMessage(parseInt(Id)))
+                setClubCount(clubResponse.data);
             } catch (error) {
                 console.error('Error fetching counts:', error);
             }
@@ -78,8 +81,9 @@ export function Dashboard() {
 
                     <section className="counts">
                         <h2>Counts</h2>
-                        <p>Run Count: {runCount !== null ? runCount : "Loading..."}</p>
-                        <p>Group Exercise Count: {groupexCount !== null ? groupexCount : "Loading..."}</p>
+                        <p>Run Count: {runCount !== null ? runCount : 'Loading...'}</p>
+                        <p>Group Exercise Count: {groupexCount !== null ? groupexCount : 'Loading...'}</p>
+                        <p>Club Count: {clubCount !== null ? clubCount : 'Loading...'}</p>
                     </section>
 
                     <div className="square-block" onClick={() => handleNavigation("/student_runupload")}>

@@ -47,6 +47,16 @@ object Routes:
 
       case "SubmitHWMessage" =>
         IO(decode[SubmitHWPlanner](str).getOrElse(throw new Exception("Invalid JSON for SubmitHWMessage")))
+          .flatMap { m =>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "CountHWMessage" =>
+        IO(decode[CountHWPlanner](str).getOrElse(throw new Exception("Invalid JSON for CountHWMessage")))
+          .flatMap { m =>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "TAQueryHWMessage" =>
+        IO(decode[TAQueryHWPlanner](str).getOrElse(throw new Exception("Invalid JSON for TAQueryHWMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
