@@ -11,6 +11,8 @@ import { QueryApplyMessage } from 'Plugins/ClubAPI/QueryApplyMessage';
 import { ResponseStudentApplyMessage } from 'Plugins/ClubAPI/ResponseStudentApplyMessage';
 import { AddMemberMessage } from 'Plugins/ClubAPI/AddMemberMessage';
 import { CreateActivityMessage } from 'Plugins/ActivityAPI/CreateActivityMessage';
+import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
+// import { SubmitHWMessage } from 'Plugins/HWAPI/SubmitHWMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import student_manageclub_style from './manageclub.module.css';
 
@@ -39,8 +41,8 @@ export const ManagedClubInfo: React.FC = () => {
     const { Id } = useIdStore();
     const studentIdNumber = parseInt(Id);
     const history = useHistory();
+    const [memberId, setMemberId] = useState('');
     const { ClubName } = useClubNameStore();
-
     const [clubInfo, setClubInfo] = useState<any>(null);
     const [leaderInfo, setLeaderInfo] = useState<any>(null);
     const [members, setMembers] = useState<any[]>([]);
@@ -62,6 +64,16 @@ export const ManagedClubInfo: React.FC = () => {
         num: 0,
     });
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+    const [hwModalIsOpen, setHWModalIsOpen] = useState<boolean>(false);
+    const [newHW, setNewHW] = useState({
+        startTime: new Date().toISOString().slice(0, 16),
+        finishTime: '',
+        HWName: '',
+        studentId: studentIdNumber,
+        leaderId: leaderInfo?.id || 0,
+        clubName: ClubName,
+        imgUrl: '',
+    });
 
     useEffect(() => {
         fetchClubInfo();
@@ -79,6 +91,7 @@ export const ManagedClubInfo: React.FC = () => {
                 const leaderProfileResponse = await sendPostRequest(new FetchProfileMessage(leaderId));
 
                 setLeaderInfo({
+                    id: leaderId,
                     name: leaderNameResponse.data,
                     profile: leaderProfileResponse.data
                 });
@@ -131,8 +144,6 @@ export const ManagedClubInfo: React.FC = () => {
         history.push('/update_clubinfo');
     };
 
-
-
     const handleOpenApplyModal = async () => {
         setShowApplyModal(true);
         await fetchApplications();
@@ -173,11 +184,29 @@ export const ManagedClubInfo: React.FC = () => {
                 await sendPostRequest(new AddMemberMessage(ClubName, studentId));
             }
 
+            // Fetch the student's name
+            const studentNameResponse = await sendPostRequest(new FetchNameMessage(studentId));
+            const studentName = studentNameResponse.data;
+
+            // Fetch the club leader's name
+            const leaderNameResponse = await sendPostRequest(new FetchNameMessage(studentIdNumber));
+            const leaderName = leaderNameResponse.data;
+
+            // Send notification to the student
+            const notificationMessage = new ReleaseNotificationMessage(
+                leaderName,
+                studentIdNumber,
+                studentId,
+                `您的申请已${result === 1 ? '通过' : '被拒绝'}。`
+            );
+            await sendPostRequest(notificationMessage);
+
             await fetchApplications();
         } catch (error) {
             setError('处理申请失败，请重试。');
         }
     };
+
 
     const handleCreateActivity = async () => {
         if (!newActivity.startTime || !newActivity.finishTime || !newActivity.activityName || !newActivity.lowLimit || !newActivity.upLimit) {
@@ -193,13 +222,13 @@ export const ManagedClubInfo: React.FC = () => {
                 newActivity.intro,
                 startTimestamp.toString(),
                 finishTimestamp.toString(),
-                studentIdNumber,
+                studentIdNumber,  // 使用当前用户的 student_id
                 newActivity.lowLimit,
                 newActivity.upLimit,
                 newActivity.num
             ));
 
-            if (response.data === '成功') {
+            if (response.data === 'Activity created successfully') {
                 setActivities([...activities, { ...newActivity, organizorId: studentIdNumber }]);
                 setNewActivity({
                     clubName: ClubName,
@@ -212,7 +241,27 @@ export const ManagedClubInfo: React.FC = () => {
                     upLimit: 0,
                     num: 0,
                 });
-                setModalIsOpen(false);
+                setModalIsOpen(false); // 关闭模态框
+                alert('活动创建成功！');
+
+                // Fetch all members
+                const membersResponse = await sendPostRequest(new QueryMemberMessage(ClubName));
+                const members = membersResponse.data;
+
+                // Fetch the club leader's name
+                const leaderNameResponse = await sendPostRequest(new FetchNameMessage(studentIdNumber));
+                const leaderName = leaderNameResponse.data;
+
+                // Send notification to all members
+                for (const member of members) {
+                    const notificationMessage = new ReleaseNotificationMessage(
+                        leaderName,
+                        studentIdNumber,
+                        member.member,
+                        `俱乐部 ${ClubName} 创建了一个新活动: ${newActivity.activityName}`
+                    );
+                    await sendPostRequest(notificationMessage);
+                }
             } else {
                 setError('创建活动失败，请重试。');
             }

@@ -70,7 +70,7 @@ export const RunUpload: React.FC = () => {
                     startTime.getTime().toString(),
                     finishTime.getTime().toString(),
                     distanceNumber,
-                    `http://183.172.236.220:9004/proof/${filename}`
+                    `http://183.173.129.197:9500/proof/${filename}`
                 );
 
                 // Send the running data

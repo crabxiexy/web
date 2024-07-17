@@ -6,7 +6,11 @@ import { AdminQueryAppMessage } from 'Plugins/ClubAPI/AdminQueryAppMessage';
 import { ReplyAppMessage } from 'Plugins/ClubAPI/ReplyAppMessage';
 import { QueryNameMessage } from 'Plugins/StudentAPI/QueryNameMessage';
 import { QueryDepartmentMessage } from 'Plugins/StudentAPI/QueryDepartmentMessage';
-import { FoundClubMessage } from 'Plugins/ClubAPI/FoundClubMessage';
+import { FoundClubMessage } from 'Plugins/ClubAPI/FoundClubMessage'; // Import FoundClubMessage
+import { GetDepartmentStudentMessage } from 'Plugins/StudentAPI/GetDepartmentStudentMessage'
+import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
+// import 'Pages/Main.css';
+
 
 interface Application {
     name: string;
@@ -125,6 +129,25 @@ export function Root() {
                 );
                 await sendPostRequest(foundClubMessage);
 
+                // Fetch department students
+                const departmentStudentsResponse = await sendPostRequest(new GetDepartmentStudentMessage(selectedApplication.department));
+                const departmentStudents = departmentStudentsResponse.data;
+
+                // Fetch the club leader's name
+                const leaderNameResponse = await sendPostRequest(new QueryNameMessage(selectedApplication.leader));
+                const leaderName = leaderNameResponse.data;
+
+                // Send notification to all department students
+                for (const student of departmentStudents) {
+                    const notificationMessage = new ReleaseNotificationMessage(
+                        leaderName,
+                        selectedApplication.leader,
+                        student.studentID,
+                        `俱乐部 ${selectedApplication.name} 已经成立，欢迎加入！`
+                    );
+                    await sendPostRequest(notificationMessage);
+                }
+
                 setShowModal(false);
                 setResponse('');
                 setResult(0);
@@ -138,6 +161,7 @@ export function Root() {
             setError('回复失败，请重试。');
         }
     };
+
 
     return (
         <div className="App">
