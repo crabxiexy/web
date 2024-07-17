@@ -7,6 +7,8 @@ import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage';
 import useIdStore from 'Pages/IdStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { QueryMemberMessage } from 'Plugins/ActivityAPI/QueryMemberMessage';
+import { SubmitHWMessage } from 'Plugins/ActivityAPI/SubmitHWMessage';
+import { GetTAMessage } from 'Plugins/StudentAPI/GetTAMessage';
 
 interface Member {
     memberId: number;
@@ -22,7 +24,7 @@ interface Activity {
     finishtime: string;
     lowlimit: number;
     uplimit: number;
-    members: Member[]; // Changed from number[] to Member[]
+    members: Member[];
 }
 
 export const MoreInfo: React.FC = () => {
@@ -31,6 +33,8 @@ export const MoreInfo: React.FC = () => {
     const { Id } = useIdStore();
     const [activities, setActivities] = useState<Activity[]>([]);
     const [error, setError] = useState<string>('');
+    const [studentId, setStudentId] = useState('');
+    const [imgUrl, setImgUrl] = useState('');
 
     useEffect(() => {
         fetchActivities();
@@ -44,7 +48,7 @@ export const MoreInfo: React.FC = () => {
                     const memberDetails = await fetchMemberDetails(activity.activityID);
                     return {
                         ...activity,
-                        members: memberDetails, // Now members are of type Member[]
+                        members: memberDetails,
                     };
                 })
             );
@@ -58,7 +62,7 @@ export const MoreInfo: React.FC = () => {
         const memberResponse = await sendPostRequest(new QueryMemberMessage(activityID));
         return Promise.all(
             memberResponse.data.map(async (memberObject: { memberID: number }) => {
-                const memberId = memberObject.memberID; // Extract memberID
+                const memberId = memberObject.memberID;
                 const [nameResponse, profileResponse] = await Promise.all([
                     sendPostRequest(new FetchNameMessage(memberId)),
                     sendPostRequest(new FetchProfileMessage(memberId)),
@@ -76,11 +80,18 @@ export const MoreInfo: React.FC = () => {
         history.goBack();
     };
 
-    const handleSubmitHomework = async (activityID: number) => {
-        // 这里可以添加提交作业的逻辑
+
+    const handleSubmitHomework = async (activityID: number ) => {
         try {
-            // 提交作业的请求逻辑
-            await sendPostRequest(/* 提交作业的消息 */);
+            const taMessageResponse = await sendPostRequest(new GetTAMessage(parseInt(Id))); // 获取 TA_id
+            const taMessage = taMessageResponse.data;
+
+            const studentId = prompt('请输入您的学生ID:');
+            const imgUrl = prompt('请输入作业图片链接:');
+            const submitMessage = new SubmitHWMessage(activityID, parseInt(Id), taMessage.TA_id, Date.now(), imgUrl); // 构建提交作业消息
+
+            await sendPostRequest(submitMessage); // 发送提交作业请求
+
             alert('作业提交成功！');
         } catch (error) {
             setError('提交作业失败，请重试。');
@@ -113,10 +124,28 @@ export const MoreInfo: React.FC = () => {
                             </div>
                         ))}
 
-                        {/* 提交作业按钮 */}
-                        <button onClick={() => handleSubmitHomework(activity.activityID)}>
-                            提交作业
-                        </button>
+                        <div className="modal">
+                            <div className="modal-content">
+                                <h2>提交作业</h2>
+                                <label>
+                                    学生ID:
+                                    <input
+                                        type="text"
+                                        value={0}
+                                        onChange={(e) => setStudentId(e.target.value)}
+                                    />
+                                </label>
+                                <label>
+                                    作业图片链接:
+                                    <input
+                                        type="text"
+                                        value={imgUrl}
+                                        onChange={(e) => setImgUrl(e.target.value)}
+                                    />
+                                </label>
+                                <button onClick={handleSubmitHomework}>提交作业</button>
+                            </div>
+                        </div>
                     </div>
                 ))
             ) : (
