@@ -1,64 +1,51 @@
+/* Main.module.css */
+
 body, html {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: white; /* 改为白色背景，移除渐变色 */
+    font-family: 'Roboto', sans-serif;
     height: 100%;
-    width: 100%; /* 覆盖整个页面宽度 */
+    width: 100%;
 }
 
-.min-h-screen {
+.min_h_screen {
     min-height: 100vh;
-    height: 100%; /* 确保覆盖高度 */
-    width: 100%; /* 确保覆盖宽度 */
+    height: 100%;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    background-color: white; /* 确保背景颜色是白色 */
-}
-
-.flex-col {
-    display: flex;
-    flex-direction: column;
-}
-
-.h-screen {
-    height: 100vh;
-    width: 100%; /* 覆盖宽度 */
-}
-
-.items-center {
-    align-items: center;
-}
-
-.justify-center {
-    justify-content: center;
 }
 
 .header {
-    background-color: #1f2937;
+    background-color: #212121; /* 更深的背景色 */
     color: white;
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    position: fixed;
+    padding: 1rem 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    position: sticky;
     top: 0;
     z-index: 50;
+    flex-wrap: wrap; /* 允许在小屏幕下换行 */
 }
 
 .header h1 {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     font-weight: bold;
 }
 
-.header .btn {
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
     font-weight: bold;
     cursor: pointer;
-    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease;
+    border: none;
+    outline: none;
 }
 
 .btn-blue {
@@ -68,6 +55,7 @@ body, html {
 
 .btn-blue:hover {
     background-color: #1d4ed8;
+    transform: translateY(-2px);
 }
 
 .btn-green {
@@ -77,82 +65,93 @@ body, html {
 
 .btn-green:hover {
     background-color: #047857;
+    transform: translateY(-2px);
 }
 
-.relative {
-    position: relative;
-}
-
-.user-avatar {
+.userAvatar {
     cursor: pointer;
     font-size: 1rem;
     margin-left: 1rem;
+    color: #eaeaea; /* 淡色文本 */
 }
 
-.dropdown-menu {
+.dropdownMenu {
     position: absolute;
     right: 0;
-    margin-top: 0.5rem;
-    width: 12rem;
-    background-color: #1f2937;
-    border-radius: 0.25rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-top: 0.75rem;
+    width: 15rem;
+    background-color: #212121;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     z-index: 20;
+    transition: all 0.3s ease;
 }
 
-.dropdown-menu p {
-    padding: 0.5rem 1rem;
+.dropdownMenu p {
+    padding: 0.75rem 1.5rem;
     color: white;
     cursor: pointer;
 }
 
-.dropdown-menu p:hover {
+.dropdownMenu p:hover {
     background-color: #3b3f46;
+    transform: translateY(-2px);
 }
 
-.main-content {
+.mainContent {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 64px; /* 确保页面内容在导航栏下方 */
-    padding: 1.5rem 0.5rem;
+    padding: 1.5rem 2rem;
+    background-image: url("https://wallpapercave.com/wp/wp13783574.jpg");
+    background-blend-mode: overlay;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 
 .section {
     width: 100%;
-    max-width: 64rem;
-    background-color: white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    border-radius: 0.25rem;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
+    max-width: 60rem;
+    background-color: #eaeaea;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
 }
 
 .section h2 {
-    border-bottom: 2px solid #3b82f6;
-    padding-bottom: 0.5rem;
-    margin-bottom: 1rem;
-    font-size: 1.25rem;
+    border-bottom: 3px solid #3b82f6;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
 }
 
-.notification-board {
+.notificationBoard {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    color: #212121;
+}
+
+.buttonGroup {
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
-.button-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.loader-container {
+.loaderContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    width: 100vw; /* 确保加载时覆盖整个页面 */
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色背景 */
 }

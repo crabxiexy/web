@@ -11,11 +11,11 @@ import { SubmitHWMessage } from 'Plugins/ActivityAPI/SubmitHWMessage';
 import * as Minio from 'minio';
 
 const minioClient = new Minio.Client({
-    endPoint: '183.173.185.144',
-    port: 9004,
+    endPoint: '183.173.129.197',
+    port: 9500,
     useSSL: false,
-    accessKey: '12345678',
-    secretKey: '12345678',
+    accessKey: 'minioadmin',
+    secretKey: 'minioadmin',
 });
 
 interface Member {

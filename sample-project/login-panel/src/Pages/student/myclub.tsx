@@ -8,7 +8,7 @@ import { QueryMemberMessage } from 'Plugins/ClubAPI/QueryMemberMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { MemberQueryActivityMessage } from 'Plugins/ActivityAPI/MemberQueryActivityMessage';
 import { JoinActivityMessage } from 'Plugins/ActivityAPI/JoinActivityMessage';
-import './manageclub.css';
+import student_myclub_style from './manageclub.module.css';
 import useIdStore from 'Pages/IdStore';
 
 interface Member {

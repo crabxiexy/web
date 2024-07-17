@@ -8,7 +8,7 @@ import useClubNameStore from 'Pages/student/ClubNameStore';
 import { CheckAvailableMessage } from 'Plugins/ClubAPI/CheckAvailableMessage';
 import { CheckJointClubMessage } from 'Plugins/ClubAPI/CheckJointClubMessage';
 import { parseInt } from 'lodash';
-import './viewclub.css'
+import './viewclub.module.css'
 export const ViewClub: React.FC = () => {
     const history = useHistory();
     const { Id } = useIdStore();

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { LoginMessage } from 'Plugins/DoctorAPI/LoginMessage';
-import './login.css';
+import login_style from './login.module.css';
 import useIdStore from './IdStore';
 import useTokenStore from './TokenStore';
 
@@ -63,15 +63,15 @@ export function Login() {
     };
 
     return (
-        <div className="login-container">
-            <div className="login-box">
-                <header className="login-header">
+        <div className={login_style.login_container}>
+            <div className={login_style.login_box}>
+                <header className={login_style.login_header}>
                     <h1>Welcome Back!</h1>
                     <p>Please login to your account</p>
                 </header>
                 <main>
-                    {error && <p className="error-message">{error}</p>}
-                    <div className="form-group">
+                    {error && <p className={`${login_style.error_message}`}>{error}</p>}
+                    <div className={login_style.form_group}>
                         <label htmlFor="user_id">User_ID</label>
                         <input
                             type="text"
@@ -81,7 +81,7 @@ export function Login() {
                             required
                         />
                     </div>
-                    <div className="form-group">
+                    <div className={login_style.form_group}>
                         <label htmlFor="password">Password</label>
                         <input
                             type="password"
@@ -91,7 +91,7 @@ export function Login() {
                             required
                         />
                     </div>
-                    <div className="form-group">
+                    <div className={login_style.form_group}>
                         <label htmlFor="identity">Identity</label>
                         <select
                             id="identity"
@@ -104,9 +104,9 @@ export function Login() {
                             <option value="ta">TA</option>
                         </select>
                     </div>
-                    <div className="button-group">
-                        <button className="submit-button" onClick={handleLogin}>Submit</button>
-                        <button className="back-button" onClick={() => history.push('/')}>Back</button>
+                    <div className={login_style.button_group}>
+                        <button className={login_style.submit_button} onClick={handleLogin}>Submit</button>
+                        <button className={login_style.back_button} onClick={() => history.push('/')}>Back</button>
                     </div>
                 </main>
             </div>

@@ -3,7 +3,7 @@ import { useHistory } from 'react-router';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { RenameMessage } from 'Plugins/DoctorAPI/RenameMessage';
 import { CheckTokenMessage } from 'Plugins/DoctorAPI/CheckTokenMessage'; // Adjust the path as necessary
-import './login.css';
+import './login.module.css';
 import useIdStore from './IdStore';
 import useTokenStore from './TokenStore';
 
