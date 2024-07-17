@@ -12,7 +12,7 @@ import { ResponseStudentApplyMessage } from 'Plugins/ClubAPI/ResponseStudentAppl
 import { AddMemberMessage } from 'Plugins/ClubAPI/AddMemberMessage';
 import { CreateActivityMessage } from 'Plugins/ActivityAPI/CreateActivityMessage';
 import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
-import { SubmitHWMessage } from 'Plugins/HWAPI/SubmitHWMessage';
+// import { SubmitHWMessage } from 'Plugins/HWAPI/SubmitHWMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import './manageclub.css';
 
@@ -138,6 +138,10 @@ export const ManagedClubInfo: React.FC = () => {
 
     const handleBack = () => {
         history.goBack();
+    };
+
+    const handleUpdate = () => {
+        history.push('/update_clubinfo');
     };
 
     const handleOpenApplyModal = async () => {
@@ -266,53 +270,12 @@ export const ManagedClubInfo: React.FC = () => {
         }
     };
 
-    const handleSubmitHW = async () => {
-        if (!newHW.startTime || !newHW.finishTime || !newHW.HWName || !newHW.imgUrl) {
-            setError('请填写作业基本信息！');
-            return;
-        }
-        try {
-            const startTimestamp = new Date(newHW.startTime).getTime();
-            const finishTimestamp = new Date(newHW.finishTime).getTime();
-
-            const response = await sendPostRequest(new SubmitHWMessage(
-                startTimestamp.toString(),
-                finishTimestamp.toString(),
-                newHW.HWName,
-                parseInt(memberId),
-                studentIdNumber,  // 使用当前用户的 student_id
-                newHW.clubName,
-                newHW.imgUrl
-            ));
-
-            if (response.data === 'HW submitted successfully!') {
-                // 处理提交作业成功的逻辑
-                // 例如更新状态、关闭模态框等
-                // 这里只是一个示例，您可以根据实际需求进行逻辑处理
-                setNewHW({
-                    startTime: '',
-                    finishTime: '',
-                    HWName:'',
-                    studentId: 0,
-                    leaderId: studentIdNumber,
-                    clubName: ClubName,
-                    imgUrl: '',
-                });
-                setModalIsOpen(false);// 关闭模态框
-                alert('作业提交成功！');
-            } else {
-                setError('提交作业失败，请重试。');
-            }
-        } catch (error) {
-            setError('提交作业失败，请重试。');
-        }
-    };
-
     const openModal = () => setModalIsOpen(true);
     const closeModal = () => setModalIsOpen(false);
 
-    const openHWModal = () => setHWModalIsOpen(true);
-    const closeHWModal = () => setHWModalIsOpen(false);
+    const handleMoreInfo = () => {
+        history.push('/moreinfo');
+    };
 
     return (
         <div className="managed-club-info">
@@ -337,6 +300,7 @@ export const ManagedClubInfo: React.FC = () => {
                             </div>
                         )}
                     </div>
+                    <button onClick={handleUpdate}>查看俱乐部信息</button> {/* New button */}
                 </div>
             )}
 
@@ -362,7 +326,6 @@ export const ManagedClubInfo: React.FC = () => {
             <div className="activity-section">
                 <h3>活动:</h3>
                 <button onClick={openModal}>创建活动</button>
-                <button onClick={openHWModal}>提交作业</button>
                 <div className="activity-list">
                     {activities.map((activity, index) => (
                         <div key={index} className="activity-details">
@@ -376,6 +339,7 @@ export const ManagedClubInfo: React.FC = () => {
                         </div>
                     ))}
                 </div>
+                <button onClick={handleMoreInfo}>显示更多活动</button>
             </div>
 
             <div className="button-group">
@@ -507,63 +471,6 @@ export const ManagedClubInfo: React.FC = () => {
                     </div>
                     <button type="submit">提交</button>
                     <button type="button" onClick={closeModal}>取消</button>
-                </form>
-            </Modal>
-
-            <Modal
-                isOpen={hwModalIsOpen}
-                onRequestClose={closeHWModal}
-                contentLabel="提交作业"
-                className="modal"
-                overlayClassName="modal-overlay"
-            >
-                <h2>提交作业</h2>
-                <form onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSubmitHW();
-                }}>
-                    <div>
-                        <label>作业名称:</label>
-                        <input
-                            type="text"
-                            value={newHW.HWName}
-                            onChange={(e) => setNewHW({ ...newHW, HWName: e.target.value })}
-                        />
-                    </div>
-                    <div>
-                        <label>成员ID:</label>
-                        <input
-                            type="text"
-                            value={memberId}
-                            onChange={(e) => setMemberId(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label>开始时间:</label>
-                        <input
-                            type="datetime-local"
-                            value={newHW.startTime}
-                            onChange={(e) => setNewHW({ ...newHW, startTime: e.target.value })}
-                        />
-                    </div>
-                    <div>
-                        <label>结束时间:</label>
-                        <input
-                            type="datetime-local"
-                            value={newHW.finishTime}
-                            onChange={(e) => setNewHW({ ...newHW, finishTime: e.target.value })}
-                        />
-                    </div>
-                    <div>
-                        <label>图片链接:</label>
-                        <input
-                            type="text"
-                            value={newHW.imgUrl}
-                            onChange={(e) => setNewHW({ ...newHW, imgUrl: e.target.value })}
-                        />
-                    </div>
-                    <button type="submit">提交</button>
-                    <button type="button" onClick={closeHWModal}>取消</button>
                 </form>
             </Modal>
         </div>

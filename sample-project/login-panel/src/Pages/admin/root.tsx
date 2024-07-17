@@ -9,7 +9,8 @@ import { QueryDepartmentMessage } from 'Plugins/StudentAPI/QueryDepartmentMessag
 import { FoundClubMessage } from 'Plugins/ClubAPI/FoundClubMessage'; // Import FoundClubMessage
 import { GetDepartmentStudentMessage } from 'Plugins/StudentAPI/GetDepartmentStudentMessage'
 import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
-import 'Pages/Main.css';
+// import 'Pages/Main.css';
+
 
 interface Application {
     name: string;
@@ -24,7 +25,7 @@ interface StudentInfo {
     department: string;
 }
 
-export function root() {
+export function Root() {
     const history = useHistory();
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const { setId } = useIdStore();
@@ -45,12 +46,12 @@ export function root() {
         history.push("/");
     };
 
-    const handleRegister = () => {
-        history.push("/register");
-    };
-
     const handleRename = () => {
         history.push("/rename");
+    };
+
+    const handleRegister = () => {
+        history.push("/register");
     };
 
     useEffect(() => {
@@ -168,7 +169,6 @@ export function root() {
                 <h1>Physical Exercise System</h1>
                 <div className="user-section">
                     <button className="btn login-btn" onClick={handleLogout}>Logout</button>
-                    <button className="btn login-btn" onClick={handleRegister}>Register</button>
                     <div className="user-avatar" onClick={toggleDropdown}>👤</div>
                     {dropdownVisible && (
                         <div className="dropdown-menu">
@@ -200,6 +200,8 @@ export function root() {
                         )}
                     </div>
                 </section>
+
+                <button className="btn register-btn" onClick={handleRegister}>注册</button>
 
                 {showModal && selectedApplication && (
                     <div className="modal">
@@ -252,4 +254,4 @@ export function root() {
     );
 }
 
-export default root;
+export default Root;
