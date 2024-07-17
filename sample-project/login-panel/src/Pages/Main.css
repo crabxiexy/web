@@ -1,164 +1,158 @@
-/* Main.css */
-
-.App {
-    text-align: center;
-    background: linear-gradient(135deg, #FFDEE9, #B5FFFC);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    font-family: 'Arial', sans-serif;
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: white; /* 改为白色背景，移除渐变色 */
+    height: 100%;
+    width: 100%; /* 覆盖整个页面宽度 */
 }
 
-.App-header {
-    background-color: #34495e;
-    padding: 20px;
+.min-h-screen {
+    min-height: 100vh;
+    height: 100%; /* 确保覆盖高度 */
+    width: 100%; /* 确保覆盖宽度 */
+    display: flex;
+    flex-direction: column;
+    background-color: white; /* 确保背景颜色是白色 */
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.h-screen {
+    height: 100vh;
+    width: 100%; /* 覆盖宽度 */
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.header {
+    background-color: #1f2937;
     color: white;
-    width: 100%; /* Ensure the header spans the full width */
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: fixed; /* Fixes the header at the top */
+    padding: 0.5rem 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: fixed;
     top: 0;
-
+    z-index: 50;
 }
 
-.App-header h1 {
-    margin: 0;
+.header h1 {
     font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.header .btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-blue {
+    background-color: #3b82f6;
     color: white;
 }
 
-.user-section {
-    display: flex;
-    align-items: center;
+.btn-blue:hover {
+    background-color: #1d4ed8;
+}
+
+.btn-green {
+    background-color: #10b981;
+    color: white;
+}
+
+.btn-green:hover {
+    background-color: #047857;
+}
+
+.relative {
+    position: relative;
 }
 
 .user-avatar {
-    margin-left: 20px;
     cursor: pointer;
-    font-size: 24px;
+    font-size: 1rem;
+    margin-left: 1rem;
 }
 
 .dropdown-menu {
     position: absolute;
-    background: dimgrey;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    right: 20px;
-    top: 60px;
-    width: 150px;
-    text-align: left;
+    right: 0;
+    margin-top: 0.5rem;
+    width: 12rem;
+    background-color: #1f2937;
+    border-radius: 0.25rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    z-index: 20;
 }
 
 .dropdown-menu p {
-    margin: 0;
-    padding: 10px;
+    padding: 0.5rem 1rem;
+    color: white;
     cursor: pointer;
-    border-bottom: 1px solid #ddd;
-}
-
-.dropdown-menu p:last-child {
-    border-bottom: none; /* Remove border from last item */
 }
 
 .dropdown-menu p:hover {
-    background: #FFD3E8; /* Light background for hover */
+    background-color: #3b3f46;
 }
 
-main {
-    width: 90%;
-    max-width: 1000px;
-    margin-top: 100px; /* Adjusted to give space for the fixed header */
+.main-content {
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin-top: 64px; /* 确保页面内容在导航栏下方 */
+    padding: 1.5rem 0.5rem;
 }
 
-section {
-    background: rgba(255, 255, 255, 0.9);
-    margin: 20px 0;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+.section {
     width: 100%;
-    text-align: left;
+    max-width: 64rem;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-radius: 0.25rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
 }
 
-section h2 {
-    border-bottom: 2px solid #63D1FF;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    color: #444;
+.section h2 {
+    border-bottom: 2px solid #3b82f6;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
 }
 
 .notification-board {
-    padding: 10px;
-    background: #f9f9f9;
-    border-radius: 10px;
-}
-
-.notification-board p {
-    background: #ffeecf;
-    padding: 10px;
-    border-radius: 10px;
-    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .button-group {
     display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    width: 100%;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
-.button-group button {
-    margin: 10px;
-}
-
-.btn {
-    padding: 15px 30px;
-    font-size: 16px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.login-btn {
-    background: linear-gradient(to right, #FF867C, #FEB2A8);
-    color: white;
-    box-shadow: 0 4px 12px rgba(255, 134, 124, 0.25);
-}
-
-.login-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(255, 134, 124, 0.35);
-}
-
-.activity-btn {
-    background: linear-gradient(to right, #8e44ad, #3498db);
-    color: white;
-    box-shadow: 0 4px 12px rgba(142, 68, 173, 0.25);
-}
-
-.activity-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(142, 68, 173, 0.35);
-}
-
-.exercise-btn {
-    background: linear-gradient(to right, #27ae60, #2ecc71);
-    color: white;
-    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.25);
-}
-
-.exercise-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(39, 174, 96, 0.35);
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw; /* 确保加载时覆盖整个页面 */
 }
