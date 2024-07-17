@@ -134,7 +134,7 @@ body, html {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 1rem;
-    color: #212121; /* 淡色文本 */
+    color: #212121;
 }
 
 .buttonGroup {
