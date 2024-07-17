@@ -20,6 +20,7 @@ import {UploadProfilePage} from 'Pages/UpdateProfile'
 import {ManagedClubInfo} from 'Pages/student/manageclub'
 import {AvailableClubInfo} from 'Pages/student/availableclub'
 import {MyClubInfo} from 'Pages/student/myclub'
+import {MoreInfo} from 'Pages/student/moreinfo'
 const Layout = () => {
     return (
         <HashRouter>
@@ -43,6 +44,7 @@ const Layout = () => {
                 <Route path="/managed_club" exact component={ManagedClubInfo} />
                 <Route path="/available_club" exact component={AvailableClubInfo} />
                 <Route path="/my_club" exact component={MyClubInfo} />
+                <Route path="/moreinfo" exact component={MoreInfo} />
             </Switch>
         </HashRouter>
     )
