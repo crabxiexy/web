@@ -4,7 +4,7 @@ import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage';
 import { useHistory } from 'react-router';
-import './Sidebar.css';
+import sidebar_style from './Sidebar.module.css';
 import useTokenStore from './TokenStore';
 const Sidebar = () => {
     const { Id, setId } = useIdStore(); // Get ID and setId from the Zustand store
@@ -51,16 +51,16 @@ const Sidebar = () => {
     };
 
     return (
-        <div className="sidebar">
+        <div className="sidebar_style.sidebar">
             <h1>Physical Exercise System</h1> {/* Move the title here */}
-            <div className="user-avatar" onClick={toggleDropdown}>
+            <div className="sidebar_style.user-avatar" onClick={toggleDropdown}>
                 {profileImage && (
-                    <img src={profileImage} alt="User Avatar" className="avatar-image" />
+                    <img src={profileImage} alt="User Avatar" className="sidebar_style.avatar-image" />
                 )}
                 <span>{username}</span>
             </div>
             {dropdownVisible && ( // Conditionally render the dropdown menu
-                <div className="dropdown-menu">
+                <div className="sidebar_style.dropdown-menu">
                     <p onClick={() => history.push("/profile")}>Profile</p>
                     <p onClick={() => history.push("/help")}>Help</p>
                     <p onClick={handleLogout}>Logout</p> {/* Logout button */}

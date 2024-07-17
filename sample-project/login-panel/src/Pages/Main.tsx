@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import SyncLoader from "react-spinners/SyncLoader";
-import './Main.css';
+import main_styles from './Main.module.css'; // Import the CSS module
 
 export function Main(): JSX.Element {
     const history = useHistory();
@@ -38,16 +38,16 @@ export function Main(): JSX.Element {
     };
 
     return (
-        <div className="min-h-screen flex-col bg-gray-100">
-            <header className="header">
+        <div className={main_styles.minHScreen + " flex-col bg-gray-100"}>
+            <header className={main_styles.header}>
                 <h1>Physical Exercise System</h1>
-                <div className="flex items-center space-x-4">
-                    <button className="btn btn-blue" onClick={handleLogin}>Login</button>
-                    <button className="btn btn-green" onClick={handleRegister}>Register</button>
-                    <div className="relative">
-                        <div className="user-avatar" onClick={toggleDropdown}>{username}</div>
+                <div className={"flex items-center space-x-4"}>
+                    <button className={main_styles.btn + " " + main_styles.btnBlue} onClick={handleLogin}>Login</button>
+                    <button className={main_styles.btn + " " + main_styles.btnGreen} onClick={handleRegister}>Register</button>
+                    <div className={"relative"}>
+                        <div className={main_styles.userAvatar} onClick={toggleDropdown}>{username}</div>
                         {dropdownVisible && (
-                            <div className="dropdown-menu">
+                            <div className={main_styles.dropdownMenu}>
                                 <p onClick={handleProfile}>Profile</p>
                                 <p onClick={handleHelp}>Help</p>
                             </div>
@@ -56,14 +56,14 @@ export function Main(): JSX.Element {
                 </div>
             </header>
             {loading ? (
-                <div className="flex items-center justify-center h-screen">
+                <div className={"flex items-center justify-center h-screen"}>
                     <SyncLoader color={"#123abc"} loading={loading} size={10} />
                 </div>
             ) : (
-                <main className="main-content">
-                    <section className="section">
+                <main className={main_styles.mainContent}>
+                    <section className={main_styles.section}>
                         <h2>Notifications</h2>
-                        <div className="notification-board">
+                        <div className={main_styles.notificationBoard}>
                             <p>Don't forget to warm up before exercising!</p>
                             <p>Drink plenty of water.</p>
                             <p>Team Yoga session at 10 AM tomorrow.</p>
@@ -71,16 +71,16 @@ export function Main(): JSX.Element {
                         </div>
                     </section>
 
-                    <section className="section">
+                    <section className={main_styles.section}>
                         <h2>Activities for Department Team</h2>
-                        <div className="button-group">
+                        <div className={main_styles.buttonGroup}>
                             {/* Buttons for activities */}
                         </div>
                     </section>
 
-                    <section className="section">
+                    <section className={main_styles.section}>
                         <h2>Common Exercises</h2>
-                        <div className="button-group">
+                        <div className={main_styles.buttonGroup}>
                             {/* Buttons for common exercises */}
                         </div>
                     </section>
