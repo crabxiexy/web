@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
-import './dashboard.css';
+import student_dashboard_style from './dashboard.module.css';
 import useIdStore from 'Pages/IdStore';
 import useTokenStore from 'Pages/TokenStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';

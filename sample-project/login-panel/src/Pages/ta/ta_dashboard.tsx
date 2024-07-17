@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import useIdStore from 'Pages/IdStore';
-import './dashboard.css'; // Ensure the correct path to your CSS file
+import ta_dashboard_style from './dashboard.module.css'; // Ensure the correct path to your CSS file
 import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
 import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils'

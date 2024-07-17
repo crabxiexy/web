@@ -8,7 +8,7 @@ import { QueryMemberMessage } from 'Plugins/ClubAPI/QueryMemberMessage';
 import { ApplyMemberMessage } from 'Plugins/ClubAPI/ApplyMemberMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { ShowActivityMessage } from 'Plugins/ActivityAPI/ShowActivityMessage';
-import './manageclub.css';
+import student_availableclub_style from './manageclub.module.css';
 import useIdStore from 'Pages/IdStore';
 
 export const AvailableClubInfo: React.FC = () => {

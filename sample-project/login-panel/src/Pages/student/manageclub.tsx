@@ -12,7 +12,7 @@ import { ResponseStudentApplyMessage } from 'Plugins/ClubAPI/ResponseStudentAppl
 import { AddMemberMessage } from 'Plugins/ClubAPI/AddMemberMessage';
 import { CreateActivityMessage } from 'Plugins/ActivityAPI/CreateActivityMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
-import './manageclub.css';
+import student_manageclub_style from './manageclub.module.css';
 
 interface Application {
     studentID: number;

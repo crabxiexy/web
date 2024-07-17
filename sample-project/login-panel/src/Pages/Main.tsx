@@ -38,26 +38,17 @@ export function Main(): JSX.Element {
     };
 
     return (
-        <div className={main_styles.minHScreen + " flex-col bg-gray-100"}>
+        <div className={`${main_styles.minHScreen}`}>
             <header className={main_styles.header}>
                 <h1>Physical Exercise System</h1>
                 <div className={"flex items-center space-x-4"}>
-                    <button className={main_styles.btn + " " + main_styles.btnBlue} onClick={handleLogin}>Login</button>
-                    <button className={main_styles.btn + " " + main_styles.btnGreen} onClick={handleRegister}>Register</button>
-                    <div className={"relative"}>
-                        <div className={main_styles.userAvatar} onClick={toggleDropdown}>{username}</div>
-                        {dropdownVisible && (
-                            <div className={main_styles.dropdownMenu}>
-                                <p onClick={handleProfile}>Profile</p>
-                                <p onClick={handleHelp}>Help</p>
-                            </div>
-                        )}
-                    </div>
+                    <button className={`${main_styles.btn} ${main_styles.btnBlue}`} onClick={handleLogin}>Login</button>
+                    <button className={`${main_styles.btn} ${main_styles.btnGreen}`} onClick={handleRegister}>Register</button>
                 </div>
             </header>
             {loading ? (
-                <div className={"flex items-center justify-center h-screen"}>
-                    <SyncLoader color={"#123abc"} loading={loading} size={10} />
+                <div className={main_styles.loaderContainer}>
+                    <SyncLoader color={"#123abc"} loading={loading} size={30}/>
                 </div>
             ) : (
                 <main className={main_styles.mainContent}>
@@ -73,15 +64,15 @@ export function Main(): JSX.Element {
 
                     <section className={main_styles.section}>
                         <h2>Activities for Department Team</h2>
-                        <div className={main_styles.buttonGroup}>
-                            {/* Buttons for activities */}
+                        <div className={main_styles.notificationBoard}>
+                            <p>Login to see activities released.</p>
                         </div>
                     </section>
 
                     <section className={main_styles.section}>
                         <h2>Common Exercises</h2>
-                        <div className={main_styles.buttonGroup}>
-                            {/* Buttons for common exercises */}
+                        <div className={main_styles.notificationBoard}>
+                            <p>Login to see exercise list.</p>
                         </div>
                     </section>
                 </main>

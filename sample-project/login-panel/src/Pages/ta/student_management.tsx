@@ -13,7 +13,7 @@ import { CountHWMessage } from 'Plugins/ActivityAPI/CountHWMessage';
 import { AssignScoreMessage } from 'Plugins/StudentAPI/AssignScoreMessage';
 import useIdStore from 'Pages/IdStore';
 import useTokenStore from 'Pages/TokenStore';
-import './student_management.css';
+import './student_management.module.css';
 
 interface Student {
     studentID: number;

@@ -129,11 +129,11 @@
         "xlsx": "^0.17.0"
     },
     "dependencies": {
-        "@emotion/react": "^11.4.1",
-        "@emotion/styled": "^11.3.0",
+        "@emotion/react": "^11.11.4",
+        "@emotion/styled": "^11.11.5",
         "@mui/icons-material": "^5.0.5",
         "@mui/lab": "^5.0.0-alpha.53",
-        "@mui/material": "^5.2.1",
+        "@mui/material": "^5.16.4",
         "@mui/styles": "^5.2.3",
         "@mui/x-data-grid": "^5.0.1",
         "@react-pdf/renderer": "^3.0.0",
