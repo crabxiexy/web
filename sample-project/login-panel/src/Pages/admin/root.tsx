@@ -7,7 +7,6 @@ import { ReplyAppMessage } from 'Plugins/ClubAPI/ReplyAppMessage';
 import { QueryNameMessage } from 'Plugins/StudentAPI/QueryNameMessage';
 import { QueryDepartmentMessage } from 'Plugins/StudentAPI/QueryDepartmentMessage';
 import { FoundClubMessage } from 'Plugins/ClubAPI/FoundClubMessage';
-import 'Pages/Main.css';
 
 interface Application {
     name: string;
