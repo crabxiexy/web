@@ -131,7 +131,7 @@ export const MoreInfo: React.FC = () => {
                                     学生ID:
                                     <input
                                         type="text"
-                                        value={0}
+                                        value={studentId}
                                         onChange={(e) => setStudentId(e.target.value)}
                                     />
                                 </label>
