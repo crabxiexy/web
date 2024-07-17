@@ -1,21 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import Modal from 'react-modal';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { AssignTAMessage } from 'Plugins/StudentAPI/AssignTAMessage';
 import { CheckTokenMessage } from 'Plugins/DoctorAPI/CheckTokenMessage';
 import { GetStudentMessage } from 'Plugins/StudentAPI/GetStudentMessage';
 import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { TAQueryMessage } from 'Plugins/StudentAPI/TAQueryMessage';
+import { CountRunMessage } from 'Plugins/RunAPI/CountRunMessage';
+import { CountGroupexMessage } from 'Plugins/GroupExAPI/CountGroupexMessage';
 import useIdStore from 'Pages/IdStore';
 import useTokenStore from 'Pages/TokenStore';
 import './student_management.css';
 
-// Define the Student type
 interface Student {
     studentID: number;
     department: string;
     class: string;
-    name?: string; // Optional, since it may not be fetched
+    name?: string;
+}
+
+interface TAData {
+    studentID: number;
+    name?: string;
+    score: number;
+    department: string;
+    class: string;
+    countRun: number;
+    countGroupex: number;
 }
 
 export const AssignTA: React.FC = () => {
@@ -27,15 +39,16 @@ export const AssignTA: React.FC = () => {
     const [error, setError] = useState<string>('');
     const [username, setUsername] = useState<string>('Guest');
     const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
-    const [taData, setTaData] = useState<any[]>([]); // State for TA data
+    const [taData, setTaData] = useState<TAData[]>([]);
+    const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
 
     useEffect(() => {
         const storedUsername = localStorage.getItem('username');
         if (storedUsername) {
             setUsername(storedUsername);
         }
-        fetchStudents(); // Fetch students on component mount
-        fetchTAData(); // Fetch TA data on component mount
+        fetchStudents();
+        fetchTAData();
     }, []);
 
     const fetchStudents = async () => {
@@ -43,24 +56,23 @@ export const AssignTA: React.FC = () => {
             const response = await sendPostRequest(new GetStudentMessage());
             const studentsData: Student[] = await Promise.all(
                 response.data.map(async (student: Student) => {
-                    // Fetch name but ignore errors
                     try {
                         const nameResponse = await sendPostRequest(new FetchNameMessage(student.studentID));
                         return {
                             ...student,
-                            name: nameResponse.data // Add name to student object
+                            name: nameResponse.data
                         };
                     } catch {
                         return {
                             ...student,
-                            name: undefined // Set as undefined if there's an error
+                            name: undefined
                         };
                     }
                 })
             );
             setStudents(studentsData);
         } catch {
-            setError('Failed to load student information.');
+            setError('加载学生信息失败。');
         }
     };
 
@@ -68,27 +80,35 @@ export const AssignTA: React.FC = () => {
         try {
             const taIdNumber = parseInt(Id);
             const taQueryMessage = new TAQueryMessage(taIdNumber);
-            const taResponse = await sendPostRequest(taQueryMessage); // Trigger TA query
-            const taDataWithNames = await Promise.all(
+            const taResponse = await sendPostRequest(taQueryMessage);
+
+            const taDataWithCounts = await Promise.all(
                 taResponse.data.map(async (ta: any) => {
-                    // Fetch name for each TA student
                     try {
                         const nameResponse = await sendPostRequest(new FetchNameMessage(ta.studentID));
+                        const countRunResponse = await sendPostRequest(new CountRunMessage(ta.studentID));
+                        const countGroupexResponse = await sendPostRequest(new CountGroupexMessage(ta.studentID));
+
                         return {
                             ...ta,
-                            name: nameResponse.data // Add name to TA data
+                            name: nameResponse.data,
+                            countRun: countRunResponse.data,
+                            countGroupex: countGroupexResponse.data
                         };
                     } catch {
                         return {
                             ...ta,
-                            name: undefined // Set as undefined if there's an error
+                            name: undefined,
+                            countRun: 0,
+                            countGroupex: 0
                         };
                     }
                 })
             );
-            setTaData(taDataWithNames); // Set TA data with names
+
+            setTaData(taDataWithCounts);
         } catch {
-            setError('Failed to load TA information.');
+            setError('加载TA信息失败。');
         }
     };
 
@@ -117,27 +137,33 @@ export const AssignTA: React.FC = () => {
                 }
                 history.push('/ta_dashboard');
             } else {
-                setError("Token is invalid or expired.");
+                setError("Token无效或已过期。");
                 history.push("/login");
             }
         } catch {
-            setError('Assigning TA failed. Please try again.');
+            setError('分配TA失败，请重试。');
         }
     };
 
     const toggleDropdown = () => setDropdownVisible(!dropdownVisible);
     const goBack = () => history.goBack();
 
+    const openModal = () => setModalIsOpen(true);
+    const closeModal = () => {
+        setModalIsOpen(false);
+        setSelectedStudents(new Set()); // 关闭时清空选中的学生
+    };
+
     return (
         <div className="App">
             <header className="App-header">
-                <h1>Assign TA</h1>
+                <h1>分配TA</h1>
                 <div className="user-section">
                     <div className="user-avatar" onClick={toggleDropdown}>{username}</div>
                     {dropdownVisible && (
                         <div className="dropdown-menu">
-                            <p>Profile</p>
-                            <p>Help</p>
+                            <p>个人资料</p>
+                            <p>帮助</p>
                         </div>
                     )}
                 </div>
@@ -145,18 +171,61 @@ export const AssignTA: React.FC = () => {
             <main>
                 {error && <p className="error-message">{error}</p>}
                 <div className="form-container">
-                    <button className="btn back-btn" onClick={goBack}>Back</button>
+                    <button className="btn back-btn" onClick={goBack}>返回</button>
+                    <button className="btn add-student-btn" onClick={openModal}>增加学生</button>
+                </div>
+                <div className="ta-data">
+                    <h2>已分配TA</h2>
+                    <table className="ta-table">
+                        <thead>
+                        <tr>
+                            <th>学生ID</th>
+                            <th>姓名</th>
+                            <th>得分</th>
+                            <th>系</th>
+                            <th>班级</th>
+                            <th>跑步次数</th>
+                            <th>团体锻炼次数</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {taData.map((ta) => (
+                            <tr key={ta.studentID}>
+                                <td>{ta.studentID}</td>
+                                <td>{ta.name}</td>
+                                <td>{ta.score}</td>
+                                <td>{ta.department}</td>
+                                <td>{ta.class}</td>
+                                <td>{ta.countRun}</td>
+                                <td>{ta.countGroupex}</td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+
+            {/* 弹窗 */}
+            <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                contentLabel="选择学生"
+                className="student-modal"
+                overlayClassName="student-modal-overlay"
+            >
+                <div className="modal-header">
+                    <h2>选择学生</h2>
+                    <button className="close-button" onClick={closeModal}>&times;</button>
                 </div>
                 <div className="students-list">
-                    <h2>All Students</h2>
                     <table className="students-table">
                         <thead>
                         <tr>
-                            <th>Select</th>
+                            <th>选择</th>
                             <th>ID</th>
-                            {students.some(student => student.name) && <th>Name</th>}
-                            <th>Department</th>
-                            <th>Class</th>
+                            {students.some(student => student.name) && <th>姓名</th>}
+                            <th>系</th>
+                            <th>班级</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -178,35 +247,10 @@ export const AssignTA: React.FC = () => {
                         </tbody>
                     </table>
                 </div>
-                <div className="ta-data">
-                    <h2>TA Data</h2>
-                    <table className="ta-table">
-                        <thead>
-                        <tr>
-                            <th>Student ID</th>
-                            <th>Name</th> {/* Added Name column */}
-                            <th>Score</th>
-                            <th>Department</th>
-                            <th>Class</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {taData.map((ta) => (
-                            <tr key={ta.studentID}>
-                                <td>{ta.studentID}</td>
-                                <td>{ta.name}</td> {/* Display name for each TA student */}
-                                <td>{ta.score}</td>
-                                <td>{ta.department}</td>
-                                <td>{ta.class}</td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                </div>
                 <button className="btn assign-btn" onClick={handleAssignTA}>
-                    Assign Selected TA
+                    分配选中的TA
                 </button>
-            </main>
+            </Modal>
         </div>
     );
 };

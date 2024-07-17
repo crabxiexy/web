@@ -11,7 +11,6 @@ import { RunUpload } from 'Pages/student/runupload'
 import {TA_dashboard} from 'Pages/ta/ta_dashboard'
 import {AssignTA} from 'Pages/ta/student_management'
 import {RunningCheck} from 'Pages/ta/running_check'
-import {HWCheck} from 'Pages/ta/HW_check'
 import {CheckRecord} from 'Pages/student/checkrecord'
 import {GroupexManagement} from 'Pages/ta/groupex_management'
 import {Checkgroupex} from 'Pages/student/checkgroupex'
@@ -20,6 +19,7 @@ import {UploadProfilePage} from 'Pages/UpdateProfile'
 import {ManagedClubInfo} from 'Pages/student/manageclub'
 import {AvailableClubInfo} from 'Pages/student/availableclub'
 import {MyClubInfo} from 'Pages/student/myclub'
+import {MoreInfo} from 'Pages/student/moreinfo'
 const Layout = () => {
     return (
         <HashRouter>
@@ -34,7 +34,6 @@ const Layout = () => {
                 <Route path="/ta_dashboard" exact component={TA_dashboard} />
                 <Route path="/ta_student_management" exact component={AssignTA} />
                 <Route path="/ta_running_check" exact component={RunningCheck} />
-                <Route path="/HW_check" exact component={HWCheck} />
                 <Route path="/student_check" exact component={CheckRecord} />
                 <Route path="/groupex_management" exact component={GroupexManagement} />
                 <Route path="/student_checkgroupex" exact component={Checkgroupex} />
@@ -43,6 +42,7 @@ const Layout = () => {
                 <Route path="/managed_club" exact component={ManagedClubInfo} />
                 <Route path="/available_club" exact component={AvailableClubInfo} />
                 <Route path="/my_club" exact component={MyClubInfo} />
+                <Route path="/moreinfo" exact component={MoreInfo} />
             </Switch>
         </HashRouter>
     )

@@ -18,7 +18,7 @@ case class QueryMemberPlanner(activity_id:Int, override val planContext: PlanCon
     val sqlQuery =
       s"""
          |SELECT member_id
-         |FROM ${schemaName}.activity
+         |FROM ${schemaName}.member
          |WHERE activity_id = ?
              """.stripMargin
     val parameters = List(SqlParameter("Int", activity_id.toString))

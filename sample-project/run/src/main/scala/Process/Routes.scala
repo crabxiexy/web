@@ -34,6 +34,11 @@ object Routes:
           .flatMap(m =>
             m.fullPlan.map(_.asJson.toString)
           )
+      case "CountRunMessage" =>
+        IO(decode[CountRunPlanner](str).getOrElse(throw new Exception("Invalid JSON for CountRunMessage")))
+          .flatMap(m =>
+            m.fullPlan.map(_.asJson.toString)
+          )
       case "StudentQueryRunningMessage" =>
         IO(decode[StudentQueryPlanner](str).getOrElse(throw new Exception("Invalid JSON for StudentQueryRunningMessage")))
           .flatMap(m =>

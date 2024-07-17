@@ -45,6 +45,11 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "CountGroupexMessage" =>
+        IO(decode[CountGroupexPlanner](str).getOrElse(throw new Exception("Invalid JSON for CountGroupexPlanner")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case "ExQueryMessage" =>
         IO(decode[ExQueryPlanner](str).getOrElse(throw new Exception("Invalid JSON for ExQueryPlanner")))
           .flatMap{m=>
