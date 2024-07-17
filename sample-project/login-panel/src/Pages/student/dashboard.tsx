@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
-import './dashboard.css'; // Import the CSS file
-import useIdStore from 'Pages/IdStore'; // Adjust the path based on your file structure
+import './dashboard.css';
+import useIdStore from 'Pages/IdStore';
 import useTokenStore from 'Pages/TokenStore';
-import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage'; // Import your fetch function
-import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils'; // Import your API utility
-import { QueryReceivedMessage } from 'Plugins/NotificationAPI/QueryReceivedMessage'; // Import your fetch notifications function
+import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage';
+import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
+import { QueryReceivedMessage } from 'Plugins/NotificationAPI/QueryReceivedMessage';
+import { CountRunMessage } from 'Plugins/RunAPI/CountRunMessage'; // Import CountRunMessage
+import { CountGroupexMessage } from 'Plugins/GroupExAPI/CountGroupexMessage'; // Import CountGroupexMessage
 
 export function Dashboard() {
     const history = useHistory();
@@ -13,32 +15,56 @@ export function Dashboard() {
     const { Id, setId } = useIdStore();
     const { setToken } = useTokenStore();
     const [profileImage, setProfileImage] = useState<string | null>(null);
-    const [notifications, setNotifications] = useState<{ content: string; releaserName: string }[]>([]); // State to hold notifications
+    const [notifications, setNotifications] = useState<{ content: string; releaserName: string }[]>([]);
+
+    // State to hold the counts
+    const [runCount, setRunCount] = useState<number | null>(null);
+    const [groupexCount, setGroupexCount] = useState<number | null>(null);
 
     useEffect(() => {
         const fetchProfile = async () => {
-            const fetchProfileMessage = new FetchProfileMessage(parseInt(Id)); // Adjust as necessary
+            const fetchProfileMessage = new FetchProfileMessage(parseInt(Id));
             try {
                 const response = await sendPostRequest(fetchProfileMessage);
-                setProfileImage(response.data); // Assuming the response contains the profileImage URL
+                setProfileImage(response.data);
             } catch (error) {
                 console.error('Error fetching profile:', error);
             }
         };
 
         const fetchNotifications = async () => {
-            const fetchNotificationsMessage = new QueryReceivedMessage(parseInt(Id)); // Pass the student ID
+            const fetchNotificationsMessage = new QueryReceivedMessage(parseInt(Id));
             try {
                 const response = await sendPostRequest(fetchNotificationsMessage);
-                setNotifications(response.data); // Assuming the response is a JSON array
+                setNotifications(response.data);
             } catch (error) {
                 console.error('Error fetching notifications:', error);
             }
         };
 
+        const fetchCounts = async () => {
+            // Fetch run count
+            const runMessage = new CountRunMessage(parseInt(Id));
+            try {
+                const runResponse = await sendPostRequest(runMessage);
+                setRunCount(runResponse.data); // Assuming response.data contains the count
+            } catch (error) {
+                console.error('Error fetching run count:', error);
+            }
+
+            // Fetch groupex count
+            const groupexMessage = new CountGroupexMessage(parseInt(Id));
+            try {
+                const groupexResponse = await sendPostRequest(groupexMessage);
+                setGroupexCount(groupexResponse.data); // Assuming response.data contains the count
+            } catch (error) {
+                console.error('Error fetching groupex count:', error);
+            }
+        };
+        fetchCounts();
         fetchProfile();
-        fetchNotifications(); // Fetch notifications on mount
-    }, [Id]); // Add Id as a dependency
+        fetchNotifications();// Fetch counts on mount
+    }, [Id]);
 
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
@@ -108,6 +134,14 @@ export function Dashboard() {
                         )}
                     </div>
                 </section>
+
+                {/* Display run and groupex counts */}
+                <section className="counts">
+                    <h2>Counts</h2>
+                    <p>Run Count: {runCount !== null ? runCount : "Loading..."}</p>
+                    <p>Group Exercise Count: {groupexCount !== null ? groupexCount : "Loading..."}</p>
+                </section>
+
                 <div className="square-block" onClick={handleRunUpload}>
                     阳光长跑登记
                 </div>

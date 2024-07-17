@@ -130,6 +130,7 @@ export const GroupexManagement: React.FC = () => {
                             location={item.location}
                             exName={item.ex_name}
                             status={item.status}
+                            studentIDs={[]}
                             updateStatus={(newStatus) => {
                                 setTaQueryResult(prev =>
                                     prev.map(exercise =>
