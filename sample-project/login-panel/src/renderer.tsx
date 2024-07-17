@@ -3,7 +3,7 @@ import { render } from 'react-dom'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import { Main } from 'Pages/Main'
 import { Login } from 'Pages/login'
-import {root} from 'Pages/admin/root'
+import {Root} from 'Pages/admin/root'
 import {Rename} from 'Pages/rename'
 import {Register} from 'Pages/register'
 import { Dashboard } from 'Pages/student/dashboard'
@@ -20,13 +20,14 @@ import {ManagedClubInfo} from 'Pages/student/manageclub'
 import {AvailableClubInfo} from 'Pages/student/availableclub'
 import {MyClubInfo} from 'Pages/student/myclub'
 import {MoreInfo} from 'Pages/student/moreinfo'
+import {UpdateClubInfo} from 'Pages/student/updateclubinfo'
 const Layout = () => {
     return (
         <HashRouter>
             <Switch>
                 <Route path="/" exact component={Main} />
                 <Route path="/login" exact component={Login} />
-                <Route path="/admin/root" exact component={root} />
+                <Route path="/admin/root" exact component={Root} />
                 <Route path="/rename" exact component={Rename} />
                 <Route path="/register" exact component={Register} />
                 <Route path="/student_dashboard" exact component={Dashboard} />
@@ -43,6 +44,7 @@ const Layout = () => {
                 <Route path="/available_club" exact component={AvailableClubInfo} />
                 <Route path="/my_club" exact component={MyClubInfo} />
                 <Route path="/moreinfo" exact component={MoreInfo} />
+                <Route path="/update_clubinfo" exact component={UpdateClubInfo} />
             </Switch>
         </HashRouter>
     )
