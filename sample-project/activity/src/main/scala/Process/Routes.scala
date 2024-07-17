@@ -49,6 +49,26 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "SubmitHWPlanner" =>
+        IO(decode[SubmitHWPlanner](str).getOrElse(throw new Exception("Invalid JSON for SubmitHWMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "TAQueryHWPlanner" =>
+        IO(decode[SubmitHWPlanner](str).getOrElse(throw new Exception("Invalid JSON for TAQueryHWMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "StudentQueryHWPlanner" =>
+        IO(decode[SubmitHWPlanner](str).getOrElse(throw new Exception("Invalid JSON for StudentQueryHWMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "CheckHWPlanner" =>
+        IO(decode[CheckHWPlanner](str).getOrElse(throw new Exception("Invalid JSON for CheckHWMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case _ =>
         IO.raiseError(new Exception(s"Unknown type: $messageType"))
     }
