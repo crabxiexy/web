@@ -1,7 +1,6 @@
 /* Sidebar.module.css */
 .sidebar {
-    background-color: #212121;
-    color: white;
+    color: #212121;
     padding: 20px;
     display: flex;
     align-items: center;
@@ -35,8 +34,7 @@
 }
 
 .logoutButton {
-    background-color: white;
-    color: #212121;
+    color: #eaeaea;
     border: none;
     padding: 5px 10px;
     border-radius: 4px;
@@ -48,17 +46,14 @@
     margin-right: 10px;
 }
 
-.link {
+.homeLink {
     color: white;
     text-decoration: none;
-    margin-left: 10px; /* 与标题之间的间距 */
-    transition: color 0.3s ease; /* 鼠标悬停时颜色平滑过渡 */
+    margin-left: 10px;
+    cursor: pointer;
+    transition: color 0.3s ease;
 }
 
-.link:hover {
-    color: #66b3ff; /* 鼠标悬停时的颜色 */
-}
-
-.active {
-    color: #66b3ff; /* 当前选中链接的颜色 */
+.homeLink:hover {
+    color: #66b3ff;
 }

@@ -52,15 +52,19 @@ const Sidebar = () => {
         history.push('/');
     };
 
+    const handleHome = (): void => {
+        history.push("/");
+    };
+
     return (
         <div className={styles.sidebar}>
             <h1 className={styles.title}>Physical Exercise System</h1>
-            <NavLink to="/" className={({ isActive }) => (isActive ? `${styles.link} ${styles.active}` : styles.link)}>
+            <a href="#" className={styles.homeLink} onClick={handleHome}>
                 Home
-            </NavLink>
+            </a>
             <div className={styles.userAvatar} onClick={toggleDropdown}>
                 {profileImage && (
-                    <img src={profileImage} alt="User Avatar" className={styles.avatarImage} />
+                    <img src={profileImage} alt="User Avatar" className={styles.avatarImage}/>
                 )}
                 <span className={styles.username}>{username}</span>
                 <button className={styles.logoutButton} onClick={handleLogout}>Logout</button>
