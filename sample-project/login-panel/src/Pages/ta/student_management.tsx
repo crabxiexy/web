@@ -9,6 +9,8 @@ import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { TAQueryMessage } from 'Plugins/StudentAPI/TAQueryMessage';
 import { CountRunMessage } from 'Plugins/RunAPI/CountRunMessage';
 import { CountGroupexMessage } from 'Plugins/GroupExAPI/CountGroupexMessage';
+import { CountHWMessage } from 'Plugins/ActivityAPI/CountHWMessage';
+import { AssignScoreMessage } from 'Plugins/StudentAPI/AssignScoreMessage';
 import useIdStore from 'Pages/IdStore';
 import useTokenStore from 'Pages/TokenStore';
 import './student_management.css';
@@ -28,6 +30,10 @@ interface TAData {
     class: string;
     countRun: number;
     countGroupex: number;
+    countClub: number;
+    totalScore: number;
+    standardScore: number; // Add standardScore to the interface
+    editable: boolean;
 }
 
 export const AssignTA: React.FC = () => {
@@ -88,19 +94,30 @@ export const AssignTA: React.FC = () => {
                         const nameResponse = await sendPostRequest(new FetchNameMessage(ta.studentID));
                         const countRunResponse = await sendPostRequest(new CountRunMessage(ta.studentID));
                         const countGroupexResponse = await sendPostRequest(new CountGroupexMessage(ta.studentID));
+                        const countClubResponse = await sendPostRequest(new CountHWMessage(ta.studentID));
+
+                        const standardScore = countClubResponse.data + countRunResponse.data + countGroupexResponse.data;
 
                         return {
                             ...ta,
                             name: nameResponse.data,
                             countRun: countRunResponse.data,
-                            countGroupex: countGroupexResponse.data
+                            countGroupex: countGroupexResponse.data,
+                            countClub: countClubResponse.data,
+                            totalScore: ta.score, // Fetching score from the response
+                            standardScore, // Store the standard score
+                            editable: false // Initially set editable to false
                         };
                     } catch {
                         return {
                             ...ta,
                             name: undefined,
                             countRun: 0,
-                            countGroupex: 0
+                            countGroupex: 0,
+                            countClub: 0,
+                            totalScore: 0,
+                            standardScore: 0,
+                            editable: false // Initially set editable to false
                         };
                     }
                 })
@@ -122,6 +139,43 @@ export const AssignTA: React.FC = () => {
             }
             return updated;
         });
+    };
+
+    const handleEditScore = (studentID: number) => {
+        setTaData(prevData =>
+            prevData.map(ta =>
+                ta.studentID === studentID ? { ...ta, editable: true, totalScore: ta.standardScore } : ta // Set totalScore to standardScore on edit
+            )
+        );
+    };
+
+    const handleScoreChange = (studentID: number, newScore: number) => {
+        setTaData(prevData =>
+            prevData.map(ta =>
+                ta.studentID === studentID ? { ...ta, totalScore: newScore } : ta
+            )
+        );
+    };
+
+    const handleSubmitScores = async () => {
+        try {
+            for (const ta of taData) {
+                if (ta.editable) {
+                    const assignScoreMessage = new AssignScoreMessage(ta.studentID, ta.totalScore);
+                    await sendPostRequest(assignScoreMessage);
+                }
+            }
+
+            // Disable editing after submission
+            setTaData(prevData =>
+                prevData.map(item => ({ ...item, editable: false }))
+            );
+
+            setError('成绩已成功提交。');
+            fetchTAData(); // Optionally refetch TA data to reflect changes
+        } catch {
+            setError('提交成绩失败，请重试。');
+        }
     };
 
     const handleAssignTA = async () => {
@@ -173,6 +227,7 @@ export const AssignTA: React.FC = () => {
                 <div className="form-container">
                     <button className="btn back-btn" onClick={goBack}>返回</button>
                     <button className="btn add-student-btn" onClick={openModal}>增加学生</button>
+                    <button className="btn submit-score-btn" onClick={handleSubmitScores}>提交成绩</button>
                 </div>
                 <div className="ta-data">
                     <h2>已分配TA</h2>
@@ -186,6 +241,10 @@ export const AssignTA: React.FC = () => {
                             <th>班级</th>
                             <th>跑步次数</th>
                             <th>团体锻炼次数</th>
+                            <th>社团次数</th>
+                            <th>总成绩</th>
+                            <th>标准成绩</th> {/* Add Standard Score header */}
+                            <th>操作</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -198,6 +257,24 @@ export const AssignTA: React.FC = () => {
                                 <td>{ta.class}</td>
                                 <td>{ta.countRun}</td>
                                 <td>{ta.countGroupex}</td>
+                                <td>{ta.countClub}</td>
+                                <td>
+                                    {ta.editable ? (
+                                        <input
+                                            type="number"
+                                            value={ta.totalScore}
+                                            onChange={(e) => handleScoreChange(ta.studentID, Number(e.target.value))}
+                                        />
+                                    ) : (
+                                        ta.totalScore
+                                    )}
+                                </td>
+                                <td>{ta.standardScore}</td> {/* Display Standard Score */}
+                                <td>
+                                    {!ta.editable && (
+                                        <button onClick={() => handleEditScore(ta.studentID)}>编辑</button>
+                                    )}
+                                </td>
                             </tr>
                         ))}
                         </tbody>
@@ -205,7 +282,6 @@ export const AssignTA: React.FC = () => {
                 </div>
             </main>
 
-            {/* 弹窗 */}
             <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}

@@ -21,6 +21,7 @@ import {AvailableClubInfo} from 'Pages/student/availableclub'
 import {MyClubInfo} from 'Pages/student/myclub'
 import {MoreInfo} from 'Pages/student/moreinfo'
 import {UpdateClubInfo} from 'Pages/student/updateclubinfo'
+import {ClubHWCheck} from 'Pages/ta/clubcheck'
 const Layout = () => {
     return (
         <HashRouter>
@@ -45,6 +46,7 @@ const Layout = () => {
                 <Route path="/my_club" exact component={MyClubInfo} />
                 <Route path="/moreinfo" exact component={MoreInfo} />
                 <Route path="/update_clubinfo" exact component={UpdateClubInfo} />
+                <Route path="/HW_check" exact component={ClubHWCheck} />
             </Switch>
         </HashRouter>
     )

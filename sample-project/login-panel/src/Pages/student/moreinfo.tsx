@@ -124,7 +124,9 @@ export const MoreInfo: React.FC = () => {
         const filename = uploadedImage.name;
         try {
             // Upload image to MinIO
-            await minioClient.fPutObject('proof', filename, uploadedImage.path, {});
+            //await minioClient.fPutObject('proof', filename, uploadedImage.path, {});
+
+            console.log('s')
             for (const memberId of selectedMembers) {
                 const submitMessage = new SubmitHWMessage(
                     parseInt(Id),
