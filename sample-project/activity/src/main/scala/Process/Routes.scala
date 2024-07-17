@@ -44,27 +44,13 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
-      case "ShowActivityPlanner" =>
-        IO(decode[QueryMemberPlanner](str).getOrElse(throw new Exception("Invalid JSON for OrganizorQueryMemberMessage")))
-          .flatMap{m=>
-            m.fullPlan.map(_.asJson.toString)
-          }
-      case "SubmitHWPlanner" =>
+
+      case "SubmitHWMessage" =>
         IO(decode[SubmitHWPlanner](str).getOrElse(throw new Exception("Invalid JSON for SubmitHWMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
-      case "TAQueryHWPlanner" =>
-        IO(decode[SubmitHWPlanner](str).getOrElse(throw new Exception("Invalid JSON for TAQueryHWMessage")))
-          .flatMap{m=>
-            m.fullPlan.map(_.asJson.toString)
-          }
-      case "StudentQueryHWPlanner" =>
-        IO(decode[SubmitHWPlanner](str).getOrElse(throw new Exception("Invalid JSON for StudentQueryHWMessage")))
-          .flatMap{m=>
-            m.fullPlan.map(_.asJson.toString)
-          }
-      case "CheckHWPlanner" =>
+      case "CheckHWMessage" =>
         IO(decode[CheckHWPlanner](str).getOrElse(throw new Exception("Invalid JSON for CheckHWMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
