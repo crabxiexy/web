@@ -67,16 +67,6 @@
     background: #FFD3E8;
 }
 
-main {
-    width: 90%;
-    max-width: 1000px;
-    margin-top: 100px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
 section.notifications {
     background: rgba(255, 255, 255, 0.9);
     margin: 20px 0;
