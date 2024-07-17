@@ -1,23 +1,19 @@
 import { ActivityMessage } from 'Plugins/ActivityAPI/ActivityMessage';
 
 export class SubmitHWMessage extends ActivityMessage {
-
+    leader_id:number;
     activity_id : number;
-    student_id :number;
-    TA_id:number;
-    submitTime:number;
+    student_id :number
     imgUrl:string;
-    constructor(activity_id : number,
+    constructor(leader_id:number,
+        activity_id : number,
     student_id :number,
-    TA_id:number,
-    submitTime:number,
     imgUrl:string,
     ) {
         super();
         this.activity_id = activity_id;
         this.student_id = student_id;
-        this.TA_id = TA_id;
-        this.submitTime = submitTime;
+        this.leader_id = leader_id;
         this.imgUrl = imgUrl;
     }
 }

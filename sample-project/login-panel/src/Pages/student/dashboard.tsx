@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import './dashboard.css';
 import useIdStore from 'Pages/IdStore';
 import useTokenStore from 'Pages/TokenStore';
-import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { QueryReceivedMessage } from 'Plugins/NotificationAPI/QueryReceivedMessage';
 import { CountRunMessage } from 'Plugins/RunAPI/CountRunMessage';
@@ -14,23 +13,11 @@ export function Dashboard() {
     const history = useHistory();
     const { Id, setId } = useIdStore();
     const { setToken } = useTokenStore();
-    const [profileImage, setProfileImage] = useState<string | null>(null);
     const [notifications, setNotifications] = useState<{ content: string; releaserName: string }[]>([]);
     const [runCount, setRunCount] = useState<number | null>(null);
     const [groupexCount, setGroupexCount] = useState<number | null>(null);
-    const [dropdownVisible, setDropdownVisible] = useState(false);
 
     useEffect(() => {
-        const fetchProfile = async () => {
-            const fetchProfileMessage = new FetchProfileMessage(parseInt(Id));
-            try {
-                const response = await sendPostRequest(fetchProfileMessage);
-                setProfileImage(response.data);
-            } catch (error) {
-                console.error('Error fetching profile:', error);
-            }
-        };
-
         const fetchNotifications = async () => {
             const fetchNotificationsMessage = new QueryReceivedMessage(parseInt(Id));
             try {
@@ -57,13 +44,8 @@ export function Dashboard() {
         };
 
         fetchCounts();
-        fetchProfile();
         fetchNotifications();
     }, [Id]);
-
-    const toggleDropdown = () => {
-        setDropdownVisible(!dropdownVisible);
-    };
 
     const handleLogout = () => {
         setId('');
@@ -77,25 +59,7 @@ export function Dashboard() {
 
     return (
         <div className="App">
-            <header className="App-header">
-                <h1>Physical Exercise System</h1>
-                <div className="user-section">
-                    <button className="btn login-btn" onClick={handleLogout}>Logout</button>
-                    <div className="user-avatar" onClick={toggleDropdown}>
-                        {profileImage && (
-                            <img src={profileImage} alt="User Avatar" className="avatar-image" />
-                        )}
-                    </div>
-                    {dropdownVisible && (
-                        <div className="dropdown-menu">
-                            <p onClick={() => handleNavigation("/rename")}>Rename</p>
-                            <p onClick={() => handleNavigation("/update_profile")}>Profile</p>
-                        </div>
-                    )}
-                </div>
-            </header>
             <div className="dashboard-container">
-                <Sidebar /> {/* Add Sidebar here */}
                 <main>
                     <section className="notifications">
                         <h2>Notifications</h2>

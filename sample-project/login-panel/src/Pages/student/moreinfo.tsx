@@ -9,6 +9,15 @@ import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { QueryMemberMessage } from 'Plugins/ActivityAPI/QueryMemberMessage';
 import { SubmitHWMessage } from 'Plugins/ActivityAPI/SubmitHWMessage';
 import { GetTAMessage } from 'Plugins/StudentAPI/GetTAMessage';
+import * as Minio from 'minio';
+
+const minioClient = new Minio.Client({
+    endPoint: '183.173.185.144',
+    port: 9004,
+    useSSL: false,
+    accessKey: '12345678',
+    secretKey: '12345678',
+});
 
 interface Member {
     memberId: number;
@@ -33,8 +42,12 @@ export const MoreInfo: React.FC = () => {
     const { Id } = useIdStore();
     const [activities, setActivities] = useState<Activity[]>([]);
     const [error, setError] = useState<string>('');
-    const [studentId, setStudentId] = useState('');
-    const [imgUrl, setImgUrl] = useState('');
+    const [selectedMembers, setSelectedMembers] = useState<number[]>([]);
+    const [membersDetails, setMembersDetails] = useState<Member[]>([]);
+    const [showModal, setShowModal] = useState(false);
+    const [currentActivityID, setCurrentActivityID] = useState<number | null>(null);
+    const [uploadedImage, setUploadedImage] = useState<File | null>(null);
+    const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
 
     useEffect(() => {
         fetchActivities();
@@ -43,24 +56,15 @@ export const MoreInfo: React.FC = () => {
     const fetchActivities = async () => {
         try {
             const activitiesResponse = await sendPostRequest(new ShowActivityMessage(ClubName));
-            const activitiesWithMembers = await Promise.all(
-                activitiesResponse.data.map(async (activity: any) => {
-                    const memberDetails = await fetchMemberDetails(activity.activityID);
-                    return {
-                        ...activity,
-                        members: memberDetails,
-                    };
-                })
-            );
-            setActivities(activitiesWithMembers);
+            setActivities(activitiesResponse.data);
         } catch (error) {
             setError('加载活动信息失败，请重试。');
         }
     };
 
-    const fetchMemberDetails = async (activityID: number): Promise<Member[]> => {
+    const fetchMemberDetails = async (activityID: number) => {
         const memberResponse = await sendPostRequest(new QueryMemberMessage(activityID));
-        return Promise.all(
+        const memberDetails = await Promise.all(
             memberResponse.data.map(async (memberObject: { memberID: number }) => {
                 const memberId = memberObject.memberID;
                 const [nameResponse, profileResponse] = await Promise.all([
@@ -74,25 +78,67 @@ export const MoreInfo: React.FC = () => {
                 };
             })
         );
+        setMembersDetails(memberDetails);
     };
 
     const handleBack = () => {
         history.goBack();
     };
 
+    const handleOpenModal = async (activityID: number) => {
+        setShowModal(true);
+        setSelectedMembers([]);
+        setCurrentActivityID(activityID);
+        await fetchMemberDetails(activityID);
+    };
 
-    const handleSubmitHomework = async (activityID: number ) => {
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setUploadedImage(null);
+        setUploadedImageUrl(null);
+    };
+
+    const handleMemberSelect = (memberId: number) => {
+        setSelectedMembers((prevSelected) =>
+            prevSelected.includes(memberId)
+                ? prevSelected.filter((id) => id !== memberId)
+                : [...prevSelected, memberId]
+        );
+    };
+
+    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const files = event.target.files;
+        if (files && files.length > 0) {
+            const file = files[0];
+            setUploadedImage(file);
+
+            const reader = new FileReader();
+            reader.onload = () => {
+                const imageUrl = reader.result as string;
+                setUploadedImageUrl(imageUrl);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleSubmitHomework = async () => {
+        const filename = uploadedImage.name;
         try {
-            const taMessageResponse = await sendPostRequest(new GetTAMessage(parseInt(Id))); // 获取 TA_id
-            const taMessage = taMessageResponse.data;
+            // Upload image to MinIO
+            await minioClient.fPutObject('proof', filename, uploadedImage.path, {});
+            for (const memberId of selectedMembers) {
+                const submitMessage = new SubmitHWMessage(
+                    parseInt(Id),
+                    currentActivityID,
+                    memberId,
+                    `http://183.172.236.220:9004/proof/${filename}`
+                );
 
-            const studentId = prompt('请输入您的学生ID:');
-            const imgUrl = prompt('请输入作业图片链接:');
-            const submitMessage = new SubmitHWMessage(activityID, parseInt(Id), taMessage.TA_id, Date.now(), imgUrl); // 构建提交作业消息
-
-            await sendPostRequest(submitMessage); // 发送提交作业请求
+                await sendPostRequest(submitMessage);
+            }
 
             alert('作业提交成功！');
+            handleCloseModal();
         } catch (error) {
             setError('提交作业失败，请重试。');
         }
@@ -110,42 +156,37 @@ export const MoreInfo: React.FC = () => {
                         <p><strong>结束时间:</strong> {new Date(parseInt(activity.finishtime)).toLocaleString()}</p>
                         <p><strong>人数限制:</strong> {activity.lowlimit} - {activity.uplimit}</p>
 
-                        <h4>参与成员:</h4>
-                        {activity.members.map((member: Member) => (
-                            <div key={member.memberId} className="member-info">
-                                <div className="profile-circle">
-                                    <img
-                                        src={member.profile}
-                                        alt={member.name}
-                                        className="member-profile-img"
-                                    />
-                                </div>
-                                <span>{member.name}</span>
-                            </div>
-                        ))}
+                        <button onClick={() => handleOpenModal(activity.activityID)}>提交作业</button>
 
-                        <div className="modal">
-                            <div className="modal-content">
-                                <h2>提交作业</h2>
-                                <label>
-                                    学生ID:
+                        {showModal && (
+                            <div className="modal">
+                                <div className="modal-content">
+                                    <h2>提交作业</h2>
+                                    <p>选择要提交作业的成员:</p>
+                                    {membersDetails.map((member) => (
+                                        <div key={member.memberId} className="member-item">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedMembers.includes(member.memberId)}
+                                                onChange={() => handleMemberSelect(member.memberId)}
+                                            />
+                                            <img src={member.profile} alt={member.name} className="member-profile" />
+                                            <span>{member.name}</span>
+                                        </div>
+                                    ))}
                                     <input
-                                        type="text"
-                                        value={0}
-                                        onChange={(e) => setStudentId(e.target.value)}
+                                        type="file"
+                                        onChange={handleImageUpload}
+                                        accept="image/*"
                                     />
-                                </label>
-                                <label>
-                                    作业图片链接:
-                                    <input
-                                        type="text"
-                                        value={imgUrl}
-                                        onChange={(e) => setImgUrl(e.target.value)}
-                                    />
-                                </label>
-                                <button onClick={handleSubmitHomework}>提交作业</button>
+                                    {uploadedImageUrl && (
+                                        <img src={uploadedImageUrl} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '400px', marginTop: '10px' }} />
+                                    )}
+                                    <button onClick={handleSubmitHomework}>提交作业</button>
+                                    <button onClick={handleCloseModal}>关闭</button>
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 ))
             ) : (

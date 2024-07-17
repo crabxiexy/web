@@ -1,0 +1,32 @@
+/* Sidebar.css */
+
+.sidebar {
+    background-color: #1a237e; /* 深蓝色背景 */
+    color: white;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed; /* 固定在顶部 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* 确保位于其他内容上方 */
+}
+
+.user-avatar {
+    position: relative; /* 使其内部元素可以使用绝对定位 */
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.user-avatar img {
+    width: 40px; /* 调整头像图片大小 */
+    height: 40px;
+    border-radius: 50%; /* 圆形头像 */
+    object-fit: cover; /* 图片尺寸适应容器 */
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 20px; /* 使头像位于右侧 */
+}

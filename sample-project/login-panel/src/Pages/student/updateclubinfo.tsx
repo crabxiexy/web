@@ -17,7 +17,7 @@ const minioClient = new Minio.Client({
 
 export const UpdateClubInfo = () => {
     const history = useHistory();
-    const { ClubName } = useClubNameStore(); // 从store中获取clubName
+    const { ClubName } = useClubNameStore();
     const [clubInfo, setClubInfo] = useState({
         profile: '',
         intro: '',
@@ -75,12 +75,10 @@ export const UpdateClubInfo = () => {
         if (newProfile) {
             const filename = newProfile.name;
             try {
-                // 上传文件到 MinIO
                 await minioClient.fPutObject('profile', filename, newProfile.path, {
                     'Content-Type': newProfile.type,
                 });
 
-                // 使用 UpdateProfileMessage 更新头像信息
                 const updateProfileMessage = new UpdateProfileMessage(ClubName,
                     `http://183.172.236.220:9004/profile/${filename}`
                 );
@@ -92,6 +90,10 @@ export const UpdateClubInfo = () => {
                 setError('更新失败，请重试。');
             }
         }
+    };
+
+    const handleBack = () => {
+        history.goBack(); // Navigate back to the previous page
     };
 
     return (
@@ -118,6 +120,7 @@ export const UpdateClubInfo = () => {
                 <input type="file" onChange={handleProfileChange} accept="image/*" />
                 <button onClick={handleUpdateProfile}>更新头像</button>
             </div>
+            <button className="back-button" onClick={handleBack}>返回</button> {/* Back button */}
         </div>
     );
 };
