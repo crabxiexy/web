@@ -40,15 +40,34 @@ export const Checkgroupex: React.FC = () => {
         fetchStudentRecordData();
     }, [Id]);
 
-    const currentTime = new Date();
+    const current = new Date();
+    const currentTime = new Date(current.getTime()-8* 60 * 60 * 1000);
 
-    const notStarted = studentQueryResult.filter(item => new Date(item.starttime) > currentTime);
-    const ongoing = studentQueryResult.filter(item => {
-        const startTime = new Date(item.starttime);
-        const finishTime = new Date(item.finishtime);
-        return startTime <= currentTime && finishTime >= currentTime;
+    const parseTimestamp = (timestamp: string) => {
+        const parsedTime = parseInt(timestamp, 10);
+        if (isNaN(parsedTime)) {
+            console.error('Invalid timestamp format:', timestamp);
+            return null;
+        }
+        return new Date(parsedTime); // 创建日期对象
+    };
+
+    const notStarted = studentQueryResult.filter(item => {
+        const startTime = parseTimestamp(item.starttime);
+        return startTime && startTime > currentTime;
     });
-    const ended = studentQueryResult.filter(item => new Date(item.finishtime) < currentTime || item.status === 4);
+
+    const ongoing = studentQueryResult.filter(item => {
+        const startTime = parseTimestamp(item.starttime);
+        const finishTime = parseTimestamp(item.finishtime);
+
+        return startTime && finishTime && startTime <= currentTime && finishTime >= currentTime && item.status !== 4;
+    });
+
+    const ended = studentQueryResult.filter(item => {
+        const finishTime = parseTimestamp(item.finishtime);
+        return finishTime && (finishTime < currentTime || item.status === 4);
+    });
 
     const handleSignin = async (groupexID: number, token: string) => {
         if (!token) {
@@ -74,10 +93,9 @@ export const Checkgroupex: React.FC = () => {
         }
     };
 
-    // Function to format date
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString);
-        return date.toLocaleString(); // Customize this format as needed
+    const formatDate = (timestamp: string) => {
+        const localTime = new Date(parseInt(timestamp) + 8 * 60 * 60 * 1000);
+        return localTime.getTime().toString();
     };
 
     return (
@@ -90,8 +108,8 @@ export const Checkgroupex: React.FC = () => {
                 <ExerciseCard
                     key={item.groupexID}
                     groupexID={item.groupexID}
-                    startTime={item.starttime}
-                    finishTime={item.finishtime}
+                    startTime={formatDate(item.starttime)}
+                    finishTime={formatDate(item.finishtime)}
                     location={item.location}
                     exName={item.ex_name}
                     status={item.status}
@@ -105,8 +123,8 @@ export const Checkgroupex: React.FC = () => {
                 <ExerciseCard
                     key={item.groupexID}
                     groupexID={item.groupexID}
-                    startTime={item.starttime}
-                    finishTime={item.finishtime}
+                    startTime={formatDate(item.starttime)}
+                    finishTime={formatDate(item.finishtime)}
                     location={item.location}
                     exName={item.ex_name}
                     status={item.status}
@@ -120,8 +138,8 @@ export const Checkgroupex: React.FC = () => {
                 <ExerciseCard
                     key={item.groupexID}
                     groupexID={item.groupexID}
-                    startTime={item.starttime}
-                    finishTime={item.finishtime}
+                    startTime={formatDate(item.starttime)}
+                    finishTime={formatDate(item.finishtime)}
                     location={item.location}
                     exName={item.ex_name}
                     status={item.status}
@@ -145,8 +163,8 @@ export const Checkgroupex: React.FC = () => {
                 {studentRecord.map(record => (
                     <tr key={record.groupex_id}>
                         <td>{record.groupex_id}</td>
-                        <td>{new Date(parseInt(record.start_time)).toLocaleString()}</td>
-                        <td>{new Date(parseInt(record.finish_time)).toLocaleString()}</td>
+                        <td>{formatDate(record.start_time)}</td>
+                        <td>{formatDate(record.finish_time)}</td>
                         <td>{record.has_signed_in ? '是' : '否'}</td>
                         <td>{record.has_signed_out ? '是' : '否'}</td>
                     </tr>

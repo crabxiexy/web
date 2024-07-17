@@ -25,7 +25,7 @@ export const GroupexManagement: React.FC = () => {
     const { Id } = useIdStore();
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
-    const [startTime, setStartTime] = useState<string>(new Date().toISOString().slice(0, 16));
+    const [startTime, setStartTime] = useState<string>('');
     const [finishTime, setFinishTime] = useState<string>('');
     const [location, setLocation] = useState<string>('');
     const [exName, setExName] = useState<string>('');
@@ -49,7 +49,8 @@ export const GroupexManagement: React.FC = () => {
     const openModal = () => {
         setModalIsOpen(true);
         const currentTime = new Date();
-        setStartTime(currentTime.toISOString().slice(0, 16));
+        const localTime = new Date(currentTime.getTime() + 8 * 60 * 60 * 1000);
+        setStartTime(localTime.toISOString().slice(0, 16));
         setFinishTime('');
         setLocation('');
         setExName('');
@@ -65,8 +66,8 @@ export const GroupexManagement: React.FC = () => {
             return;
         }
 
-        const startTimestamp = new Date(startTime).getTime();
-        const finishTimestamp = new Date(finishTime).getTime();
+        const startTimestamp = new Date(new Date(startTime).getTime() - 8 * 60 * 60 * 1000).getTime();
+        const finishTimestamp = new Date(new Date(finishTime).getTime() - 8 * 60 * 60 * 1000).getTime();
 
         const groupexMessage = new CreateGroupexMessage(
             exName,
@@ -79,7 +80,6 @@ export const GroupexManagement: React.FC = () => {
         try {
             await sendPostRequest(groupexMessage);
             closeModal();
-            // Fetch updated data after creating a new exercise
             const response: AxiosResponse<TAQueryResult[]> = await sendPostRequest(new TAQueryMessage(parseInt(Id)));
             setTaQueryResult(response.data);
         } catch (error) {
@@ -88,18 +88,24 @@ export const GroupexManagement: React.FC = () => {
     };
 
     const currentTime = Date.now();
-    const notStarted = taQueryResult.filter(item => parseInt(item.starttime) > currentTime);
+    console.log(currentTime)
+    const notStarted = taQueryResult.filter(item => parseInt(item.starttime) > currentTime- 8 * 60 * 60 * 1000);
     const ongoing = taQueryResult.filter(item =>
-        parseInt(item.starttime) <= currentTime &&
-        parseInt(item.finishtime) > currentTime &&
+        parseInt(item.starttime) <= currentTime- 8 * 60 * 60 * 1000 &&
+        parseInt(item.finishtime) > currentTime- 8 * 60 * 60 * 1000 &&
         (item.status !== 4)
     );
     const ended = taQueryResult.filter(item =>
-        parseInt(item.finishtime) <= currentTime ||
+        parseInt(item.finishtime) <= currentTime - 8 * 60 * 60 * 1000||
         (item.status === 4)
     );
 
     const displayItems = viewType === '未开始' ? notStarted : viewType === '正在进行' ? ongoing : ended;
+
+    const convertToLocalTime = (utcString: string) => {
+        const localTime = new Date(parseInt(utcString) + 8 * 60 * 60 * 1000);
+        return localTime.getTime().toString();
+    };
 
     return (
         <div className="groupex-management-container">
@@ -119,8 +125,8 @@ export const GroupexManagement: React.FC = () => {
                         <ExerciseCard
                             key={item.groupexID}
                             groupexID={item.groupexID}
-                            startTime={item.starttime}
-                            finishTime={item.finishtime}
+                            startTime={convertToLocalTime(item.starttime)}
+                            finishTime={convertToLocalTime(item.finishtime)}
                             location={item.location}
                             exName={item.ex_name}
                             status={item.status}
@@ -130,7 +136,7 @@ export const GroupexManagement: React.FC = () => {
                                         exercise.groupexID === item.groupexID ? { ...exercise, status: newStatus } : exercise
                                     )
                                 );
-                            }} // Update local status
+                            }}
                         />
                     ))}
                 </div>

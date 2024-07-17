@@ -13,7 +13,7 @@ case class StudentQueryPlanner(
                               ) extends Planner[List[Json]] {
 
   override def plan(using planContext: PlanContext): IO[List[Json]] = {
-    // 检查学生是否存在
+    // Check if the student exists
     val checkStudentExists = readDBBoolean(
       s"SELECT EXISTS(SELECT 1 FROM student.student WHERE student_id = ?)",
       List(SqlParameter("Int", student_id.toString))
@@ -23,34 +23,22 @@ case class StudentQueryPlanner(
       if (!exists) {
         IO.raiseError(new Exception("Student not found!"))
       } else {
-        // 查找对应的 TA_id
+        // Retrieve the corresponding TA_id
         val getTAforStudent = readDBInt(
           s"SELECT ta_id FROM student.student WHERE student_id = ?",
           List(SqlParameter("Int", student_id.toString))
         )
 
         getTAforStudent.flatMap { TA_id =>
-          // 检查 TA 是否存在
-          val checkTAExists = readDBBoolean(
-            s"SELECT EXISTS(SELECT 1 FROM TA.TA WHERE TA_id = ?)",
-            List(SqlParameter("Int", TA_id.toString))
-          )
+          // Query to get all group exercise information for the TA
+          val sqlQuery =
+            s"""
+               |SELECT groupex_id, ex_name, startTime, finishTime, location, status
+               |FROM groupex.groupex
+               |WHERE TA_id = ?
+             """.stripMargin
 
-          checkTAExists.flatMap { exists =>
-            if (!exists) {
-              IO.raiseError(new Exception("TA not found!"))
-            } else {
-              // 查找 TA 对应的所有 group exercise 信息
-              val sqlQuery =
-                s"""
-                   |SELECT groupex_id, ex_name, startTime, finishTime, location, status
-                   |FROM groupex.groupex
-                   |WHERE TA_id = ?
-                 """.stripMargin
-
-              readDBRows(sqlQuery, List(SqlParameter("Int", TA_id.toString)))
-            }
-          }
+          readDBRows(sqlQuery, List(SqlParameter("Int", TA_id.toString)))
         }
       }
     }

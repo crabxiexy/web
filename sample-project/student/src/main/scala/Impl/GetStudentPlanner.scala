@@ -11,21 +11,21 @@ import io.circe.generic.auto.*
 
 import java.security.MessageDigest
 import java.util.Base64
-case class TAQueryPlanner(
-                           TAId: Int,
-                           override val planContext: PlanContext
-                         ) extends Planner[List[Json]] {
+
+case class GetStudentPlanner(
+                              override val planContext: PlanContext
+                            ) extends Planner[List[Json]] {
 
   override def plan(using planContext: PlanContext): IO[List[Json]] = {
-    // Construct the SQL query to fetch all fields related to the TA
+    // Construct the SQL query to fetch all fields where TA_id is NULL
     val sqlQuery =
       s"""
-         |SELECT student_id, score, department, class
+         |SELECT student_id, TA_id, score, department, class
          |FROM ${schemaName}.student
-         |WHERE TA_id = ?
+         |WHERE TA_id IS NULL
        """.stripMargin
 
     // Execute the query using readDBRows
-    readDBRows(sqlQuery, List(SqlParameter("Int", TAId.toString)))
+    readDBRows(sqlQuery, List())
   }
 }

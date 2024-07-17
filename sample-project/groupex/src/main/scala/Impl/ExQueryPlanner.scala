@@ -44,7 +44,7 @@ case class ExQueryPlanner(
 
     // Execute the query
     readDBRows(sqlQuery, parameters).map { rows =>
-      rows.map(row => row.hcursor.get[Int]("student_id").getOrElse(0)) // Safely extract student_id
+      rows.map(row => row.hcursor.get[Int]("studentID").getOrElse(0)) // Safely extract student_id
     }.map(_.filter(_ != 0).toArray) // Filter out default values and convert to Array
   }
 }

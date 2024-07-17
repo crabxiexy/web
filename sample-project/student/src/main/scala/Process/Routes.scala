@@ -29,6 +29,11 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "GetStudentMessage" =>
+        IO(decode[GetStudentPlanner](str).getOrElse(throw new Exception("Invalid JSON for GetTAMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case "GetTAMessage" =>
         IO(decode[GetTAPlanner](str).getOrElse(throw new Exception("Invalid JSON for GetTAMessage")))
           .flatMap{m=>

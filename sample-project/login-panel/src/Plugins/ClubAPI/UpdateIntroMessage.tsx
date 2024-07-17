@@ -1,6 +1,6 @@
 import { ClubMessage } from 'Plugins/ClubAPI/ClubMessage';
 
-export class ReplyAppMessage extends ClubMessage {
+export class UpdateIntroMessage extends ClubMessage {
     club_name: string;
     new_intro: string
 
