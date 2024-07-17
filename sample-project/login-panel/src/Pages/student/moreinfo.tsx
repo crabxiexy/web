@@ -8,7 +8,6 @@ import useIdStore from 'Pages/IdStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { QueryMemberMessage } from 'Plugins/ActivityAPI/QueryMemberMessage';
 import { SubmitHWMessage } from 'Plugins/ActivityAPI/SubmitHWMessage';
-import { GetTAMessage } from 'Plugins/StudentAPI/GetTAMessage';
 import * as Minio from 'minio';
 
 const minioClient = new Minio.Client({
@@ -125,7 +124,9 @@ export const MoreInfo: React.FC = () => {
         const filename = uploadedImage.name;
         try {
             // Upload image to MinIO
-            await minioClient.fPutObject('proof', filename, uploadedImage.path, {});
+            //await minioClient.fPutObject('proof', filename, uploadedImage.path, {});
+
+            console.log('s')
             for (const memberId of selectedMembers) {
                 const submitMessage = new SubmitHWMessage(
                     parseInt(Id),

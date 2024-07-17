@@ -4,7 +4,7 @@ import { AssignDepartmentMessage } from 'Plugins/StudentAPI/AssignDepartmentMess
 import { AssignClassMessage } from 'Plugins/StudentAPI/AssignClassMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { useHistory } from 'react-router';
-import './register.css';
+import register_style from './register.module.css';
 
 interface Student {
     student_id: string;
@@ -85,8 +85,8 @@ export function Register() {
     };
 
     return (
-        <div className="register-container">
-            <header className="register-header">
+        <div className="register_style.register-container">
+            <header className="register_style.register-header">
                 <div className="logo" onClick={() => history.push('/home')}>MyApp</div>
                 <nav>
                     <ul>
@@ -94,13 +94,13 @@ export function Register() {
                     </ul>
                 </nav>
             </header>
-            <main className="main-content">
-                <div className="form-container">
+            <main className="register_style.main-content">
+                <div className="register_style.form-container">
                     <h2>Batch Register Users</h2>
-                    {error && <p className="error-message">{error}</p>}
+                    {error && <p className="register_style.error-message">{error}</p>}
 
                     {/* Identity selection */}
-                    <div className="form-group">
+                    <div className="register_style.form-group">
                         <select
                             value={identity}
                             onChange={e => {
@@ -121,7 +121,7 @@ export function Register() {
                     {identity === 'student' && (
                         <>
                             {/* Bulk input fields for students only */}
-                            <div className="bulk-inputs">
+                            <div className="register_style.bulk-inputs">
                                 <input
                                     type="text"
                                     value={bulkDepartment}
@@ -150,7 +150,7 @@ export function Register() {
                     )}
 
                     {students.map((student, index) => (
-                        <div key={index} className="student-form">
+                        <div key={index} className="register_style.student-form">
                             <input
                                 type="number"
                                 value={student.student_id}
@@ -192,10 +192,10 @@ export function Register() {
                             )}
                         </div>
                     ))}
-                    <div className="button-group">
-                        <button className="add-student-button" onClick={addStudentField}>Add Student</button>
-                        <button className="submit-button" onClick={handleRegister}>Submit All</button>
-                        <button className="back-button" onClick={() => history.push('/admin/root')}>Back</button>
+                    <div className="register_style.button-group">
+                        <button className="register_style.add-student-button" onClick={addStudentField}>Add Student</button>
+                        <button className="register_style.submit-button" onClick={handleRegister}>Submit All</button>
+                        <button className="register_style.back-button" onClick={() => history.push('/admin/root')}>Back</button>
                     </div>
                 </div>
             </main>
