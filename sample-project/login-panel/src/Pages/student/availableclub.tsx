@@ -133,7 +133,7 @@ export const AvailableClubInfo: React.FC = () => {
                 )}
 
                 <div className={availableclubinfo_style.memberList}>
-                    <h3>成员:</h3>
+                    <h3>成员</h3>
                     <div className={availableclubinfo_style.memberRow}>
                         {members.slice(0, 5).map(member => (
                             <div key={member.student_id} className={availableclubinfo_style.memberDetails}>
@@ -154,7 +154,7 @@ export const AvailableClubInfo: React.FC = () => {
                 </div>
 
                 <div className={availableclubinfo_style.activitySection}>
-                    <h3>活动:</h3>
+                    <h3>活动</h3>
                     <div className={availableclubinfo_style.activitiesList}>
                         {activities.map(activity => (
                             <div key={activity.activityID} className={availableclubinfo_style.activityDetails}>

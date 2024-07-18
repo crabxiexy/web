@@ -167,7 +167,7 @@ export const Checkgroupex: React.FC = () => {
                 </div>
 
                 <button className={checkgroupex_style.button} onClick={() => history.push('/student_dashboard')}>
-                    返回 Student Dashboard
+                    返回学生 Dashboard
                 </button>
             </div>
         </div>

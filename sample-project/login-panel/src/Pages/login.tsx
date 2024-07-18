@@ -69,11 +69,12 @@ export function Login() {
                     <h1>欢迎回来!</h1>
                     <p>请登录你的用户</p>
                 </header>
-                <main>
+                <div className={`${login_style.formContainer}`}>
                     {error && <p className={`${login_style.error_message}`}>{error}</p>}
                     <div className={login_style.form_group}>
                         <label htmlFor="user_id">用户ID</label>
                         <input
+                            align={"center"}
                             type="text"
                             id="user_id"
                             value={Id}
@@ -108,7 +109,7 @@ export function Login() {
                         <button className={login_style.submit_button} onClick={handleLogin}>提交</button>
                         <button className={login_style.back_button} onClick={() => history.push('/')}>返回</button>
                     </div>
-                </main>
+                </div>
             </div>
         </div>
     );
