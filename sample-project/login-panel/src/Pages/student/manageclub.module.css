@@ -1,23 +1,31 @@
 /* manageclub.module.css */
 
-.managedClubContainer {
+.App {
     display: flex;
     flex-direction: column;
-    background-color: #f0f4f7;
+    align-items: center;
+    justify-content: center; /* Center vertically */
     min-height: 100vh;
-    padding: 20px;
-    position: relative;
+    background-image: url("https://www.gameuidatabase.com/uploads/Genshin-Impact01032021-021443-79651.jpg");
+    background-size: cover;
+    text-align: center;
+    font-family: Arial, sans-serif;
 }
 
-.sidebar {
-    width: 100%;
-    margin-bottom: 20px;
+.managedClubContainer {
+    margin-top: -50px;
+    display: flex;
+    flex-direction: column;
+    min-height: 10vh;
+    max-height: 70vh;
+    padding: 20px;
+    position: relative;
 }
 
 .content {
     width: 100%;
     max-width: 1200px;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.9);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     padding: 20px;
@@ -35,7 +43,6 @@
 }
 
 .header h1 {
-    color: #007bff;
     font-size: 2rem;
     margin: 0;
 }
@@ -46,10 +53,6 @@
 }
 
 .clubDetails {
-    background-color: white;
-    border: 1px solid #dce1e4;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     padding: 15px;
     margin-bottom: 20px;
     text-align: center;
@@ -97,8 +100,17 @@
     margin-bottom: 20px;
 }
 
+.membetDetailContainer {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    gap: 30px;
+}
+
 .memberDetails {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: space-between;
     padding: 10px 0;

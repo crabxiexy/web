@@ -260,80 +260,27 @@ export const ManagedClubInfo: React.FC = () => {
     const closeModal = () => setModalIsOpen(false);
 
     return (
-        <div className={student_manageclub_style.managedClubContainer}>
+        <div className={student_manageclub_style.App}>
             <Sidebar />
-
-            <div className={student_manageclub_style.content}>
-                <header className={student_manageclub_style.header}>
-                    <h1>俱乐部信息</h1>
-                    {error && <p className={student_manageclub_style.errorMessage}>{error}</p>}
-                </header>
-
-                {clubInfo && (
-                    <div className={student_manageclub_style.clubDetails}>
-                        <h2>{clubInfo.name}</h2>
-                        <p><strong>简介:</strong> {clubInfo.intro}</p>
-                        <p><strong>负责人:</strong> {leaderName}</p>
+            <div className={student_manageclub_style.managedClubContainer}>
+                <div className={student_manageclub_style.content}>
+                    {clubInfo && (
+                        <div className={student_manageclub_style.clubDetails}>
+                            <h2>{clubInfo.name}</h2>
+                            <p><strong>简介:</strong> {clubInfo.intro}</p>
+                            <p><strong>负责人:</strong> {leaderName}</p>
 
 
-                        <button onClick={handleUpdate}
-                                className={student_manageclub_style.updateButton}>查看俱乐部信息
-                        </button>
-                    </div>
-                )}
-
-                <div className={student_manageclub_style.memberList}>
-                    <h3>成员:</h3>
-                    {members.slice(0, 5).map(member => (
-                        <div key={member.studentID} className={student_manageclub_style.memberDetails}>
-                            <div className={student_manageclub_style.profileCircle}>
-                                <img
-                                    src={member.profile}
-                                    alt={member.name}
-                                    className={student_manageclub_style.memberProfileImg}
-                                />
-                            </div>
-                            <span>{member.name}</span>
+                            <button onClick={handleUpdate}
+                                    className={student_manageclub_style.updateButton}>查看俱乐部信息
+                            </button>
                         </div>
-                    ))}
-                    {members.length > 5 && (
-                        <button onClick={handleViewMoreMembers} className={student_manageclub_style.viewMoreButton}>查看所有成员</button>
                     )}
-                </div>
 
-                <div className={student_manageclub_style.activitySection}>
-                    <h3>活动:</h3>
-                    <div className={student_manageclub_style.activityButtons}>
-                        <button onClick={openModal} className={student_manageclub_style.createActivityButton}>创建活动</button>
-                        <button onClick={handleMoreInfo} className={student_manageclub_style.showMoreButton}>显示更多活动</button>
-                    </div>
-                    <div className={student_manageclub_style.activityList}>
-                        {activities.map((activity, index) => (
-                            <div key={index} className={student_manageclub_style.activityDetails}>
-                                <h4>{activity.activityName}</h4>
-                                <p>{activity.intro}</p>
-                                <p><strong>开始时间:</strong> {activity.startTime}</p>
-                                <p><strong>结束时间:</strong> {activity.finishTime}</p>
-                                <p><strong>组织者ID:</strong> {activity.organizorId}</p>
-                                <p><strong>人数限制:</strong> {activity.lowLimit} - {activity.upLimit}</p>
-                                <p><strong>当前人数:</strong> {activity.num}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                <div className={student_manageclub_style.buttonGroup}>
-                    <button className={student_manageclub_style.applyButton} onClick={handleOpenApplyModal}>
-                        审核新成员
-                    </button>
-                </div>
-
-                {showModal && (
-                    <div className={student_manageclub_style.modal}>
-                        <div className={student_manageclub_style.modalContent}>
-                            <span className={student_manageclub_style.close} onClick={() => setShowModal(false)}>&times;</span>
-                            <h2>所有成员</h2>
-                            {allMembers.map(member => (
+                    <div className={student_manageclub_style.memberList}>
+                        <h3>成员</h3>
+                        <div className={student_manageclub_style.membetDetailContainer}>
+                            {members.slice(0, 5).map(member => (
                                 <div key={member.studentID} className={student_manageclub_style.memberDetails}>
                                     <div className={student_manageclub_style.profileCircle}>
                                         <img
@@ -346,110 +293,161 @@ export const ManagedClubInfo: React.FC = () => {
                                 </div>
                             ))}
                         </div>
+                        {members.length > 5 && (
+                            <button onClick={handleViewMoreMembers}
+                                    className={student_manageclub_style.viewMoreButton}>查看所有成员</button>
+                        )}
+                        <div className={student_manageclub_style.buttonGroup}>
+                            <button className={student_manageclub_style.applyButton} onClick={handleOpenApplyModal}>
+                                审核新成员
+                            </button>
+                        </div>
                     </div>
-                )}
 
-                {showApplyModal && (
-                    <div className={student_manageclub_style.modal}>
-                        <div className={student_manageclub_style.modalContent}>
-                            <span className={student_manageclub_style.close} onClick={handleCloseApplyModal}>&times;</span>
-                            <h2>审核新成员申请</h2>
-                            <div className={student_manageclub_style.applicationList}>
-                                {applications.length > 0 ? (
-                                    applications.map(application => (
-                                        <div key={application.studentID} className={student_manageclub_style.applicationDetails}>
-                                            <h3>学生ID: {application.studentID}</h3>
-                                            <div className={student_manageclub_style.applicationMemberInfo}>
-                                                <p>姓名: {application.name}</p>
-                                                <div className={student_manageclub_style.profileCircle}>
-                                                    <img
-                                                        src={application.profile}
-                                                        alt={application.name}
-                                                        className={student_manageclub_style.memberProfileImg}
-                                                    />
-                                                </div>
-                                                <div className={student_manageclub_style.applicationActions}>
-                                                    <button onClick={() => handleResponseApplication(application.studentID, 1)}>
-                                                        通过
-                                                    </button>
-                                                    <button onClick={() => handleResponseApplication(application.studentID, 0)}>
-                                                        不通过
-                                                    </button>
-                                                </div>
-                                            </div>
+                    <div className={student_manageclub_style.activitySection}>
+                        <h3>活动:</h3>
+                        <div className={student_manageclub_style.activityButtons}>
+                            <button onClick={openModal} className={student_manageclub_style.createActivityButton}>创建活动</button>
+                            <button onClick={handleMoreInfo} className={student_manageclub_style.showMoreButton}>显示更多活动</button>
+                        </div>
+                        <div className={student_manageclub_style.activityList}>
+                            {activities.map((activity, index) => (
+                                <div key={index} className={student_manageclub_style.activityDetails}>
+                                    <h4>{activity.activityName}</h4>
+                                    <p>{activity.intro}</p>
+                                    <p><strong>开始时间:</strong> {activity.startTime}</p>
+                                    <p><strong>结束时间:</strong> {activity.finishTime}</p>
+                                    <p><strong>组织者ID:</strong> {activity.organizorId}</p>
+                                    <p><strong>人数限制:</strong> {activity.lowLimit} - {activity.upLimit}</p>
+                                    <p><strong>当前人数:</strong> {activity.num}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {showModal && (
+                        <div className={student_manageclub_style.modal}>
+                            <div className={student_manageclub_style.modalContent}>
+                                <span className={student_manageclub_style.close} onClick={() => setShowModal(false)}>&times;</span>
+                                <h2>所有成员</h2>
+                                {allMembers.map(member => (
+                                    <div key={member.studentID} className={student_manageclub_style.memberDetails}>
+                                        <div className={student_manageclub_style.profileCircle}>
+                                            <img
+                                                src={member.profile}
+                                                alt={member.name}
+                                                className={student_manageclub_style.memberProfileImg}
+                                            />
                                         </div>
-                                    ))
-                                ) : (
-                                    <p>没有新成员申请。</p>
-                                )}
+                                        <span>{member.name}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                    </div>
-                )}
+                    )}
 
-                <Modal
-                    isOpen={modalIsOpen}
-                    onRequestClose={closeModal}
-                    contentLabel="创建活动"
-                    className={student_manageclub_style.modal}
-                    overlayClassName={student_manageclub_style.modalOverlay}
-                >
-                    <h2>创建活动</h2>
-                    <form onSubmit={(e) => { e.preventDefault(); handleCreateActivity(); }}>
-                        <div>
-                            <label>活动名称:</label>
-                            <input
-                                type="text"
-                                value={newActivity.activityName}
-                                onChange={(e) => setNewActivity({ ...newActivity, activityName: e.target.value })}
-                            />
+                    {showApplyModal && (
+                        <div className={student_manageclub_style.modal}>
+                            <div className={student_manageclub_style.modalContent}>
+                                <span className={student_manageclub_style.close} onClick={handleCloseApplyModal}>&times;</span>
+                                <h2>审核新成员申请</h2>
+                                <div className={student_manageclub_style.applicationList}>
+                                    {applications.length > 0 ? (
+                                        applications.map(application => (
+                                            <div key={application.studentID} className={student_manageclub_style.applicationDetails}>
+                                                <h3>学生ID: {application.studentID}</h3>
+                                                <div className={student_manageclub_style.applicationMemberInfo}>
+                                                    <p>姓名: {application.name}</p>
+                                                    <div className={student_manageclub_style.profileCircle}>
+                                                        <img
+                                                            src={application.profile}
+                                                            alt={application.name}
+                                                            className={student_manageclub_style.memberProfileImg}
+                                                        />
+                                                    </div>
+                                                    <div className={student_manageclub_style.applicationActions}>
+                                                        <button onClick={() => handleResponseApplication(application.studentID, 1)}>
+                                                            通过
+                                                        </button>
+                                                        <button onClick={() => handleResponseApplication(application.studentID, 0)}>
+                                                            不通过
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p>没有新成员申请。</p>
+                                    )}
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <label>简介:</label>
-                            <input
-                                type="text"
-                                value={newActivity.intro}
-                                onChange={(e) => setNewActivity({ ...newActivity, intro: e.target.value })}
-                            />
-                        </div>
-                        <div>
-                            <label>开始时间:</label>
-                            <input
-                                type="datetime-local"
-                                value={newActivity.startTime}
-                                onChange={(e) => setNewActivity({ ...newActivity, startTime: e.target.value })}
-                            />
-                        </div>
-                        <div>
-                            <label>结束时间:</label>
-                            <input
-                                type="datetime-local"
-                                value={newActivity.finishTime}
-                                onChange={(e) => setNewActivity({ ...newActivity, finishTime: e.target.value })}
-                            />
-                        </div>
-                        <div>
-                            <label>最低人数:</label>
-                            <input
-                                type="number"
-                                placeholder="请输入最低人数"
-                                value={newActivity.lowLimit ?? ''}
-                                onChange={(e) => setNewActivity({ ...newActivity, lowLimit: e.target.value ? parseInt(e.target.value) : undefined })}
-                            />
-                        </div>
-                        <div>
-                            <label>最高人数:</label>
-                            <input
-                                type="number"
-                                placeholder="请输入最高人数"
-                                value={newActivity.upLimit ?? ''}
-                                onChange={(e) => setNewActivity({ ...newActivity, upLimit: e.target.value ? parseInt(e.target.value) : undefined })}
-                            />
-                        </div>
-                        <button type="submit" className={student_manageclub_style.submitButton}>提交</button>
-                        <button type="button" onClick={closeModal} className={student_manageclub_style.cancelButton}>取消</button>
-                    </form>
-                </Modal>
+                    )}
+
+                    <Modal
+                        isOpen={modalIsOpen}
+                        onRequestClose={closeModal}
+                        contentLabel="创建活动"
+                        className={student_manageclub_style.modal}
+                        overlayClassName={student_manageclub_style.modalOverlay}
+                    >
+                        <h2>创建活动</h2>
+                        <form onSubmit={(e) => { e.preventDefault(); handleCreateActivity(); }}>
+                            <div>
+                                <label>活动名称:</label>
+                                <input
+                                    type="text"
+                                    value={newActivity.activityName}
+                                    onChange={(e) => setNewActivity({ ...newActivity, activityName: e.target.value })}
+                                />
+                            </div>
+                            <div>
+                                <label>简介:</label>
+                                <input
+                                    type="text"
+                                    value={newActivity.intro}
+                                    onChange={(e) => setNewActivity({ ...newActivity, intro: e.target.value })}
+                                />
+                            </div>
+                            <div>
+                                <label>开始时间:</label>
+                                <input
+                                    type="datetime-local"
+                                    value={newActivity.startTime}
+                                    onChange={(e) => setNewActivity({ ...newActivity, startTime: e.target.value })}
+                                />
+                            </div>
+                            <div>
+                                <label>结束时间:</label>
+                                <input
+                                    type="datetime-local"
+                                    value={newActivity.finishTime}
+                                    onChange={(e) => setNewActivity({ ...newActivity, finishTime: e.target.value })}
+                                />
+                            </div>
+                            <div>
+                                <label>最低人数:</label>
+                                <input
+                                    type="number"
+                                    placeholder="请输入最低人数"
+                                    value={newActivity.lowLimit ?? ''}
+                                    onChange={(e) => setNewActivity({ ...newActivity, lowLimit: e.target.value ? parseInt(e.target.value) : undefined })}
+                                />
+                            </div>
+                            <div>
+                                <label>最高人数:</label>
+                                <input
+                                    type="number"
+                                    placeholder="请输入最高人数"
+                                    value={newActivity.upLimit ?? ''}
+                                    onChange={(e) => setNewActivity({ ...newActivity, upLimit: e.target.value ? parseInt(e.target.value) : undefined })}
+                                />
+                            </div>
+                            <button type="submit" className={student_manageclub_style.submitButton}>提交</button>
+                            <button type="button" onClick={closeModal} className={student_manageclub_style.cancelButton}>取消</button>
+                        </form>
+                    </Modal>
+                </div>
             </div>
         </div>
     );

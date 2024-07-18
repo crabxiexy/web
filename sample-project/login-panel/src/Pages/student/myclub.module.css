@@ -1,17 +1,37 @@
-.myClubInfo {
+.App {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 60px; /* Add padding to prevent content from being hidden behind the sidebar */
+    justify-content: center; /* Center vertically */
+    min-height: 100vh;
+    background-image: url("https://www.gameuidatabase.com/uploads/Genshin-Impact01032021-021443-79651.jpg");
+    background-size: cover;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.myClubInfo {
+    margin-top: -50px;
+    display: flex;
+    flex-direction: column;
+    min-height: 10vh;
+    max-height: 70vh;
+    padding: 20px;
+    position: relative;
 }
 
 .content {
+    width: 100%;
+    max-width: 1200px;
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
-    background-color: #f0f2f5;
-    width: 100%;
+    justify-content: space-between; /* Space between content and footer */
 }
 
 
@@ -21,18 +41,19 @@
     margin-bottom: 20px;
 }
 
-.clubDetailsBox, .membersBox, .activitiesBox {
+.membersBox, .activitiesBox {
     background-color: #ffffff;
-    padding: 20px;
+    padding: 10px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 80%; /* Adjust width to fit content in one page */
+    width: 90%; /* Adjust width to fit content in one page */
     margin-bottom: 20px;
 }
 
-.clubDetails {
-    display: flex;
-    justify-content: space-between;
+.clubDetailsBox h2 {
+    color: #007bff;
+    font-size: 1.5rem;
+    margin: 10px 0;
 }
 
 .textInfo {
@@ -176,4 +197,18 @@
 .textInfo p {
     font-size: 14px; /* Smaller font size for intro, leader, and department */
     line-height: 1.2; /* Reduce line height for closer spacing */
+}
+
+.button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #0056b3;
 }
