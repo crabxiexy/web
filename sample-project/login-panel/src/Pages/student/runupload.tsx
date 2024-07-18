@@ -7,7 +7,8 @@ import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotif
 import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { GetTAMessage } from 'Plugins/StudentAPI/GetTAMessage'; // Import your getTA message
 import * as Minio from 'minio';
-import runupload_styles from './runupload.module.css'; // Import the CSS module
+import runupload_styles from './runupload.module.css';
+import runupload from 'Pages/student/runupload' // Import the CSS module
 
 const minioClient = new Minio.Client({
     endPoint: '183.173.41.206',
@@ -134,7 +135,7 @@ export const RunUpload: React.FC = () => {
     return (
         <div className={runupload_styles.pageContainer}>
             <div className={runupload_styles.runUploadPage}>
-                <h1>Run Upload</h1>
+                <h1 className={runupload_styles.runuploadHeader}>Run Upload</h1>
                 {error && <p className={runupload_styles.errorMessage}>{error}</p>}
                 <div className={runupload_styles.timestampBox}>
                     <p>Start Time: {startTime ? startTime.toLocaleString() : '-'}</p>
@@ -165,10 +166,12 @@ export const RunUpload: React.FC = () => {
                     )}
                 </div>
                 <div className={runupload_styles.buttonGroup}>
-                    <button className={runupload_styles.startButton} onClick={handleStartFinishRunning} disabled={clickCount >= 2}>
+                    <button className={runupload_styles.startButton} onClick={handleStartFinishRunning}
+                            disabled={clickCount >= 2}>
                         {clickCount === 0 ? 'Start Running' : 'Finish Running'}
                     </button>
-                    <button className={runupload_styles.submitButton} onClick={handleSubmit} disabled={!startTime || !finishTime || !distance || !uploadedImage || submitted}>
+                    <button className={runupload_styles.submitButton} onClick={handleSubmit}
+                            disabled={!startTime || !finishTime || !distance || !uploadedImage || submitted}>
                         Submit
                     </button>
                     <button className={runupload_styles.cancelButton} onClick={handleCancel}>

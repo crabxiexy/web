@@ -136,7 +136,7 @@ export const RunningCheck = () => {
     return (
         <div className={styles.pageContainer}>
             <div className={styles.runningCheckContainer}>
-                <h1>Running Check</h1>
+                <h1 className={styles.runningCheckHeader}>Running Check</h1>
                 {error && <p className={styles.errorMessage}>{error}</p>}
                 <div className={styles.buttonGroup}>
                     <button className={styles.button} onClick={() => history.push('/ta_dashboard')}>

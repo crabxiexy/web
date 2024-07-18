@@ -13,7 +13,7 @@ import { CountHWMessage } from 'Plugins/ActivityAPI/CountHWMessage';
 import { AssignScoreMessage } from 'Plugins/StudentAPI/AssignScoreMessage';
 import useIdStore from 'Pages/IdStore';
 import useTokenStore from 'Pages/TokenStore';
-import './student_management.module.css';
+import styles from './student_management.module.css'; // Import the CSS module
 
 interface Student {
     studentID: number;
@@ -209,29 +209,29 @@ export const AssignTA: React.FC = () => {
     };
 
     return (
-        <div className="App">
-            <header className="App-header">
+        <div className={styles.pageContainer}>
+            <header className={styles.header}>
                 <h1>分配TA</h1>
-                <div className="user-section">
-                    <div className="user-avatar" onClick={toggleDropdown}>{username}</div>
+                <div className={styles.userSection}>
+                    <div className={styles.userAvatar} onClick={toggleDropdown}>{username}</div>
                     {dropdownVisible && (
-                        <div className="dropdown-menu">
+                        <div className={styles.dropdownMenu}>
                             <p>个人资料</p>
                             <p>帮助</p>
                         </div>
                     )}
                 </div>
             </header>
-            <main>
-                {error && <p className="error-message">{error}</p>}
-                <div className="form-container">
-                    <button className="btn back-btn" onClick={goBack}>返回</button>
-                    <button className="btn add-student-btn" onClick={openModal}>增加学生</button>
-                    <button className="btn submit-score-btn" onClick={handleSubmitScores}>提交成绩</button>
+            <main className={styles.main}>
+                {error && <p className={styles.errorMessage}>{error}</p>}
+                <div className={styles.formContainer}>
+                    <button className={styles.button} onClick={goBack}>返回</button>
+                    <button className={styles.button} onClick={openModal}>增加学生</button>
+                    <button className={styles.button} onClick={handleSubmitScores}>提交成绩</button>
                 </div>
-                <div className="ta-data">
+                <div className={styles.taData}>
                     <h2>已分配TA</h2>
-                    <table className="ta-table">
+                    <table className={styles.table}>
                         <thead>
                         <tr>
                             <th>学生ID</th>
@@ -264,6 +264,7 @@ export const AssignTA: React.FC = () => {
                                             type="number"
                                             value={ta.totalScore}
                                             onChange={(e) => handleScoreChange(ta.studentID, Number(e.target.value))}
+                                            className={styles.input}
                                         />
                                     ) : (
                                         ta.totalScore
@@ -272,7 +273,7 @@ export const AssignTA: React.FC = () => {
                                 <td>{ta.standardScore}</td> {/* Display Standard Score */}
                                 <td>
                                     {!ta.editable && (
-                                        <button onClick={() => handleEditScore(ta.studentID)}>编辑</button>
+                                        <button className={styles.button} onClick={() => handleEditScore(ta.studentID)}>编辑</button>
                                     )}
                                 </td>
                             </tr>
@@ -286,15 +287,15 @@ export const AssignTA: React.FC = () => {
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
                 contentLabel="选择学生"
-                className="student-modal"
-                overlayClassName="student-modal-overlay"
+                className={styles.studentModal}
+                overlayClassName={styles.studentModalOverlay}
             >
-                <div className="modal-header">
+                <div className={styles.modalHeader}>
                     <h2>选择学生</h2>
-                    <button className="close-button" onClick={closeModal}>&times;</button>
+                    <button className={styles.closeButton} onClick={closeModal}>&times;</button>
                 </div>
-                <div className="students-list">
-                    <table className="students-table">
+                <div className={styles.studentsList}>
+                    <table className={styles.table}>
                         <thead>
                         <tr>
                             <th>选择</th>
@@ -323,10 +324,12 @@ export const AssignTA: React.FC = () => {
                         </tbody>
                     </table>
                 </div>
-                <button className="btn assign-btn" onClick={handleAssignTA}>
+                <button className={styles.button} onClick={handleAssignTA}>
                     分配选中的TA
                 </button>
             </Modal>
         </div>
     );
 };
+
+export default AssignTA;
