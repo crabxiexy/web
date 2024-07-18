@@ -11,7 +11,7 @@ import availableclubinfo_style from './availableclub.module.css';
 import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
 import useIdStore from 'Pages/IdStore';
 import Sidebar from 'Pages/Sidebar';
-import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage'
+import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage';
 
 export const AvailableClubInfo: React.FC = () => {
     const history = useHistory();
@@ -23,7 +23,8 @@ export const AvailableClubInfo: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
     const [allMembers, setAllMembers] = useState<any[]>([]);
     const [error, setError] = useState<string>('');
-    const [leaderName,setLeaderName]=useState<string>(null);
+    const [leaderName, setLeaderName] = useState<string | null>(null);
+
     useEffect(() => {
         fetchClubInfo();
         fetchActivities();
@@ -34,7 +35,7 @@ export const AvailableClubInfo: React.FC = () => {
             const infoResponse = await sendPostRequest(new FetchInfoMessage(ClubName));
             const clubData = infoResponse.data[0];
             setClubInfo(clubData);
-            const leadernameResponse = await sendPostRequest(new FetchNameMessage(clubInfo.leader));
+            const leadernameResponse = await sendPostRequest(new FetchNameMessage(clubData.leader));
             setLeaderName(leadernameResponse.data);
             const membersResponse = await sendPostRequest(new QueryMemberMessage(ClubName));
             const memberDetails = await Promise.all(membersResponse.data.map(async (member: any) => {
@@ -43,11 +44,12 @@ export const AvailableClubInfo: React.FC = () => {
                 return {
                     ...member,
                     name: nameResponse.data,
-                    profile:profileResponse.data,
+                    profile: profileResponse.data,
                 };
             }));
             setMembers(memberDetails);
         } catch (error) {
+            setError('加载俱乐部信息失败，请重试。');
         }
     };
 
@@ -119,7 +121,6 @@ export const AvailableClubInfo: React.FC = () => {
                             <p><strong>简介:</strong> {clubInfo.intro}</p>
                             <p><strong>负责人：</strong> {leaderName}</p>
                             <p><strong>院系：</strong> {clubInfo.department}</p>
-
                         </div>
                         <div className={availableclubinfo_style.profileImage}>
                             <img
@@ -165,6 +166,8 @@ export const AvailableClubInfo: React.FC = () => {
                         ))}
                     </div>
                 </div>
+
+                <button className={availableclubinfo_style.applyButton} onClick={handleApplyToJoin}>申请加入</button>
 
                 {showModal && (
                     <div className={availableclubinfo_style.modal}>
