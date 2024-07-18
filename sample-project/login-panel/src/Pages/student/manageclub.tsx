@@ -394,7 +394,7 @@ export const ManagedClubInfo: React.FC = () => {
                         <h2>创建活动</h2>
                         <form onSubmit={(e) => { e.preventDefault(); handleCreateActivity(); }}>
                             <div>
-                                <label>活动名称:</label>
+                                <label>活动名称: </label>
                                 <input
                                     type="text"
                                     value={newActivity.activityName}
@@ -402,7 +402,7 @@ export const ManagedClubInfo: React.FC = () => {
                                 />
                             </div>
                             <div>
-                                <label>简介:</label>
+                                <label>简介: </label>
                                 <input
                                     type="text"
                                     value={newActivity.intro}
@@ -410,7 +410,7 @@ export const ManagedClubInfo: React.FC = () => {
                                 />
                             </div>
                             <div>
-                                <label>开始时间:</label>
+                                <label>开始时间: </label>
                                 <input
                                     type="datetime-local"
                                     value={newActivity.startTime}
@@ -418,7 +418,7 @@ export const ManagedClubInfo: React.FC = () => {
                                 />
                             </div>
                             <div>
-                                <label>结束时间:</label>
+                                <label>结束时间: </label>
                                 <input
                                     type="datetime-local"
                                     value={newActivity.finishTime}
@@ -426,7 +426,7 @@ export const ManagedClubInfo: React.FC = () => {
                                 />
                             </div>
                             <div>
-                                <label>最低人数:</label>
+                                <label>最低人数: </label>
                                 <input
                                     type="number"
                                     placeholder="请输入最低人数"
@@ -435,7 +435,7 @@ export const ManagedClubInfo: React.FC = () => {
                                 />
                             </div>
                             <div>
-                                <label>最高人数:</label>
+                                <label>最高人数: </label>
                                 <input
                                     type="number"
                                     placeholder="请输入最高人数"
@@ -443,8 +443,12 @@ export const ManagedClubInfo: React.FC = () => {
                                     onChange={(e) => setNewActivity({ ...newActivity, upLimit: e.target.value ? parseInt(e.target.value) : undefined })}
                                 />
                             </div>
-                            <button type="submit" className={student_manageclub_style.submitButton}>提交</button>
-                            <button type="button" onClick={closeModal} className={student_manageclub_style.cancelButton}>取消</button>
+                            <div className={student_manageclub_style.buttonGroup}>
+                                <button type="submit" className={student_manageclub_style.submitButton}>提交</button>
+                                <button type="button" onClick={closeModal}
+                                        className={student_manageclub_style.cancelButton}>取消
+                                </button>
+                            </div>
                         </form>
                     </Modal>
                 </div>
