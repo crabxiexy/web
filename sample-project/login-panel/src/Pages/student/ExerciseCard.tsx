@@ -1,4 +1,5 @@
 import React from 'react';
+import student_exercisecard_style from './ExerciseCard.module.css';
 
 interface ExerciseCardProps {
     groupexID: number;

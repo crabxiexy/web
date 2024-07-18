@@ -38,7 +38,7 @@ export function Main(): JSX.Element {
     };
 
     return (
-        <div className={`${main_styles.minHScreen}`}>
+        <div className={`${main_styles.min_h_screen}`}>
             <header className={main_styles.header}>
                 <h1>乐动力 Pro</h1>
                 <div className={`${main_styles.buttonGroup}`}>
