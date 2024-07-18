@@ -24,12 +24,12 @@
     margin-bottom: 15px;
 }
 
-label {
+.lbl {
     display: block;
     font-weight: bold;
 }
 
-input {
+.text-input {
     width: 100%;
     padding: 8px;
     border: 1px solid #ccc;
@@ -43,7 +43,7 @@ input {
     margin-top: 10px;
 }
 
-button {
+.btn {
     width: 48%; /* Adjust width as needed */
     padding: 10px;
     background-color: #007bff;
@@ -53,7 +53,7 @@ button {
     cursor: pointer;
 }
 
-button:hover {
+.btn:hover {
     background-color: #0056b3;
 }
 
