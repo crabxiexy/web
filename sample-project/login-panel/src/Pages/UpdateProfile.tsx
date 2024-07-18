@@ -8,7 +8,7 @@ import * as Minio from 'minio';
 import updateprofilestyle from './UpdateProfile.module.css'; // Import CSS module
 
 const minioClient = new Minio.Client({
-    endPoint: '183.173.41.206',
+    endPoint: '127.0.0.1',
     port: 5000,
     useSSL: false,
     accessKey: '12345678',
@@ -63,7 +63,7 @@ export const UpdateProfilePage: React.FC = () => {
 
                 const updateProfileMessage = new UpdateProfileMessage(
                     parseInt(Id),
-                    `http://183.173.41.206:5000/profile/${filename}`
+                    `http://127.0.0.1:5000/profile/${filename}`
                 );
 
                 const response = await sendPostRequest(updateProfileMessage);

@@ -239,7 +239,7 @@ export const AssignTA: React.FC = () => {
                             <th>学生ID</th>
                             <th>姓名</th>
                             <th>得分</th>
-                            <th>系</th>
+                            <th>系别</th>
                             <th>班级</th>
                             <th>跑步次数</th>
                             <th>团体锻炼次数</th>
@@ -301,6 +301,7 @@ export const AssignTA: React.FC = () => {
                             <tr>
                                 <th>选择</th>
                                 <th>ID</th>
+                                <th>名字</th>
                                 {students.some(student => student.name) && <th>姓名</th>}
                                 <th>系</th>
                                 <th>班级</th>
@@ -318,6 +319,7 @@ export const AssignTA: React.FC = () => {
                                     </td>
                                     <td>{student.studentID}</td>
                                     {student.name && <td>{student.name}</td>}
+                                    <td>{student.name}</td>
                                     <td>{student.department}</td>
                                     <td>{student.class}</td>
                                 </tr>

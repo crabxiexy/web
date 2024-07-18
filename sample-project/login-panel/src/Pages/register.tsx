@@ -62,7 +62,7 @@ export function Register() {
                     name,
                     password,
                     identityNumber,
-                    "http://127.0.0.1/5000/proof/test.jpg"
+                    "http://127.0.0.1:5000/proof/test.jpg"
                 );
                 const response = await sendPostRequest(message);
 

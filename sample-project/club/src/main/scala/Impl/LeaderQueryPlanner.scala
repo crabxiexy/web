@@ -16,7 +16,7 @@ case class LeaderQueryPlanner(leader_id: Int, override val planContext: PlanCont
   override def plan(using planContext: PlanContext): IO[List[Json]] = {
     val sqlQuery =
       s"""
-         |SELECT name, leader, intro, department
+         |SELECT name, leader, intro, department, profile
          |FROM ${schemaName}.info
          |WHERE leader = ?
        """.stripMargin

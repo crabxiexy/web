@@ -10,7 +10,7 @@ import Sidebar from 'Pages/Sidebar';
 import updateclubinfo_style from './updateclubinfo.module.css';
 
 const minioClient = new Minio.Client({
-    endPoint: '183.173.41.206',
+    endPoint: '127.0.0.1',
     port: 5000,
     useSSL: false,
     accessKey: '12345678',
@@ -33,8 +33,8 @@ export const UpdateClubInfo = () => {
             try {
                 const response = await sendPostRequest(message);
                 setClubInfo({
-                    profile: response.data.profile,
-                    intro: response.data.intro,
+                    profile: response.data[0].profile,
+                    intro: response.data[0].intro,
                 });
                 setNewIntro(response.data.intro);
                 setProfileImageUrl(response.data.profile);
@@ -82,7 +82,7 @@ export const UpdateClubInfo = () => {
 
                 const updateProfileMessage = new UpdateProfileMessage(
                     ClubName,
-                    profileImageUrl // Add the URL of the new profile image
+                    `http://127.0.0.1:5000/profile/${filename}` // Add the URL of the new profile image
                 );
 
                 await sendPostRequest(updateProfileMessage);
@@ -108,7 +108,7 @@ export const UpdateClubInfo = () => {
                 <div className={updateclubinfo_style.clubInfo}>
                     <h3>当前头像</h3>
                     <div className={updateclubinfo_style.profileCircle}>
-                        <img src={profileImageUrl} alt="Current Profile" className={updateclubinfo_style.clubProfile} />
+                        <img src={clubInfo.profile} alt="Current Profile" className={updateclubinfo_style.clubProfile} />
                     </div>
 
                     <div className={updateclubinfo_style.buttonGroup}>

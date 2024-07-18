@@ -82,8 +82,8 @@
 .fixedSizeImage {
     max-width: 400px;
     max-height: 400px;
-    width: auto;
-    height: auto;
+    width: 300px;
+    height: 200px;
 }
 
 .clubImage {

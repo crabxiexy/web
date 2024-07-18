@@ -126,7 +126,7 @@ export function Root() {
                     selectedApplication.leader,
                     selectedApplication.intro,
                     selectedApplication.department,
-                    "创建成功"
+                    'http://127.0.0.1:5000/proof/test.jpg'
                 );
                 await sendPostRequest(foundClubMessage);
                 const departmentStudentsResponse = await sendPostRequest(new GetDepartmentStudentMessage(selectedApplication.department));
