@@ -114,7 +114,7 @@ export const UpdateClubInfo = () => {
                     <div className={updateclubinfo_style.buttonGroup}>
                         <label htmlFor="fileInput" className={updateclubinfo_style.fileInputLabel}>选择新头像</label>
                         <input id="fileInput" type="file" onChange={handleProfileChange} accept="image/*" className={updateclubinfo_style.fileInput} />
-                        <button onClick={handleUpdateProfile}>更新头像</button>
+                        <button className={updateclubinfo_style.btn} onClick={handleUpdateProfile}>更新头像</button>
                     </div>
                 </div>
 
@@ -129,8 +129,8 @@ export const UpdateClubInfo = () => {
                                 required
                             />
                             <div className={updateclubinfo_style.editButtonGroup}>
-                                <button onClick={() => setIsEditingIntro(false)}>取消编辑</button>
-                                <button onClick={handleUpdateIntro}>更新介绍</button>
+                                <button className={updateclubinfo_style.btn} onClick={() => setIsEditingIntro(false)}>取消编辑</button>
+                                <button className={updateclubinfo_style.btn} onClick={handleUpdateIntro}>更新介绍</button>
                             </div>
                         </>
                     ) : (

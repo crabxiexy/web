@@ -40,10 +40,10 @@ export function Main(): JSX.Element {
     return (
         <div className={`${main_styles.minHScreen}`}>
             <header className={main_styles.header}>
-                <h1>Physical Exercise System</h1>
+                <h1>乐动力 Pro</h1>
                 <div className={"flex items-center space-x-4"}>
-                    <button className={`${main_styles.btn} ${main_styles.btnBlue}`} onClick={handleLogin}>Login</button>
-                    <button className={`${main_styles.btn} ${main_styles.btnGreen}`} onClick={handleRegister}>Register</button>
+                    <button className={`${main_styles.btn}`} onClick={handleLogin}>登录</button>
+                    <button className={`${main_styles.btn}`} onClick={handleRegister}>注册（仅内测）</button>
                 </div>
             </header>
             {loading ? (

@@ -19,7 +19,7 @@ body, html {
 .header {
     background-color: #212121; /* 更深的背景色 */
     color: white;
-    width: 100%;
+    max-width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -104,8 +104,10 @@ body, html {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    max-width: 100%;
+    max-height: 100%;
     padding: 1.5rem 2rem;
-    background-image: url("https://wallpapercave.com/wp/wp13783574.jpg");
+    background-image: url("https://www.gameuidatabase.com/uploads/Genshin-Impact01032021-021443-79651.jpg");
     background-blend-mode: overlay;
     background-size: cover;
     background-repeat: no-repeat;
