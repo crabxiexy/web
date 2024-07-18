@@ -1,10 +1,9 @@
-/* register.module.css */
-
 .register_container {
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
+    justify-content: center;
     background-color: #f3f4f6;
 }
 
@@ -51,6 +50,7 @@ nav ul li {
     padding: 2rem;
     margin: 0 1rem; /* Equal margin on both sides */
     transition: all 0.3s; /* Smooth transition effect */
+    text-align: center; /* Center text */
 }
 
 .h2 {
@@ -69,6 +69,7 @@ nav ul li {
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
+    margin: 0 auto; /* Center the select box */
 }
 
 .bulk_inputs {
@@ -96,15 +97,15 @@ nav ul li {
     grid-template-rows: repeat(5, auto); /* Each input field occupies a separate row */
     gap: 1rem;
     margin-top: 1rem; /* Add margin at the top */
-    border-top: 2px solid #3b82f6; /* Darker color for the top border */
     padding-top: 1rem; /* Add padding at the top */
 }
 
 .student_form input {
-    width: 80%; /* Set the width to 50% */
+    width: 80%; /* Set the width to 80% */
     padding: 0.75rem; /* Increased input padding for a more prominent look */
     border: 1px solid #ccc;
     border-radius: 8px; /* Larger border radius for a more rounded look */
+    margin: 0 auto; /* Center the input fields */
 }
 
 .button_group {
