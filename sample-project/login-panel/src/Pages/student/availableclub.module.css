@@ -1,7 +1,8 @@
 .pageContainer {
     display: flex;
     height: 100vh;
-    background: linear-gradient(to right, #6a11cb, #2575fc); /* Gradient background */
+    background-image: url("https://www.gameuidatabase.com/uploads/Genshin-Impact01032021-021443-79651.jpg");
+    background-size: cover;
 }
 
 .mainContent {

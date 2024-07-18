@@ -169,28 +169,28 @@ export const GroupexManagement: React.FC = () => {
                     </div>
                     <div className={groupex_management_style.modalBody}>
                         <div>
-                            <label>锻炼名称:</label>
+                            <label>锻炼名称: </label>
                             <input
                                 type="text"
                                 value={exName}
                                 onChange={(e) => setExName(e.target.value)} />
                         </div>
                         <div>
-                            <label>开始时间:</label>
+                            <label>开始时间: </label>
                             <input
                                 type="datetime-local"
                                 value={startTime}
                                 onChange={(e) => setStartTime(e.target.value)} />
                         </div>
                         <div>
-                            <label>结束时间:</label>
+                            <label>结束时间: </label>
                             <input
                                 type="datetime-local"
                                 value={finishTime}
                                 onChange={(e) => setFinishTime(e.target.value)} />
                         </div>
                         <div>
-                            <label>地点:</label>
+                            <label>地点: </label>
                             <input
                                 type="text"
                                 value={location}
