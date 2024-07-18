@@ -14,6 +14,7 @@ import { AssignScoreMessage } from 'Plugins/StudentAPI/AssignScoreMessage';
 import useIdStore from 'Pages/IdStore';
 import useTokenStore from 'Pages/TokenStore';
 import styles from './student_management.module.css'; // Import the CSS module
+import Sidebar from 'Pages/Sidebar'; // Import Sidebar
 
 interface Student {
     studentID: number;
@@ -47,7 +48,7 @@ export const AssignTA: React.FC = () => {
     const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
     const [taData, setTaData] = useState<TAData[]>([]);
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
-
+    const [name,setName] = useState<string>('');
     useEffect(() => {
         const storedUsername = localStorage.getItem('username');
         if (storedUsername) {
@@ -63,10 +64,12 @@ export const AssignTA: React.FC = () => {
             const studentsData: Student[] = await Promise.all(
                 response.data.map(async (student: Student) => {
                     try {
+                        console.log('s');
                         const nameResponse = await sendPostRequest(new FetchNameMessage(student.studentID));
+                        setName(nameResponse.data);
                         return {
                             ...student,
-                            name: nameResponse.data
+                            name: name
                         };
                     } catch {
                         return {
@@ -200,7 +203,6 @@ export const AssignTA: React.FC = () => {
     };
 
     const toggleDropdown = () => setDropdownVisible(!dropdownVisible);
-    const goBack = () => history.goBack();
 
     const openModal = () => setModalIsOpen(true);
     const closeModal = () => {
@@ -210,6 +212,7 @@ export const AssignTA: React.FC = () => {
 
     return (
         <div className={styles.pageContainer}>
+            <Sidebar />
             <header className={styles.header}>
                 <h1 className={styles.title}>分配TA</h1>
                 <div className={styles.userSection}>
@@ -224,13 +227,12 @@ export const AssignTA: React.FC = () => {
             </header>
             <main className={styles.main}>
                 {error && <p className={styles.errorMessage}>{error}</p>}
-                <div className={styles.formContainer}>
-                    <button className={styles.button} onClick={goBack}>返回</button>
-                    <button className={styles.button} onClick={openModal}>增加学生</button>
+                <div className={styles.tableHeader}>
+                    <h2>已分配TA</h2>
                     <button className={styles.button} onClick={handleSubmitScores}>提交成绩</button>
+                    <button className={styles.button} onClick={openModal}>增加学生</button>
                 </div>
                 <div className={styles.tableContainer}>
-                    <h2>已分配TA</h2>
                     <table className={styles.table}>
                         <thead>
                         <tr>
@@ -281,53 +283,53 @@ export const AssignTA: React.FC = () => {
                         </tbody>
                     </table>
                 </div>
-            </main>
 
-            <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                contentLabel="选择学生"
-                className={styles.studentModal}
-                overlayClassName={styles.studentModalOverlay}
-            >
-                <div className={styles.modalHeader}>
-                    <h2>选择学生</h2>
-                    <button className={styles.closeButton} onClick={closeModal}>&times;</button>
-                </div>
-                <div className={styles.studentsList}>
-                    <table className={styles.table}>
-                        <thead>
-                        <tr>
-                            <th>选择</th>
-                            <th>ID</th>
-                            {students.some(student => student.name) && <th>姓名</th>}
-                            <th>系</th>
-                            <th>班级</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {students.map((student) => (
-                            <tr key={student.studentID}>
-                                <td>
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedStudents.has(student.studentID)}
-                                        onChange={() => handleSelectStudent(student.studentID)}
-                                    />
-                                </td>
-                                <td>{student.studentID}</td>
-                                {student.name && <td>{student.name}</td>}
-                                <td>{student.department}</td>
-                                <td>{student.class}</td>
+                <Modal
+                    isOpen={modalIsOpen}
+                    onRequestClose={closeModal}
+                    contentLabel="选择学生"
+                    className={styles.studentModal}
+                    overlayClassName={styles.studentModalOverlay}
+                >
+                    <div className={styles.modalHeader}>
+                        <h2>选择学生</h2>
+                        <button className={styles.closeButton} onClick={closeModal}>&times;</button>
+                    </div>
+                    <div className={styles.studentsList}>
+                        <table className={styles.table}>
+                            <thead>
+                            <tr>
+                                <th>选择</th>
+                                <th>ID</th>
+                                {students.some(student => student.name) && <th>姓名</th>}
+                                <th>系</th>
+                                <th>班级</th>
                             </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                </div>
-                <button className={styles.button} onClick={handleAssignTA}>
-                    分配选中的TA
-                </button>
-            </Modal>
+                            </thead>
+                            <tbody>
+                            {students.map((student) => (
+                                <tr key={student.studentID}>
+                                    <td>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedStudents.has(student.studentID)}
+                                            onChange={() => handleSelectStudent(student.studentID)}
+                                        />
+                                    </td>
+                                    <td>{student.studentID}</td>
+                                    {student.name && <td>{student.name}</td>}
+                                    <td>{student.department}</td>
+                                    <td>{student.class}</td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    <button className={styles.button} onClick={handleAssignTA}>
+                        分配选中的TA
+                    </button>
+                </Modal>
+            </main>
         </div>
     );
 };

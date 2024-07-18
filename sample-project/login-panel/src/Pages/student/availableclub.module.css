@@ -1,14 +1,17 @@
 .pageContainer {
     display: flex;
     height: 100vh;
-    background-color: #fff; /* Set background to white */
+    background: linear-gradient(to right, #6a11cb, #2575fc); /* Gradient background */
 }
 
 .mainContent {
     flex: 1;
     padding: 20px;
     overflow-y: auto;
-    background-color: #f0f2f5;
+    background-color: #ffffff; /* White background for the main content area */
+    border-radius: 8px; /* Rounded corners for the main content area */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Subtle shadow for the main content area */
+    margin: 20px; /* Margin around the main content area */
 }
 
 .clubTitle {
@@ -208,4 +211,20 @@
     border-radius: 50%;
     overflow: hidden;
     margin-bottom: 5px;
+}
+
+.applyButton {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+    align-self: center;
+}
+
+.applyButton:hover {
+    background-color: #218838;
 }

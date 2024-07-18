@@ -62,7 +62,7 @@ export function Register() {
                     name,
                     password,
                     identityNumber,
-                    "http://183.172.236.220:9005/proof/test.jpg"
+                    "http://127.0.0.1/5000/proof/test.jpg"
                 );
                 const response = await sendPostRequest(message);
 
@@ -86,14 +86,7 @@ export function Register() {
 
     return (
         <div className={register_style.register_container}>
-            <header className={register_style.register_header}>
-                <div className={register_style.logo} onClick={() => history.push('/home')}>乐动力Pro</div>
-                <nav>
-                    <ul>
-                        <li onClick={() => history.push('/')}>回到主页</li>
-                    </ul>
-                </nav>
-            </header>
+
             <main className={register_style.main_content}>
                 <div className={register_style.form_container}>
                     <h2>注册用户</h2>
@@ -163,8 +156,8 @@ export function Register() {
                         </div>
                     ))}
                     <div className={register_style.button_group}>
-                        <button className={register_style.add_student_button} onClick={addStudentField}>添加用户</button>
-                        <button className={register_style.submit_button} onClick={handleRegister}>全部提交</button>
+
+                        <button className={register_style.submit_button} onClick={handleRegister}>提交</button>
                         <button className={register_style.back_button} onClick={() => history.push('/admin/root')}>返回主页</button>
                     </div>
                 </div>
