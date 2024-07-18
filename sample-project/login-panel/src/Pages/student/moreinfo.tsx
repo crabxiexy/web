@@ -9,9 +9,11 @@ import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { QueryMemberMessage } from 'Plugins/ActivityAPI/QueryMemberMessage';
 import { SubmitHWMessage } from 'Plugins/ActivityAPI/SubmitHWMessage';
 import * as Minio from 'minio';
+import Sidebar from 'Pages/Sidebar';
+import moreinfo_styles from './moreinfo_style.module.css'; // Import the CSS module
 
 const minioClient = new Minio.Client({
-    endPoint: '183.173.41.206',
+    endPoint: '127.0.0.1',
     port: 5000,
     useSSL: false,
     accessKey: '12345678',
@@ -124,15 +126,14 @@ export const MoreInfo: React.FC = () => {
         const filename = uploadedImage.name;
         try {
             // Upload image to MinIO
-            //await minioClient.fPutObject('proof', filename, uploadedImage.path, {});
+            await minioClient.fPutObject('proof', filename, uploadedImage.path, {});
 
-            console.log('s')
             for (const memberId of selectedMembers) {
                 const submitMessage = new SubmitHWMessage(
                     parseInt(Id),
                     currentActivityID,
                     memberId,
-                    `http://183.173.41.206:5000/runproof/${filename}`
+                    `http://127.0.0.1:5000/proof/${filename}`
                 );
 
                 await sendPostRequest(submitMessage);
@@ -146,56 +147,59 @@ export const MoreInfo: React.FC = () => {
     };
 
     return (
-        <div className="more-info">
-            <h1>所有活动</h1>
-            {error && <p className="error-message">{error}</p>}
-            {activities.length > 0 ? (
-                activities.map((activity: Activity) => (
-                    <div key={activity.activityID} className="activity-details">
-                        <p><strong>活动名称:</strong> {activity.activityName}</p>
-                        <p><strong>开始时间:</strong> {new Date(parseInt(activity.starttime)).toLocaleString()}</p>
-                        <p><strong>结束时间:</strong> {new Date(parseInt(activity.finishtime)).toLocaleString()}</p>
-                        <p><strong>人数限制:</strong> {activity.lowlimit} - {activity.uplimit}</p>
+        <div className={moreinfo_styles.pageContainer}>
+            <Sidebar />
+            <div className={moreinfo_styles.moreInfoPage}>
+                <h1>所有活动</h1>
+                {error && <p className={moreinfo_styles.errorMessage}>{error}</p>}
+                {activities.length > 0 ? (
+                    activities.map((activity: Activity) => (
+                        <div key={activity.activityID} className={moreinfo_styles.activityDetails}>
+                            <p><strong>活动名称:</strong> {activity.activityName}</p>
+                            <p><strong>开始时间:</strong> {new Date(parseInt(activity.starttime)).toLocaleString()}</p>
+                            <p><strong>结束时间:</strong> {new Date(parseInt(activity.finishtime)).toLocaleString()}</p>
+                            <p><strong>人数限制:</strong> {activity.lowlimit} - {activity.uplimit}</p>
 
-                        <button onClick={() => handleOpenModal(activity.activityID)}>提交作业</button>
+                            <button onClick={() => handleOpenModal(activity.activityID)}>提交作业</button>
 
-                        {showModal && (
-                            <div className="modal">
-                                <div className="modal-content">
-                                    <h2>提交作业</h2>
-                                    <p>选择要提交作业的成员:</p>
-                                    {membersDetails.map((member) => (
-                                        <div key={member.memberId} className="member-item">
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedMembers.includes(member.memberId)}
-                                                onChange={() => handleMemberSelect(member.memberId)}
-                                            />
-                                            <img src={member.profile} alt={member.name} className="member-profile" />
-                                            <span>{member.name}</span>
-                                        </div>
-                                    ))}
-                                    <input
-                                        type="file"
-                                        onChange={handleImageUpload}
-                                        accept="image/*"
-                                    />
-                                    {uploadedImageUrl && (
-                                        <img src={uploadedImageUrl} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '400px', marginTop: '10px' }} />
-                                    )}
-                                    <button onClick={handleSubmitHomework}>提交作业</button>
-                                    <button onClick={handleCloseModal}>关闭</button>
+                            {showModal && currentActivityID === activity.activityID && (
+                                <div className={moreinfo_styles.modal}>
+                                    <div className={moreinfo_styles.modalContent}>
+                                        <h2>提交作业</h2>
+                                        <p>选择要提交作业的成员:</p>
+                                        {membersDetails.map((member) => (
+                                            <div key={member.memberId} className={moreinfo_styles.memberItem}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedMembers.includes(member.memberId)}
+                                                    onChange={() => handleMemberSelect(member.memberId)}
+                                                />
+                                                <img src={member.profile} alt={member.name} className={moreinfo_styles.memberProfile} />
+                                                <span>{member.name}</span>
+                                            </div>
+                                        ))}
+                                        <input
+                                            type="file"
+                                            onChange={handleImageUpload}
+                                            accept="image/*"
+                                        />
+                                        {uploadedImageUrl && (
+                                            <img src={uploadedImageUrl} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '400px', marginTop: '10px' }} />
+                                        )}
+                                        <button onClick={handleSubmitHomework}>提交作业</button>
+                                        <button onClick={handleCloseModal}>关闭</button>
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                    </div>
-                ))
-            ) : (
-                <p>没有活动信息可显示。</p>
-            )}
-            <button className="back-button" onClick={handleBack}>
-                返回
-            </button>
+                            )}
+                        </div>
+                    ))
+                ) : (
+                    <p>没有活动信息可显示。</p>
+                )}
+                <button className={moreinfo_styles.backButton} onClick={handleBack}>
+                    返回
+                </button>
+            </div>
         </div>
     );
 };
