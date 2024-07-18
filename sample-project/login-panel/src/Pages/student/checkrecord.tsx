@@ -7,6 +7,8 @@ import { useHistory } from 'react-router';
 import Modal from 'react-modal'; // Import react-modal component
 import { StudentQueryMessage } from 'Plugins/GroupExAPI/StudentQueryMessage';
 import { StudentRecordQueryMessage } from 'Plugins/GroupExAPI/StudentRecordQueryMessage';
+import Sidebar from 'Pages/Sidebar';
+import checkrecord_style from './checkrecord.module.css';
 
 Modal.setAppElement('#root');
 
@@ -148,131 +150,132 @@ export const CheckRecord: React.FC = () => {
     };
 
     return (
-        <div className="check-record-container">
-            <h1>学生跑步记录与锻炼查询</h1>
-            {error && <p className="error-message">{error}</p>}
+        <div className={checkrecord_style.App}>
+            <Sidebar />
+            <div className={checkrecord_style.checkRecordContainer}>
+                <h1>学生锻炼记录查询</h1>
+                {error && <p className={checkrecord_style.errorMessage}>{error}</p>}
 
-            <h3>学生跑步记录:</h3>
-            <div className="record-list">
-                {records.length > 0 ? (
-                    <table className="table">
-                        <thead>
-                        <tr>
-                            <th>开始时间</th>
-                            <th>结束时间</th>
-                            <th>提交时间</th>
-                            <th>距离</th>
-                            <th>照片凭证</th>
-                            <th>审核状态</th>
-                            <th>回复</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {records.map((record) => (
-                            <tr key={record.runID}>
-                                <td>{record.starttime}</td>
-                                <td>{record.finishtime}</td>
-                                <td>{record.submittime}</td>
-                                <td>{record.distance}</td>
-                                <td>
-                                    <button className="button" onClick={() => handleShowCertificate({ imgUrl: record.imgurl })}>
-                                        显示凭证
-                                    </button>
-                                </td>
-                                <td>{status[record.isChecked]}</td>
-                                <td>{record.response}</td>
+                <h3>跑步记录</h3>
+                <div className={checkrecord_style.recordList}>
+                    {records.length > 0 ? (
+                        <table className={checkrecord_style.modernTable}>
+                            <thead>
+                            <tr>
+                                <th>开始时间</th>
+                                <th>结束时间</th>
+                                <th>提交时间</th>
+                                <th>距离</th>
+                                <th>照片凭证</th>
+                                <th>审核状态</th>
+                                <th>回复</th>
                             </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    <p>暂无记录。</p>
-                )}
-            </div>
-
-            <h3>学生锻炼记录:</h3>
-            <table>
-                <thead>
-                <tr>
-                    <th>Group Exercise ID</th>
-                    <th>Start Time</th>
-                    <th>Finish Time</th>
-                    <th>签到状态</th>
-                    <th>签退状态</th>
-                </tr>
-                </thead>
-                <tbody>
-                {studentRecord.map(record => (
-                    <tr key={record.groupex_id}>
-                        <td>{record.groupex_id}</td>
-                        <td>{formatDate(record.start_time)}</td>
-                        <td>{formatDate(record.finish_time)}</td>
-                        <td>{record.has_signed_in ? '是' : '否'}</td>
-                        <td>{record.has_signed_out ? '是' : '否'}</td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-
-            <h3>俱乐部活动记录:</h3>
-            <div className="activity-list">
-                {clubActivities.length > 0 ? (
-                    <table className="table">
-                        <thead>
-                        <tr>
-                            <th>活动 ID</th>
-                            <th>提交时间</th>
-                            <th>照片凭证</th>
-                            <th>审核状态</th>
-                            <th>回复</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {clubActivities.map((activity) => (
-                            <tr key={activity.activity_id}>
-                                <td>{activity.activity_id}</td>
-                                <td>{decodeTimestamp(activity.submitTime.toString())}</td>
-                                <td>
-                                    <button className="button" onClick={() => handleShowCertificate({ imgUrl: activity.imgUrl })}>
-                                        显示凭证
-                                    </button>
-                                </td>
-                                <td>{status[activity.is_checked]}</td>
-                                <td>{activity.response}</td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    <p>暂无记录。</p>
-                )}
-            </div>
-
-            <button className="button" onClick={handleCancel}>
-                返回 Student Dashboard
-            </button>
-
-            <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                contentLabel="Certificate Modal"
-                className="certificate-modal"
-                overlayClassName="certificate-modal-overlay"
-            >
-                <div className="modal-header">
-                    <button className="close-button" onClick={closeModal}>
-                        &times;
-                    </button>
-                </div>
-                <div className="modal-body">
-                    <h2>凭证信息</h2>
-                    {selectedRecord && (
-                        <div>
-                            <img src={selectedRecord.imgUrl} alt="Certificate" style={{ maxWidth: '100%', maxHeight: '100%' }} />
-                        </div>
+                            </thead>
+                            <tbody>
+                            {records.map((record) => (
+                                <tr key={record.runID}>
+                                    <td>{record.starttime}</td>
+                                    <td>{record.finishtime}</td>
+                                    <td>{record.submittime}</td>
+                                    <td>{record.distance}</td>
+                                    <td>
+                                        <button className={checkrecord_style.button}
+                                                onClick={() => handleShowCertificate({imgUrl: record.imgurl})}>
+                                            显示
+                                        </button>
+                                    </td>
+                                    <td>{status[record.isChecked]}</td>
+                                    <td>{record.response}</td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>暂无记录。</p>
                     )}
                 </div>
-            </Modal>
+
+                <h3>集体锻炼记录</h3>
+                <table className={checkrecord_style.modernTable}>
+                    <thead>
+                    <tr>
+                        <th>Group Exercise ID</th>
+                        <th>Start Time</th>
+                        <th>Finish Time</th>
+                        <th>签到状态</th>
+                        <th>签退状态</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {studentRecord.map(record => (
+                        <tr key={record.groupex_id}>
+                            <td>{record.groupex_id}</td>
+                            <td>{formatDate(record.start_time)}</td>
+                            <td>{formatDate(record.finish_time)}</td>
+                            <td>{record.has_signed_in ? '是' : '否'}</td>
+                            <td>{record.has_signed_out ? '是' : '否'}</td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+
+                <h3>俱乐部活动记录</h3>
+                <div className={checkrecord_style.activityList}>
+                    {clubActivities.length > 0 ? (
+                        <table className={checkrecord_style.modernTable}>
+                            <thead>
+                            <tr>
+                                <th>活动 ID</th>
+                                <th>提交时间</th>
+                                <th>照片凭证</th>
+                                <th>审核状态</th>
+                                <th>回复</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {clubActivities.map((activity) => (
+                                <tr key={activity.activity_id}>
+                                    <td>{activity.activity_id}</td>
+                                    <td>{decodeTimestamp(activity.submitTime.toString())}</td>
+                                    <td>
+                                        <button className={checkrecord_style.button}
+                                                onClick={() => handleShowCertificate({imgUrl: activity.imgUrl})}>
+                                            显示
+                                        </button>
+                                    </td>
+                                    <td>{status[activity.is_checked]}</td>
+                                    <td>{activity.response}</td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p>暂无记录。</p>
+                    )}
+                </div>
+
+                <button className={checkrecord_style.cancelButton} onClick={handleCancel}>
+                    返回 Student Dashboard
+                </button>
+
+                <Modal
+                    isOpen={modalIsOpen}
+                    onRequestClose={closeModal} // This allows closing by clicking the overlay or pressing ESC
+                    contentLabel="Certificate Modal"
+                    className={checkrecord_style.certificateModal}
+                    overlayClassName={checkrecord_style.certificateModalOverlay}
+                >
+                    <div className={checkrecord_style.modalHeader}>
+                        <button className={checkrecord_style.closeButton} onClick={closeModal}>&times;</button>
+                    </div>
+                    <div className={checkrecord_style.modalBody}>
+                        <h2>凭证信息</h2>
+                        {selectedRecord && (
+                            <img src={selectedRecord.imgUrl} alt="Certificate" style={{ maxWidth: '60%', maxHeight: '60%' }}/>
+                        )}
+                    </div>
+                </Modal>
+            </div>
         </div>
     );
 };
