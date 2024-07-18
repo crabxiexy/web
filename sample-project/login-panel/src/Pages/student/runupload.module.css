@@ -1,127 +1,110 @@
 .pageContainer {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, #FFDEE9, #B5FFFC);
-    font-family: 'Arial', sans-serif;
-    color: #444;
+    background-image: url("https://www.gameuidatabase.com/uploads/Genshin-Impact01032021-021443-79651.jpg"); /* Add your background image URL */
+    background-size: cover;
+    text-align: center;
+    font-family: Arial, sans-serif;
 }
 
 .runUploadPage {
-    width: 100%;
-    max-width: 500px;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 2rem;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 600px;
+    margin: 20px auto;
     text-align: center;
 }
 
-/* 其他样式保持不变 */
-
-.runupload-header {
-    font-size: 2rem;
-    color: #333;
-    margin-bottom: 1rem;
-    text-align: center;
-    font-weight: bold;
+.runuploadHeader {
+    font-size: 1.5rem;
+    color: #444;
+    margin-bottom: 20px;
 }
 
+.errorMessage {
+    color: red;
+    margin-bottom: 20px;
+}
 
-.timestampBox p {
-    margin: 0.5rem 0;
+.timestampBox {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.distanceInput {
+    margin-bottom: 20px;
+}
+
+.distanceInput label {
+    display: block;
+    margin-bottom: 5px;
     font-size: 1rem;
+    color: #333;
 }
 
-.distanceInput label,
+.distanceInput input {
+    width: calc(100% - 22px);
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.imageUpload {
+    margin-bottom: 20px;
+}
+
 .imageUpload label {
     display: block;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-    color: #34495e;
+    margin-bottom: 5px;
+    font-size: 1rem;
+    color: #333;
 }
 
-.distanceInput input,
 .imageUpload input {
-    width: 100%;
+    width: calc(100% - 22px);
     padding: 10px;
-    border: 1px solid #ddd;
     border-radius: 5px;
-    margin-bottom: 1rem;
-    outline: none;
-    transition: border-color 0.3s ease;
-}
-
-.distanceInput input:focus,
-.imageUpload input:focus {
-    border-color: #63D1FF;
+    border: 1px solid #ddd;
 }
 
 .uploadedImage {
-    max-width: 100%;
-    max-height: 400px;
     margin-top: 10px;
+    max-width: 100%;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .buttonGroup {
     display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
 }
 
-.startButton,
-.submitButton,
-.cancelButton {
-    padding: 0.5rem 1rem;
+.startButton, .submitButton, .cancelButton {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
     border: none;
-    border-radius: 10px;
-    color: white;
+    border-radius: 5px;
     cursor: pointer;
-    margin: 0.5rem 0;
-    flex: 1;
-    margin: 5px;
     transition: transform 0.2s, box-shadow 0.2s;
+    outline: none; /* Remove the blue outline on focus */
 }
 
-.startButton {
-    background: linear-gradient(to right, #63D1FF, #3498db);
-    box-shadow: 0 4px 12px rgba(99, 209, 255, 0.25);
-}
-
-.startButton:hover {
+.startButton:hover, .submitButton:hover, .cancelButton:hover {
     transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(99, 209, 255, 0.35);
-}
-
-.submitButton {
-    background: linear-gradient(to right, #27ae60, #2ecc71);
-    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.25);
-}
-
-.submitButton:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(39, 174, 96, 0.35);
-}
-
-.cancelButton {
-    background: linear-gradient(to right, #FF867C, #FEB2A8);
-    box-shadow: 0 4px 12px rgba(255, 134, 124, 0.25);
-}
-
-.cancelButton:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(255, 134, 124, 0.35);
-}
-
-.errorMessage {
-    color: #FF867C;
-    margin-bottom: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .submittedMessage {
-    color: #27ae60;
-    margin-top: 1rem;
+    color: green;
+    margin-top: 20px;
+    font-size: 1rem;
 }

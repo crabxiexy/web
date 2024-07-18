@@ -8,10 +8,10 @@ import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { GetTAMessage } from 'Plugins/StudentAPI/GetTAMessage'; // Import your getTA message
 import * as Minio from 'minio';
 import runupload_styles from './runupload.module.css';
-import runupload from 'Pages/student/runupload' // Import the CSS module
+import Sidebar from 'Pages/Sidebar'; // Import Sidebar
 
 const minioClient = new Minio.Client({
-    endPoint: '183.173.41.206',
+    endPoint: '127.0.0.1',
     port: 5000,
     useSSL: false,
     accessKey: '12345678',
@@ -62,7 +62,7 @@ export const RunUpload: React.FC = () => {
 
             try {
                 // Upload image to MinIO
-                await minioClient.fPutObject('run', filename, uploadedImage.path, {});
+                await minioClient.fPutObject('proof', filename, uploadedImage.path, {});
 
                 const studentIdNumber = parseInt(Id);
                 const distanceNumber = parseFloat(distance) * 10;
@@ -72,7 +72,7 @@ export const RunUpload: React.FC = () => {
                     startTime.getTime().toString(),
                     finishTime.getTime().toString(),
                     distanceNumber,
-                    `http://183.173.41.206:5000/run/${filename}`
+                    `http://127.0.0.1:5000/proof/${filename}`
                 );
 
                 // Send the running data
@@ -134,6 +134,7 @@ export const RunUpload: React.FC = () => {
 
     return (
         <div className={runupload_styles.pageContainer}>
+            <Sidebar />
             <div className={runupload_styles.runUploadPage}>
                 <h1 className={runupload_styles.runuploadHeader}>Run Upload</h1>
                 {error && <p className={runupload_styles.errorMessage}>{error}</p>}
