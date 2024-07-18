@@ -1,16 +1,18 @@
+/* dashboard.module.css */
 .App {
-    text-align: center;
-    background: linear-gradient(135deg, #FFDEE9, #B5FFFC);
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    font-family: 'Arial', sans-serif;
+    justify-content: center; /* Center vertically */
+    min-height: 100vh;
+    background-image: url("https://www.gameuidatabase.com/uploads/Genshin-Impact01032021-021443-79651.jpg");
+    background-size: cover;
+    text-align: center;
+    font-family: Arial, sans-serif;
 }
 
 .App-header {
-    background-color: #34495e;
+    background-color: transparent;
     padding: 20px;
     color: white;
     width: 100%;
@@ -73,7 +75,7 @@ section.notifications {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 100%;
+    max-width: 100%;
     text-align: left;
 }
 
@@ -97,26 +99,58 @@ section.notifications h2 {
     margin-bottom: 10px;
 }
 
-.square-block {
-    background: linear-gradient(to right, #8e44ad, #3498db);
-    color: white;
+section.counts {
+    display: flex;
+    flex-wrap: wrap;
+    background: rgba(255, 255, 255, 0.9);
+    margin: 20px 0;
     padding: 20px;
-    margin: 10px;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(142, 68, 173, 0.25);
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    text-align: center;
-    width: 80%;
-    max-width: 400px;
+    justify-content: center;
+    gap: 10px;
+    max-width: 100%;
 }
 
-.square-block:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(142, 68, 173, 0.35);
+.countcard {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: calc(33% - 20px);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.countcard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.countcardtitle {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.countcardvalue {
+    font-size: 2em;
+    font-weight: bold;
+    color: #555555;
+}
+
+section.btn_group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
 }
 
 .btn {
+    background-color: rgba(255, 255, 255, 0.9);
+    flex: 1;
+    margin: 0 5px;
     padding: 15px 30px;
     font-size: 16px;
     border: none;
@@ -126,38 +160,11 @@ section.notifications h2 {
     outline: none; /* Remove the blue outline on focus */
 }
 
-.login-btn {
-    background: linear-gradient(to right, #FF867C, #FEB2A8);
-    color: white;
-    box-shadow: 0 4px 12px rgba(255, 134, 124, 0.25);
-}
-
-.login-btn:hover {
+.btn:hover {
     transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(255, 134, 124, 0.35);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-.activity-btn {
-    background: linear-gradient(to right, #8e44ad, #3498db);
-    color: white;
-    box-shadow: 0 4px 12px rgba(142, 68, 173, 0.25);
-}
-
-.activity-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(142, 68, 173, 0.35);
-}
-
-.exercise-btn {
-    background: linear-gradient(to right, #27ae60, #2ecc71);
-    color: white;
-    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.25);
-}
-
-.exercise-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(39, 174, 96, 0.35);
-}
 .user-avatar {
     position: relative;
     display: inline-block;
