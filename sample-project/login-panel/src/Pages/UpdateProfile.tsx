@@ -7,8 +7,8 @@ import { UpdateProfileMessage } from 'Plugins/DoctorAPI/UpdateProfileMessage';
 import * as Minio from 'minio'; // Import MinIO client
 
 const minioClient = new Minio.Client({
-    endPoint: '183.172.236.220', // 替换为您的 MinIO 服务器地址
-    port: 9004,
+    endPoint: '183.173.41.206', // 替换为您的 MinIO 服务器地址
+    port: 5000,
     useSSL: false,
     accessKey: '12345678', // 替换为您的 MinIO Access Key
     secretKey: '12345678', // 替换为您的 MinIO Secret Key
@@ -62,7 +62,7 @@ export const UploadProfilePage: React.FC = () => {
 
                 const updateProfileMessage = new UpdateProfileMessage(
                     parseInt(Id),
-                    `http://183.172.236.220:9004/profile/${filename}`
+                    `http://183.173.41.206:5000/profile/${filename}`
                 );
 
                 const response = await sendPostRequest(updateProfileMessage);
