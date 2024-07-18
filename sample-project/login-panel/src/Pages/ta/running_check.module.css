@@ -1,3 +1,15 @@
+.App {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Center vertically */
+    min-height: 100vh;
+    background-image: url("https://wallpapercave.com/uwp/uwp3766950.jpeg");
+    background-size: cover;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
 .pageContainer {
     display: flex;
     justify-content: center;
@@ -50,11 +62,12 @@
     flex: 1;
     margin: 5px;
     transition: transform 0.2s, box-shadow 0.2s;
-    background: linear-gradient(to right, #63D1FF, #3498db);
+    background-color: #007bff;
     box-shadow: 0 4px 12px rgba(99, 209, 255, 0.25);
 }
 
 .button:hover {
+    background-color: #0056b3;
     transform: scale(1.05);
     box-shadow: 0 8px 16px rgba(99, 209, 255, 0.35);
 }

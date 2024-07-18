@@ -7,6 +7,7 @@ import { CheckRunningMessage } from 'Plugins/RunAPI/CheckRunningMessage';
 import Modal from 'react-modal';
 import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
+import Sidebar from "Pages/Sidebar";
 import styles from './running_check.module.css'; // Import the CSS module
 
 Modal.setAppElement('#root');
@@ -134,7 +135,8 @@ export const RunningCheck = () => {
     };
 
     return (
-        <div className={styles.pageContainer}>
+        <div className={styles.App}>
+            <Sidebar />
             <div className={styles.runningCheckContainer}>
                 <h1 className={styles.runningCheckHeader}>Running Check</h1>
                 {error && <p className={styles.errorMessage}>{error}</p>}
@@ -157,7 +159,7 @@ export const RunningCheck = () => {
                                 <th>结束时间</th>
                                 <th>提交时间</th>
                                 <th>距离</th>
-                                <th>查看图片</th>
+                                <th>证明图片</th>
                                 <th>回复</th>
                                 <th>速度 (km/h)</th>
                                 <th>操作</th>
@@ -176,7 +178,7 @@ export const RunningCheck = () => {
                                             className={styles.button}
                                             onClick={() => handleImageClick(run.imgurl, run.runID)}
                                         >
-                                            查看图片
+                                            查看
                                         </button>
                                     </td>
                                     <td>
@@ -190,10 +192,12 @@ export const RunningCheck = () => {
                                     </td>
                                     <td>{run.speed.toFixed(2)}</td>
                                     <td>
-                                        <button className={styles.button} onClick={() => handleCheck(run.runID,run.studentID)}>
+                                        <button className={styles.button}
+                                                onClick={() => handleCheck(run.runID, run.studentID)}>
                                             通过
                                         </button>
-                                        <button className={styles.button} onClick={() => handleReject(run.runID,run.studentID)}>
+                                        <button className={styles.button}
+                                                onClick={() => handleReject(run.runID, run.studentID)}>
                                             拒绝
                                         </button>
                                     </td>
@@ -225,6 +229,7 @@ export const RunningCheck = () => {
                     </Modal>
                 ))}
             </div>
+
         </div>
     );
 };

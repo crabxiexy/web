@@ -4,7 +4,10 @@
     align-items: center;
     min-height: 100vh;
     justify-content: center;
-    background-color: #f3f4f6;
+    background-image: url("https://www.gameuidatabase.com/uploads/Genshin-Impact01032021-021443-79651.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 
 .register_header {
