@@ -126,7 +126,7 @@ export const ViewClub: React.FC = () => {
     const ClubCard: React.FC<{ club: any; onClick: () => void; actionText?: string; onActionClick?: () => void }> = ({ club, onClick, actionText, onActionClick }) => (
     <div className={viewclub_styles.clubCard} onClick={onClick}>
         <div className={viewclub_styles.clubImage}>
-            <img src={club.profile} alt={club.name} className={viewclub_styles.clubProfileImg} />
+            <img src={club.profile} alt={club.name} className={viewclub_styles.fixedSizeImage} />
         </div>
         <div className={viewclub_styles.clubInfo}>
             <h3>{club.name}</h3>
