@@ -1,0 +1,159 @@
+/* updateclubinfo.module.css */
+.updateClubInfo {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    background-color: #f9f9f9;
+    min-height: 100vh;
+    font-family: 'Roboto', sans-serif;
+}
+.introTitle {
+    text-align: center; /* Center the text horizontally */
+}
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin: 20px;
+    width: 500px; /* Set a fixed width for the content box */
+}
+
+h2 {
+    color: #333333;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+h3 {
+    color: #666666;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.errorMessage {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.clubInfo {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; /* Ensure it takes full width of the content */
+}
+
+.profileCircle {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.clubProfile {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: center; /* Center buttons horizontally */
+    align-items: center;
+    gap: 10px; /* Add some space between buttons */
+    width: 100%;
+}
+
+.fileInputLabel {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.fileInputLabel:hover {
+    background-color: #0056b3;
+}
+
+.fileInput {
+    display: none;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+textarea {
+    width: 100%;
+    height: 100px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    box-sizing: border-box; /* Ensure padding is included in the element's total width and height */
+}
+
+.backButton {
+    background-color: #28a745;
+}
+
+.backButton:hover {
+    background-color: #218838;
+}
+
+.introContainer {
+    margin-bottom: 20px;
+    width: 100%; /* Ensure it takes full width of the content */
+}
+
+.introContainer p {
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 4px;
+    min-height: 100px; /* Ensure it has the same minimum height as the textarea */
+    box-sizing: border-box; /* Ensure padding is included in the element's total width and height */
+    width: 100%; /* Ensure it takes full width of the container */
+}
+
+.editButtonGroup {
+    display: flex;
+    justify-content: center; /* Center buttons horizontally */
+    gap: 10px; /* Add some space between buttons */
+    width: 100%;
+}
+
+.editIntroButton {
+    display: block;
+    margin: 0 auto; /* Center the button horizontally */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.editIntroButton:hover {
+    background-color: #0056b3;
+}

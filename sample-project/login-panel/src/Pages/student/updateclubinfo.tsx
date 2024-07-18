@@ -6,6 +6,8 @@ import { UpdateIntroMessage } from 'Plugins/ClubAPI/UpdateIntroMessage';
 import { UpdateProfileMessage } from 'Plugins/ClubAPI/UpdateProfileMessage';
 import * as Minio from 'minio';
 import useClubNameStore from 'Pages/student/ClubNameStore';
+import Sidebar from 'Pages/Sidebar';
+import updateclubinfo_style from './updateclubinfo.module.css';
 
 const minioClient = new Minio.Client({
     endPoint: '183.172.236.220',
@@ -18,14 +20,12 @@ const minioClient = new Minio.Client({
 export const UpdateClubInfo = () => {
     const history = useHistory();
     const { ClubName } = useClubNameStore();
-    const [clubInfo, setClubInfo] = useState({
-        profile: '',
-        intro: '',
-    });
+    const [clubInfo, setClubInfo] = useState({ profile: '', intro: '' });
     const [newIntro, setNewIntro] = useState('');
     const [newProfile, setNewProfile] = useState<File | null>(null);
     const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
     const [error, setError] = useState('');
+    const [isEditingIntro, setIsEditingIntro] = useState(false);
 
     useEffect(() => {
         const fetchClubInfo = async () => {
@@ -51,6 +51,7 @@ export const UpdateClubInfo = () => {
         try {
             await sendPostRequest(updateMessage);
             alert('俱乐部介绍更新成功！');
+            setIsEditingIntro(false);
             history.goBack();
         } catch (error) {
             setError('更新失败，请重试。');
@@ -79,8 +80,9 @@ export const UpdateClubInfo = () => {
                     'Content-Type': newProfile.type,
                 });
 
-                const updateProfileMessage = new UpdateProfileMessage(ClubName,
-                    `http://183.172.236.220:9004/profile/${filename}`
+                const updateProfileMessage = new UpdateProfileMessage(
+                    ClubName,
+                    profileImageUrl // Add the URL of the new profile image
                 );
 
                 await sendPostRequest(updateProfileMessage);
@@ -93,34 +95,55 @@ export const UpdateClubInfo = () => {
     };
 
     const handleBack = () => {
-        history.goBack(); // Navigate back to the previous page
+        history.goBack();
     };
 
     return (
-        <div className="update-club-info">
-            <h2>更新俱乐部信息</h2>
-            {error && <p className="error-message">{error}</p>}
-            <div className="club-info">
-                <h3>当前头像</h3>
-                <img src={clubInfo.profile} alt="Current Profile" className="club-profile" />
-                <h3>当前介绍</h3>
-                <p>{clubInfo.intro}</p>
-            </div>
-            <div className="update-form">
-                <h3>更新介绍</h3>
-                <textarea
-                    value={newIntro}
-                    onChange={(e) => setNewIntro(e.target.value)}
-                    placeholder="输入新的俱乐部介绍"
-                    required
-                />
-                <button onClick={handleUpdateIntro}>更新介绍</button>
+        <div className={updateclubinfo_style.updateClubInfo}>
+            <Sidebar />
+            <div className={updateclubinfo_style.content}>
+                <h2>更新俱乐部信息</h2>
+                {error && <p className={updateclubinfo_style.errorMessage}>{error}</p>}
 
-                <h3>更新头像</h3>
-                <input type="file" onChange={handleProfileChange} accept="image/*" />
-                <button onClick={handleUpdateProfile}>更新头像</button>
+                <div className={updateclubinfo_style.clubInfo}>
+                    <h3>当前头像</h3>
+                    <div className={updateclubinfo_style.profileCircle}>
+                        <img src={profileImageUrl} alt="Current Profile" className={updateclubinfo_style.clubProfile} />
+                    </div>
+
+                    <div className={updateclubinfo_style.buttonGroup}>
+                        <label htmlFor="fileInput" className={updateclubinfo_style.fileInputLabel}>选择新头像</label>
+                        <input id="fileInput" type="file" onChange={handleProfileChange} accept="image/*" className={updateclubinfo_style.fileInput} />
+                        <button onClick={handleUpdateProfile}>更新头像</button>
+                    </div>
+                </div>
+
+                <div className={updateclubinfo_style.introContainer}>
+                    <h3 className={updateclubinfo_style.introTitle}>当前介绍</h3>
+                    {isEditingIntro ? (
+                        <>
+                            <textarea
+                                value={newIntro}
+                                onChange={(e) => setNewIntro(e.target.value)}
+                                placeholder="输入新的俱乐部介绍"
+                                required
+                            />
+                            <div className={updateclubinfo_style.editButtonGroup}>
+                                <button onClick={() => setIsEditingIntro(false)}>取消编辑</button>
+                                <button onClick={handleUpdateIntro}>更新介绍</button>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <p>{clubInfo.intro}</p>
+                            <button className={updateclubinfo_style.editIntroButton}
+                                    onClick={() => setIsEditingIntro(true)}>编辑介绍
+                            </button>
+                        </>
+                    )}
+                </div>
+
             </div>
-            <button className="back-button" onClick={handleBack}>返回</button> {/* Back button */}
         </div>
     );
 };
