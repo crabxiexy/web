@@ -14,31 +14,6 @@
     width: 100%;
 }
 
-h1, h2, h3, h4 {
-    margin: 0;
-}
-
-h1 {
-    margin-bottom: 20px;
-    font-size: 36px; /* Increase font size for the club name */
-    color: #333;
-}
-
-h2 {
-    font-size: 24px;
-    color: #555;
-}
-
-h3 {
-    font-size: 20px;
-    color: #777;
-    margin-bottom: 10px;
-}
-
-h4 {
-    font-size: 18px;
-    color: #999;
-}
 
 .errorMessage {
     color: red;
@@ -142,21 +117,6 @@ h4 {
     margin-bottom: 10px;
 }
 
-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    margin: 5px;
-    gap: 10px;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
 
 .modal {
     position: fixed;
