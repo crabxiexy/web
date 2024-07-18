@@ -211,7 +211,7 @@ export const AssignTA: React.FC = () => {
     return (
         <div className={styles.pageContainer}>
             <header className={styles.header}>
-                <h1>分配TA</h1>
+                <h1 className={styles.title}>分配TA</h1>
                 <div className={styles.userSection}>
                     <div className={styles.userAvatar} onClick={toggleDropdown}>{username}</div>
                     {dropdownVisible && (
@@ -229,7 +229,7 @@ export const AssignTA: React.FC = () => {
                     <button className={styles.button} onClick={openModal}>增加学生</button>
                     <button className={styles.button} onClick={handleSubmitScores}>提交成绩</button>
                 </div>
-                <div className={styles.taData}>
+                <div className={styles.tableContainer}>
                     <h2>已分配TA</h2>
                     <table className={styles.table}>
                         <thead>

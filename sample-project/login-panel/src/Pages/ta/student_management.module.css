@@ -6,7 +6,29 @@
     background: linear-gradient(135deg, #FFDEE9, #B5FFFC);
     font-family: 'Arial', sans-serif;
     color: #444;
+    padding: 40px; /* 为页面边缘留出更多空隙 */
 }
+
+.tableContainer {
+    margin: 20px 0; /* 增加表格与其他内容之间的外边距 */
+    padding: 20px; /* 增加表格周围的内边距 */
+    border: 1px solid #ddd; /* 添加边框 */
+    border-radius: 10px; /* 添加圆角 */
+    background-color: #fff; /* 设置表格容器背景颜色 */
+}
+
+
+.header h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #000; /* 设置为黑色 */
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    margin: 0;
+}
+
 
 .header {
     width: 100%;
@@ -57,7 +79,7 @@
 .main {
     width: 100%;
     max-width: 1200px;
-    padding: 2rem;
+    padding: 40px; /* 为主内容区留出更多空隙 */
     background: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -97,12 +119,16 @@
 
 .taData {
     margin-top: 1rem;
+    padding: 20px; /* 为表格容器增加内边距 */
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 1rem;
+    margin: 40px 0; /* 为表格留出更多上下空隙 */
 }
 
 .table th,
@@ -185,3 +211,4 @@
     background-color: #f2f2f2;
     color: #333;
 }
+
