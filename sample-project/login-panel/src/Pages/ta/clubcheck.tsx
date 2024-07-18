@@ -195,9 +195,7 @@ export const ClubHWCheck = () => {
                     </div>
                 ) : <center>暂时没有需要审核的俱乐部活动作业。</center>}
                 <div className={styles.buttonGroup}>
-                    <button className={styles.button} onClick={() => history.push('/ta_dashboard')}>
-                        返回 TA 仪表盘
-                    </button>
+
                 </div>
                 {result.map((homework) => (
                     <Modal

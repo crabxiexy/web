@@ -60,7 +60,6 @@ const TA_ExerciseCard: React.FC<ExerciseCardProps> = ({
         try {
             const response = await sendPostRequest(new TASignMessage(groupexID, taId, 1, token));
             if (response.status === 200) {
-                setError('签到成功！');
                 updateStatus(1); // Update status to 1 (end sign in)
             } else {
                 setError('签到失败，请重试。');
@@ -76,7 +75,6 @@ const TA_ExerciseCard: React.FC<ExerciseCardProps> = ({
         try {
             const response = await sendPostRequest(new TASignMessage(groupexID, taId, 2, ''));
             if (response.status === 200) {
-                setError('结束签到成功！');
                 updateStatus(2); // Update status to 2 (start sign out)
             } else {
                 setError('结束签到失败，请重试。');
@@ -96,7 +94,6 @@ const TA_ExerciseCard: React.FC<ExerciseCardProps> = ({
         try {
             const response = await sendPostRequest(new TASignMessage(groupexID, taId, 3, token));
             if (response.status === 200) {
-                setError('签退成功！');
                 updateStatus(3); // Update status to 3 (end sign out)
             } else {
                 setError('签退失败，请重试。');
@@ -112,7 +109,6 @@ const TA_ExerciseCard: React.FC<ExerciseCardProps> = ({
         try {
             const response = await sendPostRequest(new TASignMessage(groupexID, taId, 4, ''));
             if (response.status === 200) {
-                setError('结束签退成功！');
                 setInProcess(true);
                 updateStatus(4); // Update status to 4 (completed)
             } else {

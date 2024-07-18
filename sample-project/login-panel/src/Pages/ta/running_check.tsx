@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { TAQueryRunningMessage } from 'Plugins/RunAPI/TAQueryRunningMessage';
@@ -33,6 +33,10 @@ export const RunningCheck = () => {
     const [modalOpen, setModalOpen] = useState<{ [key: number]: boolean }>({});
     const [selectedImageUrl, setSelectedImageUrl] = useState<string>('');
     const { Id } = useIdStore();
+
+    useEffect(() => {
+        handleTAQuery();
+    }, []);
 
     const decodeTimestamp = (timestamp: string): string => {
         const date = new Date(parseInt(timestamp));
@@ -140,14 +144,6 @@ export const RunningCheck = () => {
             <div className={styles.runningCheckContainer}>
                 <h1 className={styles.runningCheckHeader}>Running Check</h1>
                 {error && <p className={styles.errorMessage}>{error}</p>}
-                <div className={styles.buttonGroup}>
-                    <button className={styles.button} onClick={() => history.push('/ta_dashboard')}>
-                        返回 TA 仪表盘
-                    </button>
-                    <button className={styles.button} onClick={handleTAQuery}>
-                        执行 TA 查询
-                    </button>
-                </div>
                 {result.length > 0 && (
                     <div className={styles.queryResult}>
                         <h3>TA 查询结果:</h3>
@@ -229,7 +225,6 @@ export const RunningCheck = () => {
                     </Modal>
                 ))}
             </div>
-
         </div>
     );
 };

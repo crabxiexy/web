@@ -72,7 +72,7 @@ const Sidebar = () => {
                 <h1 className={styles.title}>乐动力 Pro</h1>
             </div>
             <div className={styles.rightSection}>
-                <button className={styles.navButton} onClick={handleBack}>Back</button>
+                <button className={styles.navButton} onClick={handleBack}>返回</button>
                 <div className={styles.userAvatar} onClick={toggleDropdown}>
                     {profileImage && (
                         <img src={profileImage} alt="User Avatar" className={styles.avatarImage} />
@@ -81,9 +81,9 @@ const Sidebar = () => {
                 </div>
                 {dropdownVisible && (
                     <div className={styles.dropdownMenu}>
-                        <p onClick={handleRename}>Rename</p>
-                        <p onClick={handleUpdateProfile}>Update Profile</p>
-                        <p onClick={handleLogout}>Logout</p>
+                        <p onClick={handleRename}>更改密码</p>
+                        <p onClick={handleUpdateProfile}>更改头像</p>
+                        <p onClick={handleLogout}>退出</p>
                     </div>
                 )}
             </div>
