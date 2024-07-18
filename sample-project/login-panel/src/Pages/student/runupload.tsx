@@ -136,14 +136,14 @@ export const RunUpload: React.FC = () => {
         <div className={runupload_styles.pageContainer}>
             <Sidebar />
             <div className={runupload_styles.runUploadPage}>
-                <h1 className={runupload_styles.runuploadHeader}>Run Upload</h1>
+                <h1 className={runupload_styles.runuploadHeader}>阳光长跑记录</h1>
                 {error && <p className={runupload_styles.errorMessage}>{error}</p>}
                 <div className={runupload_styles.timestampBox}>
-                    <p>Start Time: {startTime ? startTime.toLocaleString() : '-'}</p>
-                    <p>Finish Time: {finishTime ? finishTime.toLocaleString() : '-'}</p>
+                    <p>开始时间: {startTime ? startTime.toLocaleString() : '-'}</p>
+                    <p>结束时间: {finishTime ? finishTime.toLocaleString() : '-'}</p>
                 </div>
                 <div className={runupload_styles.distanceInput}>
-                    <label htmlFor="distance">Distance (in kilometers):</label>
+                    <label htmlFor="distance">距离/千米</label>
                     <input
                         type="number"
                         id="distance"
@@ -155,7 +155,7 @@ export const RunUpload: React.FC = () => {
                     />
                 </div>
                 <div className={runupload_styles.imageUpload}>
-                    <label htmlFor="file-upload">Upload Image:</label>
+                    <label htmlFor="file-upload">上传图片证明</label>
                     <input
                         type="file"
                         id="file-upload"
@@ -169,14 +169,14 @@ export const RunUpload: React.FC = () => {
                 <div className={runupload_styles.buttonGroup}>
                     <button className={runupload_styles.startButton} onClick={handleStartFinishRunning}
                             disabled={clickCount >= 2}>
-                        {clickCount === 0 ? 'Start Running' : 'Finish Running'}
+                        {clickCount === 0 ? '开始跑步' : '停止跑步'}
                     </button>
                     <button className={runupload_styles.submitButton} onClick={handleSubmit}
                             disabled={!startTime || !finishTime || !distance || !uploadedImage || submitted}>
-                        Submit
+                        提交记录
                     </button>
                     <button className={runupload_styles.cancelButton} onClick={handleCancel}>
-                        Cancel
+                        回到主页
                     </button>
                 </div>
                 {submitted && <p className={runupload_styles.submittedMessage}>Run data submitted successfully!</p>}
