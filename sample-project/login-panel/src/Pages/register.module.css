@@ -1,150 +1,140 @@
-/* Register.css */
+/* register.module.css */
 
-body, html {
-    margin: 0;
-    padding: 0;
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #FFDEE9, #B5FFFC);
-    color: #444;
-    height: 100%;
-    display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    flex-direction: column;
-}
-
-.register-container {
-    width: 100%;
+.register_container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-height: 100vh;
+    background-color: #f3f4f6;
 }
 
-.register-header {
+.register_header {
+    background-color: #212121;
+    color: white;
     width: 100%;
-    background-color: #fff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    position: fixed; /* Fix the header at the top */
+    padding: 1rem 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    position: sticky;
     top: 0;
+    z-index: 50;
 }
 
-.register-header .logo {
+.logo {
+    cursor: pointer;
     font-size: 1.5rem;
     font-weight: bold;
-    color: #63D1FF;
 }
 
-.register-header nav ul {
+nav ul {
+    display: flex;
     list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
 }
 
-.register-header nav ul li {
-    margin: 0 10px;
+nav ul li {
+    cursor: pointer;
+    margin-left: 1rem;
 }
 
-.register-header nav ul li a {
-    text-decoration: none;
-    color: #444;
-    font-size: 1rem;
-    transition: color 0.3s ease;
-}
-
-.register-header nav ul li a:hover {
-    color: #63D1FF;
-}
-
-.main-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center; /* Center vertically */
-    flex: 1; /* Take available space */
+.main_content {
     width: 100%;
-    margin-top: 80px; /* Ensure it's below the header */
+    max-width: 600px;
+    padding: 2rem;
 }
 
-.form-container {
-    background: rgba(255, 255, 255, 0.9);
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
+.form_container {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin: 0 1rem; /* Equal margin on both sides */
+    transition: all 0.3s; /* Smooth transition effect */
 }
 
-h2 {
-    margin-bottom: 20px;
-    color: #444;
+.h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
 }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 15px;
-    width: 100%;
+.error_message {
+    color: #ff0000;
+    margin-bottom: 1rem;
 }
 
-.form-group input, .form-group select {
-    width: 100%;
-    padding: 12px;
-    margin: 8px 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background: #fff;
-    color: #444;
-    outline: none;
-    transition: border-color 0.3s ease;
+.form_group select {
+    width: 80%; /* Make the select box narrower */
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
-.form-group input::placeholder {
-    color: #aaa;
+.bulk_inputs {
+    display: grid;
+    gap: 1rem;
 }
 
-.form-group input:focus, .form-group select:focus {
-    border-color: #63D1FF;
+.bulk_inputs input {
+    padding: 0.75rem; /* Increased input padding for a more prominent look */
+    border: 1px solid #ccc;
+    border-radius: 8px; /* Larger border radius for a more rounded look */
 }
 
-.button-group {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    width: 100%;
-}
-
-.submit-button, .back-button {
-    padding: 10px 20px;
+.bulk_inputs button {
+    padding: 0.5rem 1rem;
     border: none;
     border-radius: 4px;
+    background-color: #3b82f6;
     color: white;
     cursor: pointer;
-    flex: 1;
-    margin: 5px;
 }
 
-.submit-button {
-    background: #63D1FF;
-    transition: background 0.3s ease;
+.student_form {
+    display: grid;
+    grid-template-rows: repeat(5, auto); /* Each input field occupies a separate row */
+    gap: 1rem;
+    margin-top: 1rem; /* Add margin at the top */
+    border-top: 2px solid #3b82f6; /* Darker color for the top border */
+    padding-top: 1rem; /* Add padding at the top */
 }
 
-.back-button {
-    background: #FF867C;
-    transition: background 0.3s ease;
+.student_form input {
+    width: 80%; /* Set the width to 50% */
+    padding: 0.75rem; /* Increased input padding for a more prominent look */
+    border: 1px solid #ccc;
+    border-radius: 8px; /* Larger border radius for a more rounded look */
 }
 
-.submit-button:hover, .back-button:hover {
-    background-position: right;
+.button_group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
 }
 
-.error-message {
-    color: #FF867C;
-    margin-bottom: 15px;
+.add_student_button,
+.submit_button,
+.back_button {
+    flex: 1; /* Equal width for all buttons */
+    margin: 0 0.5rem; /* Equal spacing between buttons */
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease;
+    border: none;
+    outline: none;
+    background-color: #10b981;
+    color: white;
+}
+
+.add_student_button:hover,
+.submit_button:hover,
+.back_button:hover {
+    background-color: #047857;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

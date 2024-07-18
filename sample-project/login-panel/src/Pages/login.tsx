@@ -66,13 +66,13 @@ export function Login() {
         <div className={login_style.login_container}>
             <div className={login_style.login_box}>
                 <header className={login_style.login_header}>
-                    <h1>Welcome Back!</h1>
-                    <p>Please login to your account</p>
+                    <h1>欢迎回来!</h1>
+                    <p>请登录你的用户</p>
                 </header>
                 <main>
                     {error && <p className={`${login_style.error_message}`}>{error}</p>}
                     <div className={login_style.form_group}>
-                        <label htmlFor="user_id">User_ID</label>
+                        <label htmlFor="user_id">用户ID</label>
                         <input
                             type="text"
                             id="user_id"
@@ -82,7 +82,7 @@ export function Login() {
                         />
                     </div>
                     <div className={login_style.form_group}>
-                        <label htmlFor="password">Password</label>
+                        <label htmlFor="password">密码</label>
                         <input
                             type="password"
                             id="password"
@@ -92,7 +92,7 @@ export function Login() {
                         />
                     </div>
                     <div className={login_style.form_group}>
-                        <label htmlFor="identity">Identity</label>
+                        <label htmlFor="identity">身份</label>
                         <select
                             id="identity"
                             value={identity}
@@ -105,8 +105,8 @@ export function Login() {
                         </select>
                     </div>
                     <div className={login_style.button_group}>
-                        <button className={login_style.submit_button} onClick={handleLogin}>Submit</button>
-                        <button className={login_style.back_button} onClick={() => history.push('/')}>Back</button>
+                        <button className={login_style.submit_button} onClick={handleLogin}>提交</button>
+                        <button className={login_style.back_button} onClick={() => history.push('/')}>返回</button>
                     </div>
                 </main>
             </div>

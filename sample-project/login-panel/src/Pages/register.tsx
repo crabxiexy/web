@@ -85,22 +85,22 @@ export function Register() {
     };
 
     return (
-        <div className="register_style.register-container">
-            <header className="register_style.register-header">
-                <div className="logo" onClick={() => history.push('/home')}>MyApp</div>
+        <div className={register_style.register_container}>
+            <header className={register_style.register_header}>
+                <div className={register_style.logo} onClick={() => history.push('/home')}>乐动力Pro</div>
                 <nav>
                     <ul>
-                        <li onClick={() => history.push('/')}>Home</li>
+                        <li onClick={() => history.push('/')}>回到主页</li>
                     </ul>
                 </nav>
             </header>
-            <main className="register_style.main-content">
-                <div className="register_style.form-container">
-                    <h2>Batch Register Users</h2>
-                    {error && <p className="register_style.error-message">{error}</p>}
+            <main className={register_style.main_content}>
+                <div className={register_style.form_container}>
+                    <h2>注册用户</h2>
+                    {error && <p className={register_style.error_message}>{error}</p>}
 
                     {/* Identity selection */}
-                    <div className="register_style.form-group">
+                    <div className={register_style.form_group}>
                         <select
                             value={identity}
                             onChange={e => {
@@ -112,65 +112,35 @@ export function Register() {
                             }}
                             required
                         >
-                            <option value="admin">Admin</option>
-                            <option value="student">Student</option>
-                            <option value="ta">TA</option>
+                            <option value="admin">管理员</option>
+                            <option value="student">学生</option>
+                            <option value="ta">助教</option>
                         </select>
                     </div>
 
-                    {identity === 'student' && (
-                        <>
-                            {/* Bulk input fields for students only */}
-                            <div className="register_style.bulk-inputs">
-                                <input
-                                    type="text"
-                                    value={bulkDepartment}
-                                    onChange={e => setBulkDepartment(e.target.value)}
-                                    placeholder="Set Department for All"
-                                />
-                                <button onClick={() => handleBulkUpdate('department', bulkDepartment)}>Apply to All</button>
-
-                                <input
-                                    type="text"
-                                    value={bulkClassname}
-                                    onChange={e => setBulkClassname(e.target.value)}
-                                    placeholder="Set Class Name for All"
-                                />
-                                <button onClick={() => handleBulkUpdate('classname', bulkClassname)}>Apply to All</button>
-
-                                <input
-                                    type="password"
-                                    value={bulkPassword}
-                                    onChange={e => setBulkPassword(e.target.value)}
-                                    placeholder="Set Password for All"
-                                />
-                                <button onClick={() => handleBulkUpdate('password', bulkPassword)}>Apply to All</button>
-                            </div>
-                        </>
-                    )}
-
+                    {/* Your existing JSX code here */}
                     {students.map((student, index) => (
-                        <div key={index} className="register_style.student-form">
+                        <div key={index} className={register_style.student_form}>
                             <input
-                                type="number"
+                                type="text"
                                 value={student.student_id}
                                 onChange={e => handleChange(index, 'student_id', e.target.value)}
                                 required
-                                placeholder="Student ID"
+                                placeholder="用户ID"
                             />
                             <input
                                 type="text"
                                 value={student.name}
                                 onChange={e => handleChange(index, 'name', e.target.value)}
                                 required
-                                placeholder="Username"
+                                placeholder="用户名"
                             />
                             <input
                                 type="password"
                                 value={student.password}
                                 onChange={e => handleChange(index, 'password', e.target.value)}
                                 required
-                                placeholder="Password"
+                                placeholder="密码"
                             />
                             {identity === 'student' && (
                                 <>
@@ -179,23 +149,23 @@ export function Register() {
                                         value={student.department}
                                         onChange={e => handleChange(index, 'department', e.target.value)}
                                         required
-                                        placeholder="Department"
+                                        placeholder="院系"
                                     />
                                     <input
                                         type="text"
                                         value={student.classname}
                                         onChange={e => handleChange(index, 'classname', e.target.value)}
                                         required
-                                        placeholder="Class Name"
+                                        placeholder="班级号"
                                     />
                                 </>
                             )}
                         </div>
                     ))}
-                    <div className="register_style.button-group">
-                        <button className="register_style.add-student-button" onClick={addStudentField}>Add Student</button>
-                        <button className="register_style.submit-button" onClick={handleRegister}>Submit All</button>
-                        <button className="register_style.back-button" onClick={() => history.push('/admin/root')}>Back</button>
+                    <div className={register_style.button_group}>
+                        <button className={register_style.add_student_button} onClick={addStudentField}>添加用户</button>
+                        <button className={register_style.submit_button} onClick={handleRegister}>全部提交</button>
+                        <button className={register_style.back_button} onClick={() => history.push('/admin/root')}>返回主页</button>
                     </div>
                 </div>
             </main>
