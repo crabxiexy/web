@@ -42,7 +42,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
     };
 
     return (
-        <div className="exercise-card">
+        <div className={student_exercisecard_style.exerciseCard}>
             <h4>{exName}</h4>
             <p>开始时间: {new Date(parseInt(startTime)).toLocaleString()}</p>
             <p>结束时间: {new Date(parseInt(finishTime)).toLocaleString()}</p>
