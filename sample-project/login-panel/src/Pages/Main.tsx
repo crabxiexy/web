@@ -53,26 +53,23 @@ export function Main(): JSX.Element {
             ) : (
                 <main className={main_styles.mainContent}>
                     <section className={main_styles.section}>
-                        <h2>Notifications</h2>
+                        <h2>通知栏</h2>
                         <div className={main_styles.notificationBoard}>
-                            <p>Don't forget to warm up before exercising!</p>
-                            <p>Drink plenty of water.</p>
-                            <p>Team Yoga session at 10 AM tomorrow.</p>
-                            <p>Friday Cycling Event has been rescheduled to 8 AM.</p>
+                            <p>登录以查看通知</p>
                         </div>
                     </section>
 
                     <section className={main_styles.section}>
-                        <h2>Activities for Department Team</h2>
+                        <h2>俱乐部活动</h2>
                         <div className={main_styles.notificationBoard}>
-                            <p>Login to see activities.</p>
+                            <p>登录以查看活动</p>
                         </div>
                     </section>
 
                     <section className={main_styles.section}>
-                        <h2>Common Exercises</h2>
+                        <h2>日常锻炼</h2>
                         <div className={main_styles.notificationBoard}>
-                            <p>Login to see exercises.</p>
+                            <p>登录以查看和管理日常锻炼</p>
                         </div>
                     </section>
                 </main>
