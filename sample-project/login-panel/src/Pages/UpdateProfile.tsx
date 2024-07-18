@@ -4,17 +4,18 @@ import useIdStore from 'Pages/IdStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage';
 import { UpdateProfileMessage } from 'Plugins/DoctorAPI/UpdateProfileMessage';
-import * as Minio from 'minio'; // Import MinIO client
+import * as Minio from 'minio';
+import updateprofilestyle from './UpdateProfile.module.css'; // Import CSS module
 
 const minioClient = new Minio.Client({
-    endPoint: '183.173.41.206', // 替换为您的 MinIO 服务器地址
+    endPoint: '183.173.41.206',
     port: 5000,
     useSSL: false,
-    accessKey: '12345678', // 替换为您的 MinIO Access Key
-    secretKey: '12345678', // 替换为您的 MinIO Secret Key
+    accessKey: '12345678',
+    secretKey: '12345678',
 });
 
-export const UploadProfilePage: React.FC = () => {
+export const UpdateProfilePage: React.FC = () => {
     const history = useHistory();
     const { Id } = useIdStore();
     const [profileImage, setProfileImage] = useState<File | null>(null);
@@ -28,10 +29,10 @@ export const UploadProfilePage: React.FC = () => {
             const fetchProfileMessage = new FetchProfileMessage(parseInt(Id));
             try {
                 const response = await sendPostRequest(fetchProfileMessage);
-                setCurrentProfileImage(response.data); // Assuming the response contains the profileImage URL
+                setCurrentProfileImage(response.data);
             } catch (error) {
                 console.error('Error fetching profile:', error);
-                setError('Unable to fetch current profile image.');
+                setError('未能查找到当前的用户头像');
             }
         };
 
@@ -86,23 +87,23 @@ export const UploadProfilePage: React.FC = () => {
     };
 
     const handleBack = () => {
-        history.goBack(); // Go back to the previous page
+        history.goBack();
     };
 
     return (
-        <div className="upload-profile-page">
-            <h1>Upload Profile Image</h1>
-            {error && <p className="error-message">{error}</p>}
-            <div className="current-image">
-                <h2>Current Profile Image:</h2>
+        <div className={updateprofilestyle.container}>
+            <h1>更新头像</h1>
+            {error && <p className={updateprofilestyle.error}>{error}</p>}
+            <div className={updateprofilestyle.imageContainer}>
+                <h2>当前用户头像:</h2>
                 {currentProfileImage ? (
-                    <img src={currentProfileImage} alt="Current Profile" style={{ maxWidth: '100%', maxHeight: '400px' }} />
+                    <img src={currentProfileImage} alt="Current Profile" className={updateprofilestyle.currentImage} />
                 ) : (
-                    <p>No profile image available.</p>
+                    <p>还未设置头像</p>
                 )}
             </div>
-            <div className="image-upload">
-                <label htmlFor="file-upload">Upload New Image:</label>
+            <div className={updateprofilestyle.uploadContainer}>
+                <label htmlFor="file-upload">上传新头像</label>
                 <input
                     type="file"
                     id="file-upload"
@@ -110,23 +111,23 @@ export const UploadProfilePage: React.FC = () => {
                     accept="image/*"
                 />
                 {profileImageUrl && (
-                    <img src={profileImageUrl} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '400px', marginTop: '10px' }} />
+                    <img src={profileImageUrl} alt="Uploaded" className={updateprofilestyle.uploadedImage} />
                 )}
             </div>
-            <div className="button-group">
-                <button className="submit-button" onClick={handleSubmit} disabled={!profileImage || submitted}>
-                    Submit
+            <div className={updateprofilestyle.buttonContainer}>
+                <button className={updateprofilestyle.submitButton} onClick={handleSubmit} disabled={!profileImage || submitted}>
+                    提交新头像
                 </button>
-                <button className="cancel-button" onClick={handleCancel}>
-                    Cancel
+                <button className={updateprofilestyle.cancelButton} onClick={handleCancel}>
+                    取消
                 </button>
-                <button className="back-button" onClick={handleBack}>
-                    Back
+                <button className={updateprofilestyle.backButton} onClick={handleBack}>
+                    返回上一页
                 </button>
             </div>
-            {submitted && <p className="submitted-message">Profile image submitted successfully!</p>}
+            {submitted && <p className={updateprofilestyle.submittedMessage}>Profile updated successfully!</p>}
         </div>
     );
 };
 
-export default UploadProfilePage;
+export default UpdateProfilePage;

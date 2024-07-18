@@ -1,0 +1,98 @@
+.container {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 30px 20px; /* 上下各30px，左右20px */
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center; /* 文本内容居中对齐 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60vh; /* 让容器占据视口高度的60% */
+    margin-top: 20vh; /* 顶部留出20%的视口高度空间，实现垂直居中 */
+}
+
+
+.error {
+    color: #FF867C;
+    margin-bottom: 1rem;
+}
+
+.imageContainer {
+    margin-top: 20px;
+}
+
+.currentImage img {
+    max-width: 100%;
+    max-height: 400px;
+}
+
+.uploadContainer {
+    margin-top: 20px;
+}
+
+.uploadContainer label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.uploadContainer input[type="file"] {
+    display: none; /* 隐藏原生文件选择按钮 */
+}
+
+.uploadContainer label {
+    padding: 20px 30px;
+    font-size: 20px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.uploadedImage {
+    max-width: 100%;
+    max-height: 400px;
+    margin-top: 10px;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: space-around; /* 使按钮之间有空间 */
+    margin-top: 20px;
+}
+
+.submitButton,
+.cancelButton,
+.backButton {
+    flex: 1; /* 使按钮平均占据可用空间 */
+    margin: 0 20px; /* 在按钮之间留有更多空间 */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    white-space: nowrap; /* 禁止文本换行 */
+}
+
+.submitButton {
+    background: #27ae60;
+    color: white;
+}
+
+.cancelButton {
+    background: #FF867C;
+    color: white;
+}
+
+.backButton {
+    background: #3498db;
+    color: white;
+}
+
+.submittedMessage {
+    color: #27ae60;
+    margin-top: 20px;
+}
