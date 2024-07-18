@@ -7,6 +7,7 @@ import useIdStore from 'Pages/IdStore';
 import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
 import { CheckHWMessage } from 'Plugins/ActivityAPI/CheckHWMessage';
+import styles from './club_hw_check.module.css';
 
 Modal.setAppElement('#root');
 
@@ -129,18 +130,18 @@ export const ClubHWCheck = () => {
     };
 
     return (
-        <div className="club-hw-check-container">
+        <div className={styles.clubHwCheckContainer}>
             <h1>作业检查</h1>
-            {error && <p className="error-message">{error}</p>}
-            <div className="button-group">
-                <button className="button" onClick={() => history.push('/ta_dashboard')}>
+            {error && <p className={styles.errorMessage}>{error}</p>}
+            <div className={styles.buttonGroup}>
+                <button className={styles.button} onClick={() => history.push('/ta_dashboard')}>
                     返回 TA 仪表盘
                 </button>
             </div>
             {result.length > 0 && (
-                <div className="query-result">
+                <div className={styles.queryResult}>
                     <h3>待检查作业:</h3>
-                    <table className="table">
+                    <table className={styles.table}>
                         <thead>
                         <tr>
                             <th>学生姓名</th>
@@ -161,7 +162,7 @@ export const ClubHWCheck = () => {
                                 <td>{homework.activity_name}</td>
                                 <td>
                                     <button
-                                        className="button"
+                                        className={styles.button}
                                         onClick={() => handleImageClick(homework.imgUrl, homework.activity_id)}
                                     >
                                         查看图片
@@ -180,10 +181,10 @@ export const ClubHWCheck = () => {
                                     />
                                 </td>
                                 <td>
-                                    <button className="button" onClick={() => handleBatchCheck(homework.activity_id)}>
+                                    <button className={styles.button} onClick={() => handleBatchCheck(homework.activity_id)}>
                                         批量通过
                                     </button>
-                                    <button className="button" onClick={() => handleBatchReject(homework.activity_id)}>
+                                    <button className={styles.button} onClick={() => handleBatchReject(homework.activity_id)}>
                                         批量拒绝
                                     </button>
                                 </td>
@@ -199,15 +200,15 @@ export const ClubHWCheck = () => {
                     isOpen={modalOpen[homework.activity_id] || false}
                     onRequestClose={() => closeModal(homework.activity_id)}
                     contentLabel="Image Modal"
-                    className="image-modal"
-                    overlayClassName="image-modal-overlay"
+                    className={styles.imageModal}
+                    overlayClassName={styles.imageModalOverlay}
                 >
-                    <div className="modal-header">
-                        <button className="close-button" onClick={() => closeModal(homework.activity_id)}>
+                    <div className={styles.modalHeader}>
+                        <button className={styles.closeButton} onClick={() => closeModal(homework.activity_id)}>
                             &times;
                         </button>
                     </div>
-                    <div className="modal-body">
+                    <div className={styles.modalBody}>
                         <img
                             src={homework.imgUrl}
                             alt="Selected"

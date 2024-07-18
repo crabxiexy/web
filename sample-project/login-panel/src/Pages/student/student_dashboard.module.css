@@ -1,0 +1,182 @@
+/* student_dashboard.module.css */
+
+.App {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Center vertically */
+    min-height: 100vh;
+    background-image: url("https://www.gameuidatabase.com/uploads/Genshin-Impact01032021-021443-79651.jpg");
+    background-size: cover;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.App-header {
+    background-color: transparent;
+    padding: 20px;
+    color: white;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+}
+
+.App-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.user-section {
+    display: flex;
+    align-items: center;
+}
+
+.user-avatar {
+    margin-left: 20px;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.dropdown-menu {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    right: 20px;
+    top: 60px;
+    width: 150px;
+    text-align: left;
+}
+
+.dropdown-menu p {
+    margin: 0;
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+}
+
+.dropdown-menu p:last-child {
+    border-bottom: none;
+}
+
+.dropdown-menu p:hover {
+    background: #FFD3E8;
+}
+
+section.notifications {
+    background: rgba(255, 255, 255, 0.9);
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    text-align: left;
+}
+
+section.notifications h2 {
+    border-bottom: 2px solid #63D1FF;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    color: #444;
+}
+
+.notification-board {
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 10px;
+}
+
+.notification-board p {
+    background: #ffeecf;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+section.counts {
+    display: flex;
+    flex-wrap: wrap;
+    background: rgba(255, 255, 255, 0.9);
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 10px;
+    justify-content: center;
+    gap: 10px;
+    max-width: 100%;
+}
+
+.countcard {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: calc(33% - 20px);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.countcard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.countcardtitle {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.countcardvalue {
+    font-size: 2em;
+    font-weight: bold;
+    color: #555555;
+}
+
+section.btn_group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    max-width: 100%;
+}
+
+.btn {
+    background-color: rgba(255, 255, 255, 0.9);
+    flex: 1;
+    margin: 0 5px;
+    padding: 15px 30px;
+    font-size: 16px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    outline: none; /* Remove the blue outline on focus */
+}
+
+.btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.user-avatar {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.avatar-image {
+    width: 50px; /* Set fixed width */
+    height: 50px; /* Set fixed height */
+    border-radius: 50%; /* Make it circular */
+    object-fit: cover; /* Ensure image covers the circle */
+    border: 2px solid #ccc; /* Optional: Add a border */
+}

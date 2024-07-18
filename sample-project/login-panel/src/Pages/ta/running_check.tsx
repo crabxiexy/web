@@ -7,6 +7,7 @@ import { CheckRunningMessage } from 'Plugins/RunAPI/CheckRunningMessage';
 import Modal from 'react-modal';
 import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
+import styles from './running_check.module.css'; // Import the CSS module
 
 Modal.setAppElement('#root');
 
@@ -20,7 +21,7 @@ interface Run {
     imgurl: string;
     response: string;
     speed: number;
-    studentName:string;
+    studentName: string;
 }
 
 export const RunningCheck = () => {
@@ -133,97 +134,97 @@ export const RunningCheck = () => {
     };
 
     return (
-        <div className="running-check-container">
-            <h1>Running Check</h1>
-            {error && <p className="error-message">{error}</p>}
-            <div className="button-group">
-                <button className="button" onClick={() => history.push('/ta_dashboard')}>
-                    返回 TA 仪表盘
-                </button>
-                <button className="button" onClick={handleTAQuery}>
-                    执行 TA 查询
-                </button>
-            </div>
-            {result.length > 0 && (
-                <div className="query-result">
-                    <h3>TA 查询结果:</h3>
-                    <table className="table">
-                        <thead>
-                        <tr>
-                            <th>学生姓名</th> {/* New column for student name */}
-                            <th>开始时间</th>
-                            <th>结束时间</th>
-                            <th>提交时间</th>
-                            <th>距离</th>
-                            <th>查看图片</th>
-                            <th>回复</th>
-                            <th>速度 (km/h)</th>
-                            <th>操作</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {result.map((run) => (
-                            <tr key={run.runID}>
-                                <td>{run.studentName}</td> {/* Display student name */}
-                                <td>{decodeTimestamp(run.starttime)}</td>
-                                <td>{decodeTimestamp(run.finishtime)}</td>
-                                <td>{decodeTimestamp(run.submittime)}</td>
-                                <td>{(run.distance / 10).toFixed(2)}</td>
-                                <td>
-                                    <button
-                                        className="button"
-                                        onClick={() => handleImageClick(run.imgurl, run.runID)}
-                                    >
-                                        查看图片
-                                    </button>
-                                </td>
-                                <td>
-                                    <input
-                                        type="text"
-                                        value={editData[run.runID]?.response ?? run.response}
-                                        onChange={(e) =>
-                                            handleFieldChange(run.runID, 'response', e.target.value)
-                                        }
-                                    />
-                                </td>
-                                <td>{run.speed.toFixed(2)}</td>
-                                <td>
-                                    <button className="button" onClick={() => handleCheck(run.runID)}>
-                                        通过
-                                    </button>
-                                    <button className="button" onClick={() => handleReject(run.runID)}>
-                                        拒绝
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
+        <div className={styles.pageContainer}>
+            <div className={styles.runningCheckContainer}>
+                <h1 className={styles.runningCheckHeader}>Running Check</h1>
+                {error && <p className={styles.errorMessage}>{error}</p>}
+                <div className={styles.buttonGroup}>
+                    <button className={styles.button} onClick={() => history.push('/ta_dashboard')}>
+                        返回 TA 仪表盘
+                    </button>
+                    <button className={styles.button} onClick={handleTAQuery}>
+                        执行 TA 查询
+                    </button>
                 </div>
-            )}
-            {result.map((run) => (
-                <Modal
-                    key={run.runID}
-                    isOpen={modalOpen[run.runID] || false}
-                    onRequestClose={() => closeModal(run.runID)}
-                    contentLabel="Image Modal"
-                    className="image-modal"
-                    overlayClassName="image-modal-overlay"
-                >
-                    <div className="modal-header">
-                        <button className="close-button" onClick={() => closeModal(run.runID)}>
-                            &times;
-                        </button>
+                {result.length > 0 && (
+                    <div className={styles.queryResult}>
+                        <h3>TA 查询结果:</h3>
+                        <table className={styles.table}>
+                            <thead>
+                            <tr>
+                                <th>学生姓名</th>
+                                <th>开始时间</th>
+                                <th>结束时间</th>
+                                <th>提交时间</th>
+                                <th>距离</th>
+                                <th>查看图片</th>
+                                <th>回复</th>
+                                <th>速度 (km/h)</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {result.map((run) => (
+                                <tr key={run.runID}>
+                                    <td>{run.studentName}</td>
+                                    <td>{decodeTimestamp(run.starttime)}</td>
+                                    <td>{decodeTimestamp(run.finishtime)}</td>
+                                    <td>{decodeTimestamp(run.submittime)}</td>
+                                    <td>{(run.distance / 10).toFixed(2)}</td>
+                                    <td>
+                                        <button
+                                            className={styles.button}
+                                            onClick={() => handleImageClick(run.imgurl, run.runID)}
+                                        >
+                                            查看图片
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            value={editData[run.runID]?.response ?? run.response}
+                                            onChange={(e) =>
+                                                handleFieldChange(run.runID, 'response', e.target.value)
+                                            }
+                                        />
+                                    </td>
+                                    <td>{run.speed.toFixed(2)}</td>
+                                    <td>
+                                        <button className={styles.button} onClick={() => handleCheck(run.runID)}>
+                                            通过
+                                        </button>
+                                        <button className={styles.button} onClick={() => handleReject(run.runID)}>
+                                            拒绝
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
                     </div>
-                    <div className="modal-body">
-                        <img
-                            src={run.imgurl}
-                            alt="Selected"
-                            style={{ maxWidth: '100%', maxHeight: '100%' }}
-                        />
-                    </div>
-                </Modal>
-            ))}
+                )}
+                {result.map((run) => (
+                    <Modal
+                        key={run.runID}
+                        isOpen={modalOpen[run.runID] || false}
+                        onRequestClose={() => closeModal(run.runID)}
+                        contentLabel="Image Modal"
+                        className={styles.imageModal}
+                        overlayClassName={styles.imageModalOverlay}
+                    >
+                        <div className={styles.modalContent}>
+                            <button className={styles.closeButton} onClick={() => closeModal(run.runID)}>
+                                &times;
+                            </button>
+                            <img
+                                src={run.imgurl}
+                                alt="Selected"
+                                className={styles.modalImage}
+                            />
+                        </div>
+                    </Modal>
+                ))}
+            </div>
         </div>
     );
 };

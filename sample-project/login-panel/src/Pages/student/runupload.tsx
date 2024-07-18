@@ -7,10 +7,12 @@ import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotif
 import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { GetTAMessage } from 'Plugins/StudentAPI/GetTAMessage'; // Import your getTA message
 import * as Minio from 'minio';
+import runupload_styles from './runupload.module.css';
+import runupload from 'Pages/student/runupload' // Import the CSS module
 
 const minioClient = new Minio.Client({
-    endPoint: '183.172.236.220',
-    port: 9004,
+    endPoint: '183.173.41.206',
+    port: 5000,
     useSSL: false,
     accessKey: '12345678',
     secretKey: '12345678',
@@ -60,7 +62,7 @@ export const RunUpload: React.FC = () => {
 
             try {
                 // Upload image to MinIO
-                await minioClient.fPutObject('proof', filename, uploadedImage.path, {});
+                await minioClient.fPutObject('run', filename, uploadedImage.path, {});
 
                 const studentIdNumber = parseInt(Id);
                 const distanceNumber = parseFloat(distance) * 10;
@@ -70,7 +72,7 @@ export const RunUpload: React.FC = () => {
                     startTime.getTime().toString(),
                     finishTime.getTime().toString(),
                     distanceNumber,
-                    `http://183.173.129.197:9500/proof/${filename}`
+                    `http://183.173.41.206:5000/run/${filename}`
                 );
 
                 // Send the running data
@@ -131,49 +133,53 @@ export const RunUpload: React.FC = () => {
     };
 
     return (
-        <div className="run-upload-page">
-            <h1>Run Upload</h1>
-            {error && <p className="error-message">{error}</p>}
-            <div className="timestamp-box">
-                <p>Start Time: {startTime ? startTime.toLocaleString() : '-'}</p>
-                <p>Finish Time: {finishTime ? finishTime.toLocaleString() : '-'}</p>
+        <div className={runupload_styles.pageContainer}>
+            <div className={runupload_styles.runUploadPage}>
+                <h1 className={runupload_styles.runuploadHeader}>Run Upload</h1>
+                {error && <p className={runupload_styles.errorMessage}>{error}</p>}
+                <div className={runupload_styles.timestampBox}>
+                    <p>Start Time: {startTime ? startTime.toLocaleString() : '-'}</p>
+                    <p>Finish Time: {finishTime ? finishTime.toLocaleString() : '-'}</p>
+                </div>
+                <div className={runupload_styles.distanceInput}>
+                    <label htmlFor="distance">Distance (in kilometers):</label>
+                    <input
+                        type="number"
+                        id="distance"
+                        value={distance}
+                        onChange={handleDistanceChange}
+                        step="0.1"
+                        min="0"
+                        required
+                    />
+                </div>
+                <div className={runupload_styles.imageUpload}>
+                    <label htmlFor="file-upload">Upload Image:</label>
+                    <input
+                        type="file"
+                        id="file-upload"
+                        onChange={handleImageUpload}
+                        accept="image/*"
+                    />
+                    {uploadedImageUrl && (
+                        <img src={uploadedImageUrl} alt="Uploaded" className={runupload_styles.uploadedImage} />
+                    )}
+                </div>
+                <div className={runupload_styles.buttonGroup}>
+                    <button className={runupload_styles.startButton} onClick={handleStartFinishRunning}
+                            disabled={clickCount >= 2}>
+                        {clickCount === 0 ? 'Start Running' : 'Finish Running'}
+                    </button>
+                    <button className={runupload_styles.submitButton} onClick={handleSubmit}
+                            disabled={!startTime || !finishTime || !distance || !uploadedImage || submitted}>
+                        Submit
+                    </button>
+                    <button className={runupload_styles.cancelButton} onClick={handleCancel}>
+                        Cancel
+                    </button>
+                </div>
+                {submitted && <p className={runupload_styles.submittedMessage}>Run data submitted successfully!</p>}
             </div>
-            <div className="distance-input">
-                <label htmlFor="distance">Distance (in kilometers):</label>
-                <input
-                    type="number"
-                    id="distance"
-                    value={distance}
-                    onChange={handleDistanceChange}
-                    step="0.1"
-                    min="0"
-                    required
-                />
-            </div>
-            <div className="image-upload">
-                <label htmlFor="file-upload">Upload Image:</label>
-                <input
-                    type="file"
-                    id="file-upload"
-                    onChange={handleImageUpload}
-                    accept="image/*"
-                />
-                {uploadedImageUrl && (
-                    <img src={uploadedImageUrl} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '400px', marginTop: '10px' }} />
-                )}
-            </div>
-            <div className="button-group">
-                <button className="start-button" onClick={handleStartFinishRunning} disabled={clickCount >= 2}>
-                    {clickCount === 0 ? 'Start Running' : 'Finish Running'}
-                </button>
-                <button className="submit-button" onClick={handleSubmit} disabled={!startTime || !finishTime || !distance || !uploadedImage || submitted}>
-                    Submit
-                </button>
-                <button className="cancel-button" onClick={handleCancel}>
-                    Cancel
-                </button>
-            </div>
-            {submitted && <p className="submitted-message">Run data submitted successfully!</p>}
         </div>
     );
 };

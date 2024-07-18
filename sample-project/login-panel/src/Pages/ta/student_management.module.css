@@ -1,11 +1,214 @@
-.student-modal {
+.pageContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #FFDEE9, #B5FFFC);
+    font-family: 'Arial', sans-serif;
+    color: #444;
+    padding: 40px; /* 为页面边缘留出更多空隙 */
+}
+
+.tableContainer {
+    margin: 20px 0; /* 增加表格与其他内容之间的外边距 */
+    padding: 20px; /* 增加表格周围的内边距 */
+    border: 1px solid #ddd; /* 添加边框 */
+    border-radius: 10px; /* 添加圆角 */
+    background-color: #fff; /* 设置表格容器背景颜色 */
+}
+
+
+.header h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #000; /* 设置为黑色 */
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    margin: 0;
+}
+
+
+.header {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.userSection {
+    display: flex;
+    align-items: center;
+}
+
+.userAvatar {
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    background: #3498db;
+    color: white;
+    font-weight: bold;
+    margin-left: 1rem;
+}
+
+.dropdownMenu {
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.dropdownMenu p {
+    margin: 0;
+    padding: 1rem;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.dropdownMenu p:hover {
+    background: #f2f2f2;
+}
+
+.main {
+    width: 100%;
+    max-width: 1200px;
+    padding: 40px; /* 为主内容区留出更多空隙 */
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.errorMessage {
+    color: #FF867C;
+    margin-bottom: 1rem;
+}
+
+.formContainer {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+}
+
+.button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    margin: 0.5rem 0;
+    flex: 1;
+    margin: 5px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    background: linear-gradient(to right, #63D1FF, #3498db);
+    box-shadow: 0 4px 12px rgba(99, 209, 255, 0.25);
+}
+
+.button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(99, 209, 255, 0.35);
+}
+
+.taData {
+    margin-top: 1rem;
+    padding: 20px; /* 为表格容器增加内边距 */
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 40px 0; /* 为表格留出更多上下空隙 */
+}
+
+.table th,
+.table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.table th {
+    background-color: #f2f2f2;
+    color: #333;
+}
+
+.input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.studentModal {
     width: 80%;
     max-width: 600px;
     padding: 20px;
     border-radius: 10px;
     background: white;
-    position: relative;
-    top: 10%; /* 从50%调整为30% */
+    position: fixed;
+    top: 50%;
     left: 50%;
-    transform: translate(-50%, -30%); /* 也调整这个值 */
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
+
+.studentModalOverlay {
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #444;
+}
+
+.studentsList {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.studentsList .table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.studentsList .table th,
+.studentsList .table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.studentsList .table th {
+    background-color: #f2f2f2;
+    color: #333;
+}
+

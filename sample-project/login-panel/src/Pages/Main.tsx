@@ -38,7 +38,7 @@ export function Main(): JSX.Element {
     };
 
     return (
-        <div className={`${main_styles.minHScreen}`}>
+        <div className={`${main_styles.min_h_screen}`}>
             <header className={main_styles.header}>
                 <h1>乐动力 Pro</h1>
                 <div className={`${main_styles.buttonGroup}`}>
@@ -65,14 +65,14 @@ export function Main(): JSX.Element {
                     <section className={main_styles.section}>
                         <h2>Activities for Department Team</h2>
                         <div className={main_styles.notificationBoard}>
-                            <p>Login to see activities released.</p>
+                            <p>Login to see activities.</p>
                         </div>
                     </section>
 
                     <section className={main_styles.section}>
                         <h2>Common Exercises</h2>
                         <div className={main_styles.notificationBoard}>
-                            <p>Login to see exercise list.</p>
+                            <p>Login to see exercises.</p>
                         </div>
                     </section>
                 </main>

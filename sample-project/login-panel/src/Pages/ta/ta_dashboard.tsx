@@ -1,26 +1,39 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useHistory } from 'react-router';
 import useIdStore from 'Pages/IdStore';
-import ta_dashboard_style from './dashboard.module.css'; // Ensure the correct path to your CSS file
+import ta_dashboard_style from './ta_dashboard.module.css'; // Ensure the correct path to your CSS file
 import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
 import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils'
+import Sidebar from 'Pages/Sidebar';
+import {QueryReceivedMessage} from "Plugins/NotificationAPI/QueryReceivedMessage";
+import {CountRunMessage} from "Plugins/RunAPI/CountRunMessage";
+import {CountGroupexMessage} from "Plugins/GroupExAPI/CountGroupexMessage";
+import {CountHWMessage} from "Plugins/ActivityAPI/CountHWMessage";
 
-export function TA_dashboard() {
+export function TADashboard() {
     const history = useHistory();
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [isModalOpen, setModalOpen] = useState(false);
     const [notificationContent, setNotificationContent] = useState('');
-    const { setId } = useIdStore();
-    const studentId = 1; // Replace with the actual student ID logic
+    const { Id, setId } = useIdStore();
+    const [notifications, setNotifications] = useState<{ content: string; releaserName: string }[]>([]);
 
-    const toggleDropdown = () => {
-        setDropdownVisible(!dropdownVisible);
-    };
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            const fetchNotificationsMessage = new QueryReceivedMessage(parseInt(Id));
+            try {
+                const response = await sendPostRequest(fetchNotificationsMessage);
+                setNotifications(response.data);
+            } catch (error) {
+                console.error('Error fetching notifications:', error);
+            }
+        };
 
-    const handleRename = () => {
-        history.push("/rename");
-    };
+        if (Id) {
+            fetchNotifications();
+        }
+    }, [Id]);
 
     const handleStudentManagement = () => {
         history.push("/ta_student_management");
@@ -38,99 +51,43 @@ export function TA_dashboard() {
         history.push("/HW_check");
     };
 
-    const handleLogout = () => {
-        setId('');
-        history.push("/");
-    };
-
-    const openModal = () => {
-        setModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setModalOpen(false);
-        setNotificationContent('');
-    };
-
-    const handleNotificationSubmit = async () => {
-        const releaserName = await fetchReleaserName(studentId);
-        const senderId = parseInt(useIdStore().Id);
-        const receiverId = 2; // Set the actual receiver ID as needed
-
-        const notification = new ReleaseNotificationMessage(releaserName, senderId, receiverId, notificationContent);
-
-        // Here you would typically send the notification object to your backend
-        // Example: await sendNotificationToBackend(notification);
-
-        closeModal();
-    };
-
-    const fetchReleaserName = async (studentId:number) => {
-        // Create an instance of FetchNameMessage
-        const fetchNameMessage = new FetchNameMessage(studentId);
-
-        // Call the API or service to get the releaser name
-        // This is a placeholder for your actual implementation
-        try {
-            // Assume fetchReleaserNameFromAPI is a function that makes the API call
-            const response = await sendPostRequest(fetchNameMessage);
-            return response.data; // Assuming the response has a 'name' property
-        } catch (error) {
-            console.error("Error fetching releaser name:", error);
-            return "Unknown Releaser"; // Fallback if there is an error
-        }
-    };
-
-
-
     return (
-        <div className="dashboard-container">
-            <header className="dashboard-header">
-                <h1>Physical Exercise System</h1>
-                <div className="user-section">
-                    <button className="btn login-btn" onClick={handleLogout}>Logout</button>
-                    <div className="user-avatar" onClick={toggleDropdown}>👤</div>
-                    {dropdownVisible && (
-                        <div className="dropdown-menu">
-                            <p onClick={handleRename}>Rename</p>
-                        </div>
-                    )}
-                </div>
-            </header>
-            <main>
-                <div className="square-block" onClick={handleStudentManagement}>
-                    学生管理
-                </div>
-                <div className="square-block" onClick={handleRunningCheck}>
-                    阳光长跑审批
-                </div>
-                <div className="square-block" onClick={handleGroupexManagement}>
-                    集体锻炼管理
-                </div>
-                <div className="square-block" onClick={handleHWManagement}>
-                    俱乐部作业管理
-                </div>
-                <button className="btn publish-btn" onClick={openModal}>
-                    发布公告
-                </button>
+        <div className={ta_dashboard_style.App}>
+            <Sidebar />
 
-                {isModalOpen && (
-                    <div className="modal">
-                        <div className="modal-content">
-                            <h2>发布公告</h2>
-                            <textarea
-                                value={notificationContent}
-                                onChange={(e) => setNotificationContent(e.target.value)}
-                                placeholder="输入公告内容"
-                            />
-                            <button className="btn" onClick={handleNotificationSubmit}>提交</button>
-                            <button className="btn" onClick={closeModal}>关闭</button>
-                        </div>
+            <div>
+                <section className={ta_dashboard_style.notifications}>
+                    <h2>Notifications</h2>
+                    <div className={ta_dashboard_style.notificationBoard}>
+                        {notifications.length === 0 ? (
+                            <p>No notifications available.</p>
+                        ) : (
+                            notifications.map((notification, index) => (
+                                <div key={index} className={ta_dashboard_style.notificationItem}>
+                                    <p><strong>{notification.releaserName}</strong>: {notification.content}</p>
+                                </div>
+                            ))
+                        )}
                     </div>
-                )}
-            </main>
+                </section>
+
+                <section className={ta_dashboard_style.btn_group}>
+                    <button className={ta_dashboard_style.btn} onClick={handleStudentManagement}>
+                        学生管理
+                    </button>
+                    <button className={ta_dashboard_style.btn} onClick={handleRunningCheck}>
+                        阳光长跑审批
+                    </button>
+                    <button className={ta_dashboard_style.btn} onClick={handleGroupexManagement}>
+                        集体锻炼管理
+                    </button>
+                    <button className={ta_dashboard_style.btn} onClick={handleHWManagement}>
+                        俱乐部作业管理
+                    </button>
+                </section>
+            </div>
         </div>
-    );
+);
 }
 
-export default TA_dashboard;
+export default TADashboard;
