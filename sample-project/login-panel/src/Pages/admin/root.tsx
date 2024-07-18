@@ -119,6 +119,51 @@ export function Root() {
             setError('请填写回复。');
             return;
         }
+        const replyMessage = new ReplyAppMessage(selectedApplication.name, result, response);
+        try {
+            const replyResponse = await sendPostRequest(replyMessage);
+            if (replyResponse.status === 200 && result === 1) {
+                alert('回复成功！');
+
+                // Trigger FoundClubMessage
+                const foundClubMessage = new FoundClubMessage(
+                    selectedApplication.name,
+                    selectedApplication.leader,
+                    selectedApplication.intro,
+                    selectedApplication.department,
+                    "http://183.172.236.220:9005/proof/test.jpg"
+                );
+                await sendPostRequest(foundClubMessage);
+        const departmentStudentsResponse = await sendPostRequest(new GetDepartmentStudentMessage(selectedApplication.department));
+        const departmentStudents = departmentStudentsResponse.data;
+
+        // Fetch the club leader's name
+        const leaderNameResponse = await sendPostRequest(new QueryNameMessage(selectedApplication.leader));
+        const leaderName = leaderNameResponse.data;
+
+        // Send notification to all department students
+        for (const student of departmentStudents) {
+            const notificationMessage = new ReleaseNotificationMessage(
+                leaderName,
+                selectedApplication.leader,
+                student.studentID,
+                `俱乐部 ${selectedApplication.name} 已经成立，欢迎加入！`
+            );
+            await sendPostRequest(notificationMessage);
+        }
+
+        setShowModal(false);
+        setResponse('');
+        setResult(0);
+
+        // Refresh applications
+        const queryMessage = new AdminQueryAppMessage(0);
+        const applicationResponse = await sendPostRequest(queryMessage);
+        setApplications(applicationResponse.data);
+    }
+} catch (error) {
+    setError('回复失败，请重试。');
+}
 
         // Your existing logic for submitting reply goes here
 
