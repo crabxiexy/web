@@ -11,11 +11,11 @@ import runupload_styles from './runupload.module.css';
 import runupload from 'Pages/student/runupload' // Import the CSS module
 
 const minioClient = new Minio.Client({
-    endPoint: '183.173.41.206',
-    port: 5000,
+    endPoint: '127.0.0.1',
+    port: 9500,
     useSSL: false,
-    accessKey: '12345678',
-    secretKey: '12345678',
+    accessKey: 'minioadmin',
+    secretKey: 'minioadmin'
 });
 
 export const RunUpload: React.FC = () => {
@@ -72,7 +72,7 @@ export const RunUpload: React.FC = () => {
                     startTime.getTime().toString(),
                     finishTime.getTime().toString(),
                     distanceNumber,
-                    `http://183.173.41.206:5000/run/${filename}`
+                    `http://127.0.0.1:9500/run/${filename}`
                 );
 
                 // Send the running data

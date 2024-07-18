@@ -83,15 +83,15 @@ export function StudentDashboard() {
                 </section>
                 <section className={student_dashboard_style.counts}>
                     <div className={student_dashboard_style.countcard}>
-                        <h3 className={student_dashboard_style.countcardtitle}>Run</h3>
+                        <h3 className={student_dashboard_style.countcardtitle}>阳光长跑</h3>
                         <p className={student_dashboard_style.countcardvalue}>{runCount !== null ? runCount : 'Loading...'}</p>
                     </div>
                     <div className={student_dashboard_style.countcard}>
-                        <h3 className={student_dashboard_style.countcardtitle}>Group Exercise</h3>
+                        <h3 className={student_dashboard_style.countcardtitle}>集体锻炼</h3>
                         <p className={student_dashboard_style.countcardvalue}>{groupexCount !== null ? groupexCount : 'Loading...'}</p>
                     </div>
                     <div className={student_dashboard_style.countcard}>
-                        <h3 className={student_dashboard_style.countcardtitle}>Club</h3>
+                        <h3 className={student_dashboard_style.countcardtitle}>俱乐部活动</h3>
                         <p className={student_dashboard_style.countcardvalue}>{clubCount !== null ? clubCount : 'Loading...'}</p>
                     </div>
                 </section>

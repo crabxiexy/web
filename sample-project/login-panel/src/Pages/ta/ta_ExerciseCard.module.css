@@ -1,0 +1,61 @@
+.exerciseCard {
+    margin: 10px;
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin: 16px 0;
+    transition: transform 0.3s ease;
+}
+
+.tokenInput {
+    padding: 10px 20px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.button {
+    margin: 0 5px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+.errorMessage {
+    color: #ff0000;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.queryButtons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.queryResults {
+    margin-top: 20px;
+}
+
+.queryResults h5 {
+    margin-bottom: 10px;
+}
+
+.queryResults ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.queryResults li {
+    margin-bottom: 5px;
+}

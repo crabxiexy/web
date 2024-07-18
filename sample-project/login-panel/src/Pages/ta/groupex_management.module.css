@@ -1,0 +1,102 @@
+/* groupex_management.module.css */
+
+.App {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Center vertically */
+    min-height: 100vh;
+    background-image: url("https://wallpapercave.com/uwp/uwp3766952.jpeg");
+    background-size: cover;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.groupexManagementContainer {
+    padding: 20px;
+    margin-top: 80px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+}
+
+.viewTypeButtons button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.viewTypeButtons button:hover {
+    background-color: #0056b3;
+}
+
+.errorMessage {
+    color: red;
+    margin-bottom: 20px;
+}
+
+.exerciseContainer {
+    margin-top: 20px;
+    overflow-x: auto;
+    white-space: wrap;
+}
+
+.exerciseCardContainer {
+    /* A card container for each exercise, can handle height overflow */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    max-height: 40vh;
+    overflow: auto;
+}
+
+.button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #218838;
+}
+
+.groupexModal {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.groupexModalOverlay {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modalHeader h2 {
+    margin: 0;
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.modalBody {
+    margin-top: 20px;
+}
+
+.modalFooter {
+    margin-top: 20px;
+    text-align: right;
+}

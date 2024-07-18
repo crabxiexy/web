@@ -1,5 +1,5 @@
 import React from 'react';
-import student_exercisecard_style from './ExerciseCard.module.css';
+import student_exercisecard_style from './student_ExerciseCard.module.css';
 
 interface ExerciseCardProps {
     groupexID: number;
@@ -12,7 +12,7 @@ interface ExerciseCardProps {
     onSignout: (groupexID: number, token: string) => void;
 }
 
-const ExerciseCard: React.FC<ExerciseCardProps> = ({
+const Student_ExerciseCard: React.FC<ExerciseCardProps> = ({
                                                        groupexID,
                                                        startTime,
                                                        finishTime,
@@ -49,8 +49,9 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
             <p>地点: {location}</p>
             <p>状态: {formatStatus(status)}</p>
             {status === 1 && (
-                <div className="signin-section">
+                <div className={student_exercisecard_style.SignInSection}>
                     <input
+                        className={student_exercisecard_style.tokenInput}
                         type="text"
                         placeholder="请输入Token"
                         value={token}
@@ -60,8 +61,9 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
                 </div>
             )}
             {status === 3 && (
-                <div className="signout-section">
+                <div className={student_exercisecard_style.SignOutSection}>
                     <input
+                        className={student_exercisecard_style.tokenInput}
                         type="text"
                         placeholder="请输入Token"
                         value={token}
@@ -74,4 +76,4 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
     );
 };
 
-export default ExerciseCard;
+export default Student_ExerciseCard;

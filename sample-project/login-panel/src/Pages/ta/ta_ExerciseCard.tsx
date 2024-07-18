@@ -4,6 +4,7 @@ import { TASignMessage } from 'Plugins/GroupExAPI/TASignMessage';
 import { ExQueryMessage } from 'Plugins/GroupExAPI/ExQueryMessage';
 import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage'; // Import the FetchNameMessage
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
+import ta_exercisecard_style from './ta_ExerciseCard.module.css';
 
 interface ExerciseCardProps {
     groupexID: number;
@@ -16,7 +17,7 @@ interface ExerciseCardProps {
     studentIDs: number[]; // Accept student IDs as a prop
 }
 
-const ExerciseCard: React.FC<ExerciseCardProps> = ({
+const TA_ExerciseCard: React.FC<ExerciseCardProps> = ({
                                                        groupexID,
                                                        startTime,
                                                        finishTime,
@@ -159,23 +160,24 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
     };
 
     return (
-        <div className="exercise-card">
+        <div className={ta_exercisecard_style.exerciseCard}>
             <h4>{exName}</h4>
             <p>开始时间: {new Date(parseInt(startTime)).toLocaleString()}</p>
             <p>结束时间: {new Date(parseInt(finishTime)).toLocaleString()}</p>
             <p>地点: {location}</p>
-            {error && <p className="error-message">{error}</p>}
+            {error && <p className={ta_exercisecard_style.errorMessage}>{error}</p>}
 
             {isOngoing && (
                 <div>
                     <input
+                        className={ta_exercisecard_style.tokenInput}
                         type="text"
                         placeholder="输入token"
                         value={token}
                         onChange={(e) => setToken(e.target.value)}
-                        disabled={status === 1 || status === 3} // Disable input for sign-out and end sign-out
+                        disabled={status === 1 || status === 3}
                     />
-                    <button onClick={handleAction} disabled={inProcess}>
+                    <button className={ta_exercisecard_style.button} onClick={handleAction} disabled={inProcess}>
                         {status === 0 ? '开始签到' :
                             status === 1 ? '结束签到' :
                                 status === 2 ? '开始签退' :
@@ -187,14 +189,14 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
 
             {inProcess && <p>签到和签退已完成</p>}
 
-            <div className="query-buttons">
-                <button onClick={() => handleQueryStatus(1)}>显示签到情况</button>
-                <button onClick={() => handleQueryStatus(0)}>显示签退情况</button>
-                <button onClick={() => handleQueryStatus(2)}>显示整体情况</button>
+            <div className={ta_exercisecard_style.queryButtons}>
+                <button className={ta_exercisecard_style.button} onClick={() => handleQueryStatus(1)}>显示签到情况</button>
+                <button className={ta_exercisecard_style.button} onClick={() => handleQueryStatus(0)}>显示签退情况</button>
+                <button className={ta_exercisecard_style.button} onClick={() => handleQueryStatus(2)}>显示整体情况</button>
             </div>
 
             {queryResult.length > 0 && (
-                <div className="query-results">
+                <div className={ta_exercisecard_style.queryResults}>
                     <h5>查询结果:</h5>
                     <ul>
                         {queryResult.map((item) => (
@@ -209,4 +211,4 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
     );
 };
 
-export default ExerciseCard;
+export default TA_ExerciseCard;

@@ -5,7 +5,7 @@ import useIdStore from 'Pages/IdStore';
 import { StudentQueryMessage } from 'Plugins/GroupExAPI/StudentQueryMessage';
 import { SigninMessage } from 'Plugins/GroupExAPI/SigninMessage';
 import { SignoutMessage } from 'Plugins/GroupExAPI/SignoutMessage';
-import ExerciseCard from './ExerciseCard';
+import Student_ExerciseCard from './student_ExerciseCard';
 import { StudentRecordQueryMessage } from 'Plugins/GroupExAPI/StudentRecordQueryMessage';
 
 export const Checkgroupex: React.FC = () => {
@@ -105,7 +105,7 @@ export const Checkgroupex: React.FC = () => {
 
             <h3>未开始:</h3>
             {notStarted.map(item => (
-                <ExerciseCard
+                <Student_ExerciseCard
                     key={item.groupexID}
                     groupexID={item.groupexID}
                     startTime={formatDate(item.starttime)}
@@ -120,7 +120,7 @@ export const Checkgroupex: React.FC = () => {
 
             <h3>正在进行:</h3>
             {ongoing.map(item => (
-                <ExerciseCard
+                <Student_ExerciseCard
                     key={item.groupexID}
                     groupexID={item.groupexID}
                     startTime={formatDate(item.starttime)}
@@ -135,7 +135,7 @@ export const Checkgroupex: React.FC = () => {
 
             <h3>已结束:</h3>
             {ended.map(item => (
-                <ExerciseCard
+                <Student_ExerciseCard
                     key={item.groupexID}
                     groupexID={item.groupexID}
                     startTime={formatDate(item.starttime)}

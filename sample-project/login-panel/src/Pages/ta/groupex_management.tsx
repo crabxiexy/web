@@ -6,7 +6,10 @@ import useIdStore from 'Pages/IdStore';
 import { CreateGroupexMessage } from 'Plugins/GroupExAPI/CreateGroupexMessage';
 import { TAQueryMessage } from 'Plugins/GroupExAPI/TAQueryMessage';
 import { AxiosResponse } from 'axios';
-import ExerciseCard from './ExerciseCard';
+import TA_ExerciseCard from './ta_ExerciseCard';
+import Sidebar from "Pages/Sidebar";
+import groupex_management_style from './groupex_management.module.css';
+
 
 Modal.setAppElement('#root');
 
@@ -108,104 +111,104 @@ export const GroupexManagement: React.FC = () => {
     };
 
     return (
-        <div className="groupex-management-container">
-            <h1>Group Exercise Management</h1>
-            {error && <p className="error-message">{error}</p>}
+        <div className={groupex_management_style.App}>
+            <Sidebar/>
+            <div className={groupex_management_style.groupexManagementContainer}>
+                <h1>集体锻炼管理</h1>
+                {error && <p className={groupex_management_style.errorMessage}>{error}</p>}
 
-            <div className="view-type-buttons">
-                <button onClick={() => setViewType('未开始')}>未开始</button>
-                <button onClick={() => setViewType('正在进行')}>正在进行</button>
-                <button onClick={() => setViewType('已结束')}>已结束</button>
+                <h2>信息查询</h2>
+                <div className={groupex_management_style.viewTypeButtons}>
+                    <button onClick={() => setViewType('未开始')}>未开始</button>
+                    <button onClick={() => setViewType('正在进行')}>正在进行</button>
+                    <button onClick={() => setViewType('已结束')}>已结束</button>
+                </div>
+
+                <div className={groupex_management_style.exerciseContainer}>
+                    <h3>查询结果</h3>
+                    <div className={groupex_management_style.exerciseCardContainer}>
+                        {displayItems.map((item: TAQueryResult) => (
+                            <TA_ExerciseCard
+                                key={item.groupexID}
+                                groupexID={item.groupexID}
+                                startTime={convertToLocalTime(item.starttime)}
+                                finishTime={convertToLocalTime(item.finishtime)}
+                                location={item.location}
+                                exName={item.ex_name}
+                                status={item.status}
+                                studentIDs={[]}
+                                updateStatus={(newStatus: any) => {
+                                    setTaQueryResult(prev => prev.map(exercise => exercise.groupexID === item.groupexID ? {
+                                                ...exercise,
+                                                status: newStatus
+                                            } : exercise
+                                        )
+                                    );
+                                }}/>
+                        ))}
+                    </div>
+                </div>
+
+                <button className={groupex_management_style.button} onClick={openModal}>
+                    创建 Group Exercise
+                </button>
+                <button className={groupex_management_style.button} onClick={() => history.push('/ta_dashboard')}>
+                    返回 TA 仪表盘
+                </button>
+
+                <Modal
+                    isOpen={modalIsOpen}
+                    onRequestClose={closeModal}
+                    contentLabel="Create Group Exercise"
+                    className="groupex-modal"
+                    overlayClassName="groupex-modal-overlay"
+                >
+                    <div className={groupex_management_style.modalHeader}>
+                        <h2>创建 Group Exercise</h2>
+                        <button className={groupex_management_style.closeButton} onClick={closeModal}>
+                            &times;
+                        </button>
+                    </div>
+                    <div className={groupex_management_style.modalBody}>
+                        <div>
+                            <label>锻炼名称:</label>
+                            <input
+                                type="text"
+                                value={exName}
+                                onChange={(e) => setExName(e.target.value)}/>
+                        </div>
+                        <div>
+                            <label>开始时间:</label>
+                            <input
+                                type="datetime-local"
+                                value={startTime}
+                                onChange={(e) => setStartTime(e.target.value)}/>
+                        </div>
+                        <div>
+                            <label>结束时间:</label>
+                            <input
+                                type="datetime-local"
+                                value={finishTime}
+                                onChange={(e) => setFinishTime(e.target.value)}/>
+                        </div>
+                        <div>
+                            <label>地点:</label>
+                            <input
+                                type="text"
+                                value={location}
+                                onChange={(e) => setLocation(e.target.value)}/>
+                        </div>
+                    </div>
+                    <div className={groupex_management_style.modalFooter}>
+                        <button className="button" onClick={handleCreateGroupex}>
+                            创建
+                        </button>
+                        <button className="button" onClick={closeModal}>
+                            取消
+                        </button>
+                    </div>
+                </Modal>
             </div>
-
-            <div className="ta-query-result">
-                <h3>TA查询结果:</h3>
-                <div className="exercise-container" style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
-                    {displayItems.map((item: TAQueryResult) => (
-                        <ExerciseCard
-                            key={item.groupexID}
-                            groupexID={item.groupexID}
-                            startTime={convertToLocalTime(item.starttime)}
-                            finishTime={convertToLocalTime(item.finishtime)}
-                            location={item.location}
-                            exName={item.ex_name}
-                            status={item.status}
-                            studentIDs={[]}
-                            updateStatus={(newStatus) => {
-                                setTaQueryResult(prev =>
-                                    prev.map(exercise =>
-                                        exercise.groupexID === item.groupexID ? { ...exercise, status: newStatus } : exercise
-                                    )
-                                );
-                            }}
-                        />
-                    ))}
-                </div>
-            </div>
-
-            <button className="button" onClick={openModal}>
-                创建 Group Exercise
-            </button>
-            <button className="button" onClick={() => history.push('/ta_dashboard')}>
-                返回 TA 仪表盘
-            </button>
-
-            <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                contentLabel="Create Group Exercise"
-                className="groupex-modal"
-                overlayClassName="groupex-modal-overlay"
-            >
-                <div className="modal-header">
-                    <h2>创建 Group Exercise</h2>
-                    <button className="close-button" onClick={closeModal}>
-                        &times;
-                    </button>
-                </div>
-                <div className="modal-body">
-                    <div>
-                        <label>锻炼名称:</label>
-                        <input
-                            type="text"
-                            value={exName}
-                            onChange={(e) => setExName(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label>开始时间:</label>
-                        <input
-                            type="datetime-local"
-                            value={startTime}
-                            onChange={(e) => setStartTime(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label>结束时间:</label>
-                        <input
-                            type="datetime-local"
-                            value={finishTime}
-                            onChange={(e) => setFinishTime(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label>地点:</label>
-                        <input
-                            type="text"
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
-                        />
-                    </div>
-                </div>
-                <div className="modal-footer">
-                    <button className="button" onClick={handleCreateGroupex}>
-                        创建
-                    </button>
-                    <button className="button" onClick={closeModal}>
-                        取消
-                    </button>
-                </div>
-            </Modal>
         </div>
     );
 };

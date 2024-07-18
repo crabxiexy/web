@@ -4,6 +4,7 @@ import { StudentQueryRunningMessage } from 'Plugins/RunAPI/StudentQueryRunningMe
 import useIdStore from 'Pages/IdStore';
 import { useHistory } from 'react-router';
 import Modal from 'react-modal'; // 引入 react-modal 组件
+import student_checkrecord_style from "./checkrecord.module.css"
 
 Modal.setAppElement('#root');
 
@@ -85,12 +86,12 @@ export const CheckRecord = ({ studentId }: { studentId: number }) => {
     }, [studentId, Id]); // 当 studentId 或 Id 改变时重新获取记录
 
     return (
-        <div className="check-record-container">
+        <div className={student_checkrecord_style.checkRecordContainer}>
             <h1>学生跑步记录</h1>
-            {error && <p className="error-message">{error}</p>}
-            <div className="record-list">
+            {error && <p className={student_checkrecord_style.errorMessage}>{error}</p>}
+            <div className={student_checkrecord_style.recordList}>
                 {records.length > 0 ? (
-                    <table className="table">
+                    <table className={student_checkrecord_style.table}>
                         <thead>
                         <tr>
                             <th>开始时间</th>
@@ -108,10 +109,10 @@ export const CheckRecord = ({ studentId }: { studentId: number }) => {
                                 <td>{record.starttime}</td>
                                 <td>{record.finishtime}</td>
                                 <td>{record.submittime}</td>
-                                <td>{record.distance}</td>
+                                <td>{record.distance} km</td>
 
                                 <td>
-                                    <button className="button" onClick={() => handleShowCertificate(record)}>
+                                    <button className={student_checkrecord_style.button} onClick={() => handleShowCertificate(record)}>
                                         显示凭证
                                     </button>
                                 </td>
@@ -125,7 +126,7 @@ export const CheckRecord = ({ studentId }: { studentId: number }) => {
                     <p>暂无记录。</p>
                 )}
             </div>
-            <button className="cancel-button" onClick={handleCancel}>
+            <button className={student_checkrecord_style.cancelButton} onClick={handleCancel}>
                 Cancel
             </button>
 
