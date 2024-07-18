@@ -267,8 +267,8 @@ export const ManagedClubInfo: React.FC = () => {
                     {clubInfo && (
                         <div className={student_manageclub_style.clubDetails}>
                             <h2>{clubInfo.name}</h2>
-                            <p><strong>简介:</strong> {clubInfo.intro}</p>
-                            <p><strong>负责人:</strong> {leaderName}</p>
+                            <p><strong>简介: </strong> {clubInfo.intro}</p>
+                            <p><strong>负责人: </strong> {leaderName}</p>
 
 
                             <button onClick={handleUpdate}
@@ -305,7 +305,7 @@ export const ManagedClubInfo: React.FC = () => {
                     </div>
 
                     <div className={student_manageclub_style.activitySection}>
-                        <h3>活动:</h3>
+                        <h3>活动</h3>
                         <div className={student_manageclub_style.activityButtons}>
                             <button onClick={openModal} className={student_manageclub_style.createActivityButton}>创建活动</button>
                             <button onClick={handleMoreInfo} className={student_manageclub_style.showMoreButton}>显示更多活动</button>

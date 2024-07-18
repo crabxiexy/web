@@ -153,7 +153,7 @@ export const CheckRecord: React.FC = () => {
         <div className={checkrecord_style.App}>
             <Sidebar />
             <div className={checkrecord_style.checkRecordContainer}>
-                <h1>学生锻炼记录查询</h1>
+                <h1>锻炼总记录查询</h1>
                 {error && <p className={checkrecord_style.errorMessage}>{error}</p>}
 
                 <h3>跑步记录</h3>
@@ -199,9 +199,9 @@ export const CheckRecord: React.FC = () => {
                 <table className={checkrecord_style.modernTable}>
                     <thead>
                     <tr>
-                        <th>Group Exercise ID</th>
-                        <th>Start Time</th>
-                        <th>Finish Time</th>
+                        <th>集体锻炼 ID</th>
+                        <th>开始时间</th>
+                        <th>结束时间</th>
                         <th>签到状态</th>
                         <th>签退状态</th>
                     </tr>
@@ -255,7 +255,7 @@ export const CheckRecord: React.FC = () => {
                 </div>
 
                 <button className={checkrecord_style.cancelButton} onClick={handleCancel}>
-                    返回 Student Dashboard
+                    返回学生 Dashboard
                 </button>
 
                 <Modal

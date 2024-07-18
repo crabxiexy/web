@@ -104,7 +104,7 @@ export const Checkgroupex: React.FC = () => {
         <div className={checkgroupex_style.App}>
             <Sidebar />
             <div className={checkgroupex_style.checkGroupexContainer}>
-                <h1>学生锻炼查询</h1>
+                <h1>集体锻炼查询</h1>
                 {error && <p className="error-message">{error}</p>}
 
                 <div className={checkgroupex_style.sectionsContainer}>
@@ -167,7 +167,7 @@ export const Checkgroupex: React.FC = () => {
                 </div>
 
                 <button className={checkgroupex_style.button} onClick={() => history.push('/student_dashboard')}>
-                    返回 Student Dashboard
+                    返回学生 Dashboard
                 </button>
             </div>
         </div>
