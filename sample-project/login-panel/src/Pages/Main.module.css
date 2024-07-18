@@ -1,13 +1,5 @@
 /* Main.module.css */
 
-body, html {
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto', sans-serif;
-    height: 100%;
-    width: 100%;
-}
-
 .min_h_screen {
     min-height: 100vh;
     height: 100%;
@@ -117,7 +109,7 @@ body, html {
 .section {
     width: 100%;
     max-width: 60rem;
-    background-color: #eaeaea;
+    background-color: rgba(255, 255, 255, 0.9);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     border-radius: 0.5rem;
     padding: 2rem;
@@ -126,7 +118,7 @@ body, html {
 }
 
 .section h2 {
-    border-bottom: 3px solid #3b82f6;
+    border-bottom: 3px solid #63D1FF;
     padding-bottom: 0.75rem;
     margin-bottom: 1.5rem;
     font-size: 1.5rem;
