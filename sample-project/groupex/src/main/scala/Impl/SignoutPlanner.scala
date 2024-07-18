@@ -16,7 +16,7 @@ case class SignoutPlanner(
   override def plan(using planContext: PlanContext): IO[String] = {
     // 查找groupex_id对应的TA_id
     val getTAIdFromGroup: IO[Int] = readDBInt(
-      s"SELECT TA_id FROM group.group WHERE groupex_id = ?",
+      s"SELECT TA_id FROM groupex.groupex WHERE groupex_id = ?",
       List(SqlParameter("Int", groupex_id.toString))
     )
 
@@ -33,7 +33,7 @@ case class SignoutPlanner(
           case true =>
             // 检查groupex_id的sign_out值
             val checkSignOutValue: IO[Int] = readDBInt(
-              s"SELECT sign_out FROM group.group WHERE groupex_id = ?",
+              s"SELECT sign_out FROM groupex.groupex WHERE groupex_id = ?",
               List(SqlParameter("Int", groupex_id.toString))
             )
 

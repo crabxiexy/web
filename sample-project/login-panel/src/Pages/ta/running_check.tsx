@@ -103,7 +103,7 @@ export const RunningCheck = () => {
         return response.data; // Adjust based on your API response structure
     };
 
-    const handleCheck = async (runId: number) => {
+    const handleCheck = async (runId: number, studentId: number) => {
         const { response = '' } = editData[runId] || {}; // Default to empty string if undefined
         const checkRunningMessage = new CheckRunningMessage(runId, 1, response);
 
@@ -112,13 +112,13 @@ export const RunningCheck = () => {
             setResult((prevResult) => prevResult.filter((run) => run.runID !== runId));
             // Send notification after approval
             const taName = await fetchStudentName(parseInt(Id)); // Fetch TA name based on the runId or your logic
-            await sendNotification(runId, taName, 'approved', response); // Use studentID here
+            await sendNotification(studentId, taName, 'approved', response); // Use studentID here
         } catch (error) {
             setError('提交失败，请重试。');
         }
     };
 
-    const handleReject = async (runId: number) => {
+    const handleReject = async (runId: number, studentId: number) => {
         const { response = '' } = editData[runId] || {}; // Default to empty string if undefined
         const checkRunningMessage = new CheckRunningMessage(runId, 2, response);
 
@@ -126,8 +126,8 @@ export const RunningCheck = () => {
             await sendPostRequest(checkRunningMessage);
             setResult((prevResult) => prevResult.filter((run) => run.runID !== runId));
             // Send notification after rejection
-            const taName = await fetchStudentName(runId); // Fetch TA name based on the runId or your logic
-            await sendNotification(runId, taName, 'rejected', response); // Use studentID here
+            const taName = await fetchStudentName(parseInt(Id)); // Fetch TA name based on the runId or your logic
+            await sendNotification(studentId, taName, 'rejected', response); // Use studentID here
         } catch (error) {
             setError('提交失败，请重试。');
         }
@@ -190,10 +190,10 @@ export const RunningCheck = () => {
                                     </td>
                                     <td>{run.speed.toFixed(2)}</td>
                                     <td>
-                                        <button className={styles.button} onClick={() => handleCheck(run.runID)}>
+                                        <button className={styles.button} onClick={() => handleCheck(run.runID,run.studentID)}>
                                             通过
                                         </button>
-                                        <button className={styles.button} onClick={() => handleReject(run.runID)}>
+                                        <button className={styles.button} onClick={() => handleReject(run.runID,run.studentID)}>
                                             拒绝
                                         </button>
                                     </td>

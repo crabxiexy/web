@@ -8,7 +8,8 @@ import { QueryMemberMessage } from 'Plugins/ClubAPI/QueryMemberMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { MemberQueryActivityMessage } from 'Plugins/ActivityAPI/MemberQueryActivityMessage';
 import { JoinActivityMessage } from 'Plugins/ActivityAPI/JoinActivityMessage';
-import student_myclub_style from './manageclub.module.css';
+import Sidebar from 'Pages/Sidebar';
+import student_myclub_style from './myclub.module.css';
 import useIdStore from 'Pages/IdStore';
 
 interface Member {
@@ -20,6 +21,8 @@ interface ClubInfo {
     name: string;
     intro: string;
     leader: number;
+    profile: string;
+    department:string;
 }
 
 interface Activity {
@@ -41,7 +44,7 @@ export const MyClubInfo: React.FC = () => {
     const { Id } = useIdStore();
     const studentIdNumber = parseInt(Id);
     const [clubInfo, setClubInfo] = useState<ClubInfo | null>(null);
-    const [leaderInfo, setLeaderInfo] = useState<{ name: string; profile: string } | null>(null);
+    const [leaderInfo, setLeaderInfo] = useState<string | null>(null);
     const [members, setMembers] = useState<any[]>([]);
     const [showModal, setShowModal] = useState(false);
     const [allMembers, setAllMembers] = useState<any[]>([]);
@@ -63,12 +66,7 @@ export const MyClubInfo: React.FC = () => {
             const leaderId = clubData?.leader;
             if (leaderId) {
                 const leaderNameResponse = await sendPostRequest(new FetchNameMessage(leaderId));
-                const leaderProfileResponse = await sendPostRequest(new FetchProfileMessage(leaderId));
-
-                setLeaderInfo({
-                    name: leaderNameResponse.data,
-                    profile: leaderProfileResponse.data
-                });
+                setLeaderInfo(leaderNameResponse.data);
             }
 
             const membersResponse = await sendPostRequest(new QueryMemberMessage(ClubName));
@@ -138,11 +136,6 @@ export const MyClubInfo: React.FC = () => {
         setAllMembers(allMembersWithNames);
     };
 
-    const handleBack = () => {
-        setClubName(''); // Clear ClubName
-        history.goBack();
-    };
-
     const handleViewAvailableActivities = () => {
         setViewMode('available');
         fetchActivities('available');
@@ -154,99 +147,99 @@ export const MyClubInfo: React.FC = () => {
     };
 
     return (
-        <div className="managed-club-info">
-            <h1>俱乐部信息</h1>
-            {error && <p className="error-message">{error}</p>}
-            {clubInfo && (
-                <div className="club-details">
-                    <h2>{clubInfo.name}</h2>
-                    <p><strong>简介:</strong> {clubInfo.intro}</p>
-                    <div className="leader-info">
-                        <h3>负责人:</h3>
-                        {leaderInfo && (
-                            <div className="leader-details">
-                                <div className="profile-circle">
-                                    <img
-                                        src={leaderInfo.profile}
-                                        alt={leaderInfo.name}
-                                        className="leader-profile-img"
-                                    />
-                                </div>
-                                <span>{leaderInfo.name}</span>
+        <div className={student_myclub_style.myClubInfo}>
+            <Sidebar />
+            <div className={student_myclub_style.content}>
+                <div className={student_myclub_style.clubDetailsBox}>
+
+                    {error && <p className={student_myclub_style.errorMessage}>{error}</p>}
+                    {clubInfo && (
+                        <div className={student_myclub_style.clubDetails}>
+                            <div className={student_myclub_style.textInfo}>
+                                <h2>{clubInfo.name}</h2>
+                                <p><strong>简介:</strong> {clubInfo.intro}</p>
+                                <p><strong>负责人:</strong> {leaderInfo}</p>
+                                <p><strong>院系:</strong> {clubInfo.department}</p>
+
                             </div>
-                        )}
-                    </div>
-                </div>
-            )}
-
-            <div className="member-list">
-                <h3>成员:</h3>
-                {members.slice(0, 5).map(member => (
-                    <div key={member.student_id} className="member-details">
-                        <div className="profile-circle">
-                            <img
-                                src={member.profile}
-                                alt={member.name}
-                                className="member-profile-img"
-                            />
+                            <div className={student_myclub_style.profileImage}>
+                                <img src={clubInfo.profile} alt={clubInfo.name} className={student_myclub_style.clubProfileImg} />
+                            </div>
                         </div>
-                        <span>{member.name}</span>
-                    </div>
-                ))}
-                {members.length > 5 && (
-                    <button onClick={handleViewMoreMembers}>查看所有成员</button>
-                )}
-            </div>
-
-            <div className="activity-section">
-                <h3>活动:</h3>
-                <div className="activity-buttons">
-                    <button onClick={handleViewAvailableActivities}>可参加的活动</button>
-                    <button onClick={handleViewJoinedActivities}>已参加的活动</button>
+                    )}
                 </div>
-                {activities.length > 0 ? (
-                    activities.map(activity => (
-                        <div key={activity.activityID} className="activity-details">
-                            <h4>{activity.activityName}</h4>
-                            <p>{activity.intro}</p>
-                            <p><strong>开始时间:</strong> {new Date(parseInt(activity.starttime)).toLocaleString()}</p>
-                            <p><strong>结束时间:</strong> {new Date(parseInt(activity.finishtime)).toLocaleString()}</p>
-                            <p><strong>当前人数:</strong> {activity.num}/{activity.upLimit}</p>
-                            {viewMode === 'available' && (
-                                <button onClick={() => handleJoinActivity(activity.activityID)}>加入活动</button>
-                            )}
-                        </div>
-                    ))
-                ) : (
-                    <p>没有活动。</p>
-                )}
-            </div>
 
-            {showModal && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <span className="close" onClick={() => setShowModal(false)}>&times;</span>
-                        <h2>所有成员</h2>
-                        {allMembers.map(member => (
-                            <div key={member.student_id} className="member-details">
-                                <div className="profile-circle">
+                <div className={student_myclub_style.membersBox}>
+                    <h3>成员:</h3>
+                    <div className={student_myclub_style.memberRow}>
+                        {members.slice(0, 5).map(member => (
+                            <div key={member.student_id} className={student_myclub_style.memberDetails}>
+                                <div className={student_myclub_style.profileCircleSmall}>
                                     <img
                                         src={member.profile}
                                         alt={member.name}
-                                        className="member-profile-img"
+                                        className={student_myclub_style.memberProfileImg}
                                     />
                                 </div>
                                 <span>{member.name}</span>
                             </div>
                         ))}
                     </div>
+                    {members.length > 5 && (
+                        <div className={student_myclub_style.viewMoreMembersButton}>
+                            <button onClick={handleViewMoreMembers} className={student_myclub_style.smallButton}>查看所有成员</button>
+                        </div>
+                    )}
                 </div>
-            )}
 
-            <div className="button-group">
-                <button className="back-button" onClick={handleBack}>
-                    返回
-                </button>
+                <div className={student_myclub_style.activitiesBox}>
+                    <h3>活动:</h3>
+                    <div className={student_myclub_style.activityButtons}>
+                        <button onClick={handleViewAvailableActivities}>可参加的活动</button>
+                        <button onClick={handleViewJoinedActivities}>已参加的活动</button>
+                    </div>
+                    <div className={student_myclub_style.activitiesList}>
+                        {activities.length > 0 ? (
+                            activities.map(activity => (
+                                <div key={activity.activityID} className={student_myclub_style.activityDetails}>
+                                    <h4>{activity.activityName}</h4>
+                                    <p>{activity.intro}</p>
+                                    <p><strong>开始时间:</strong> {new Date(parseInt(activity.starttime)).toLocaleString()}</p>
+                                    <p><strong>结束时间:</strong> {new Date(parseInt(activity.finishtime)).toLocaleString()}</p>
+                                    <p><strong>当前人数:</strong> {activity.num}/{activity.upLimit}</p>
+                                    {viewMode === 'available' && (
+                                        <button onClick={() => handleJoinActivity(activity.activityID)}>加入活动</button>
+                                    )}
+                                </div>
+                            ))
+                        ) : (
+                            <p>没有活动。</p>
+                        )}
+                    </div>
+                </div>
+
+                {showModal && (
+                    <div className={student_myclub_style.modal}>
+                        <div className={student_myclub_style.modalContent}>
+                            <span className={student_myclub_style.close} onClick={() => setShowModal(false)}>&times;</span>
+                            <h2>所有成员</h2>
+                            <div className={student_myclub_style.allMembers}>
+                                {allMembers.map(member => (
+                                    <div key={member.student_id} className={student_myclub_style.memberDetailsModal}>
+                                        <div className={student_myclub_style.profileCircleSmallModal}>
+                                            <img
+                                                src={member.profile}
+                                                alt={member.name}
+                                                className={student_myclub_style.memberProfileImg}
+                                            />
+                                        </div>
+                                        <span>{member.name}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

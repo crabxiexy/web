@@ -1,0 +1,219 @@
+.myClubInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 60px; /* Add padding to prevent content from being hidden behind the sidebar */
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f0f2f5;
+    width: 100%;
+}
+
+h1, h2, h3, h4 {
+    margin: 0;
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 36px; /* Increase font size for the club name */
+    color: #333;
+}
+
+h2 {
+    font-size: 24px;
+    color: #555;
+}
+
+h3 {
+    font-size: 20px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+h4 {
+    font-size: 18px;
+    color: #999;
+}
+
+.errorMessage {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.clubDetailsBox, .membersBox, .activitiesBox {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 80%; /* Adjust width to fit content in one page */
+    margin-bottom: 20px;
+}
+
+.clubDetails {
+    display: flex;
+    justify-content: space-between;
+}
+
+.textInfo {
+    flex: 1;
+}
+
+.profileImage {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.clubProfileImg {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.membersBox {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Adjust gap between "成员" text and the member avatars */
+}
+
+.memberRow {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.memberDetails {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 10px; /* Adjust gap between member name and profile picture */
+}
+
+.viewMoreMembersButton {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.smallButton {
+    font-size: 12px; /* Adjust font size */
+    padding: 5px 10px; /* Adjust padding */
+}
+
+.profileCircleSmall {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.memberProfileImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.activityButtons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.activitiesList {
+    max-height: 200px; /* Adjust max-height to fit all content within the page */
+    overflow-y: auto;
+}
+
+.activityDetails {
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin: 5px;
+    gap: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure modal is above other content */
+}
+
+.modalContent {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    max-height: 80%;
+    overflow-y: auto;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.allMembers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Reduced gap between members */
+}
+
+.memberDetailsModal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px; /* Reduced width of member box */
+    margin: 5px; /* Reduced margin between members */
+    gap: 5px; /* Reduced gap between member name and profile picture */
+}
+
+.profileCircleSmallModal {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.textInfo p {
+    font-size: 14px; /* Smaller font size for intro, leader, and department */
+    line-height: 1.2; /* Reduce line height for closer spacing */
+}

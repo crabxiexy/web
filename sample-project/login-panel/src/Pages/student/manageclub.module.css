@@ -1,376 +1,209 @@
-.managed-club-info {
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-    margin: 20px;
-    background-color: #f0f8ff; /* AliceBlue background */
+/* manageclub.module.css */
+
+.managedClubContainer {
+    display: flex;
+    flex-direction: column;
+    background-color: #f0f4f7;
+    min-height: 100vh;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
-h1 {
-    text-align: center;
-    color: #ff69b4; /* HotPink color */
-    font-size: 2.5em;
+.sidebar {
+    width: 100%;
     margin-bottom: 20px;
-    text-shadow: 2px 2px #ffa07a; /* LightSalmon shadow */
 }
 
-.error-message {
+.content {
+    width: 100%;
+    max-width: 1200px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Space between content and footer */
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    color: #007bff;
+    font-size: 2rem;
+    margin: 0;
+}
+
+.errorMessage {
     color: red;
-    text-align: center;
-    font-weight: bold;
+    margin-top: 10px;
 }
 
-.club-details {
-    border: 2px solid #ff69b4; /* HotPink border */
-    padding: 20px;
+.clubDetails {
+    background-color: white;
+    border: 1px solid #dce1e4;
     border-radius: 10px;
-    background-color: #fff0f5; /* LavenderBlush background */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 15px;
     margin-bottom: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
-.leader-info {
-    margin-top: 20px;
+.clubDetails h2 {
+    color: #007bff;
+    font-size: 1.5rem;
+    margin: 10px 0;
 }
 
-.leader-details, .member-details {
+.leaderInfo {
     display: flex;
     align-items: center;
-    margin: 10px 0;
-    background-color: #e6e6fa; /* Lavender background */
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    justify-content: center;
+    margin-top: 10px;
 }
 
-.profile-circle {
+.leaderDetails {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profileCircle {
     width: 50px;
     height: 50px;
     border-radius: 50%;
     overflow: hidden;
-    margin-right: 10px;
-    border: 2px solid #ff69b4; /* HotPink border */
+    margin-bottom: 10px;
 }
 
-.profile-circle img {
+.leaderProfileImg {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.member-list {
-    margin-top: 20px;
-    border: 2px solid #ff69b4; /* HotPink border */
+.memberList {
+    background-color: white;
+    border: 1px solid #dce1e4;
     border-radius: 10px;
-    padding: 10px;
-    background-color: #fff0f5; /* LavenderBlush background */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 20px;
 }
 
-.member-list h3 {
-    margin: 0;
+.memberDetails {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+
+.memberProfileImg {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.activitySection {
+    background-color: white;
+    border: 1px solid #dce1e4;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.activityList {
+    margin-top: 10px;
+}
+
+.activityDetails {
+    background-color: #f9f9f9;
+    border: 1px solid #dce1e4;
+    border-radius: 10px;
     padding: 10px;
-    background-color: #ffb6c1; /* LightPink background */
+    margin-bottom: 10px;
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.applyButton, .backButton, .viewMoreButton, .createActivityButton, .updateButton, .showMoreButton, .submitButton, .cancelButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 10px;
     border-radius: 5px;
-    color: #fff;
-    text-align: center;
+    cursor: pointer;
 }
 
-.activity-section {
-    margin-top: 20px;
-}
-
-.activity-section h3 {
-    margin-bottom: 10px;
-    color: #ff69b4; /* HotPink color */
-    text-align: center;
-}
-
-.activity-details {
-    background-color: #e6e6fa; /* Lavender background */
-    padding: 10px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.applyButton:hover, .backButton:hover, .viewMoreButton:hover, .createActivityButton:hover, .updateButton:hover, .showMoreButton:hover, .submitButton:hover, .cancelButton:hover {
+    background-color: #0056b3;
 }
 
 .modal {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
+    width: 100%;
+    height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.modal-content {
-    background-color: #fff;
+.modalContent {
+    background-color: white;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 300px;
-    max-height: 80%;
-    overflow-y: auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     position: relative;
+    width: 400px;
 }
 
 .close {
-    cursor: pointer;
     position: absolute;
     top: 10px;
     right: 10px;
-    font-size: 20px;
-    color: #ff69b4; /* HotPink color */
-}
-
-.button-group {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.back-button, .apply-button {
-    background-color: #ff69b4; /* HotPink background */
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
+    font-size: 1.5rem;
     cursor: pointer;
-    margin: 5px;
-    transition: background-color 0.3s;
 }
 
-.back-button:hover, .apply-button:hover {
-    background-color: #ff1493; /* DeepPink background */
+.applicationList {
+    margin-top: 10px;
 }
 
-@media (max-width: 600px) {
-    .profile-circle {
-        width: 40px;
-        height: 40px;
-    }
-}
-
-/* 创建活动按钮的样式 */
-.activity-section button {
-    background-color: #ff69b4; /* HotPink background */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s, transform 0.3s;
-    margin-bottom: 20px;
-}
-
-.activity-section button:hover {
-    background-color: #ff1493; /* DeepPink background */
-    transform: scale(1.05);
-}
-
-/* 模态框内容的样式 */
-.modal-content {
-    background-color: #fff;
-    padding: 20px;
+.applicationDetails {
+    background-color: #f9f9f9;
+    border: 1px solid #dce1e4;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 400px; /* 增加宽度 */
-    max-height: 80%;
-    overflow-y: auto;
-    position: relative;
-    color: #333; /* 确保文字颜色清晰 */
-}
-
-.modal-content h2 {
-    color: #ff69b4; /* HotPink color */
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.modal-content form div {
-    margin-bottom: 15px;
-}
-
-.modal-content label {
-    display: block;
-    margin-bottom: 5px;
-    color: #ff69b4; /* HotPink color */
-}
-
-.modal-content input[type="text"],
-.modal-content input[type="datetime-local"],
-.modal-content input[type="number"] {
-    width: calc(100% - 20px); /* 调整宽度 */
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1em;
     margin-bottom: 10px;
 }
 
-.modal-content button[type="submit"],
-.modal-content button[type="button"] {
-    background-color: #ff69b4; /* HotPink background */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s, transform 0.3s;
-    margin-right: 10px;
-}
-
-.modal-content button[type="submit"]:hover,
-.modal-content button[type="button"]:hover {
-    background-color: #ff1493; /* DeepPink background */
-    transform: scale(1.05);
-}
-
-/* 模态框的背景颜色 */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7); /* 加深背景颜色 */
+.applicationMemberInfo {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: space-between;
 }
 
-/* 模态框内容的样式 */
-.modal-content {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 400px; /* 增加宽度 */
-    max-height: 80%;
-    overflow-y: auto;
-    position: relative;
-    color: #333; /* 确保文字颜色清晰 */
-}
-
-.modal-content h2 {
-    color: #ff69b4; /* HotPink color */
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.modal-content form div {
-    margin-bottom: 15px;
-}
-
-.modal-content label {
-    display: block;
-    margin-bottom: 5px;
-    color: #ff69b4; /* HotPink color */
-}
-
-.modal-content input[type="text"],
-.modal-content input[type="datetime-local"],
-.modal-content input[type="number"] {
-    width: calc(100% - 20px); /* 调整宽度 */
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1em;
-    margin-bottom: 10px;
-}
-
-.modal-content button[type="submit"],
-.modal-content button[type="button"] {
-    background-color: #ff69b4; /* HotPink background */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s, transform 0.3s;
-    margin-right: 10px;
-}
-
-.modal-content button[type="submit"]:hover,
-.modal-content button[type="button"]:hover {
-    background-color: #ff1493; /* DeepPink background */
-    transform: scale(1.05);
-}
-/* 模态框的背景颜色 */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(255, 255, 255, 0.9); /* 浅色背景 */
+.applicationActions {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    gap: 10px;
 }
 
-/* 模态框内容的样式 */
-.modal-content {
-    background-color: #333; /* 深色背景 */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 400px; /* 增加宽度 */
-    max-height: 80%;
-    overflow-y: auto;
-    position: relative;
-    color: #fff; /* 确保文字颜色清晰 */
-}
-
-.modal-content h2 {
-    color: #ff69b4; /* HotPink color */
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.modal-content form div {
-    margin-bottom: 15px;
-}
-
-.modal-content label {
-    display: block;
-    margin-bottom: 5px;
-    color: #ff69b4; /* HotPink color */
-}
-
-.modal-content input[type="text"],
-.modal-content input[type="datetime-local"],
-.modal-content input[type="number"] {
-    width: calc(100% - 20px); /* 调整宽度 */
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1em;
-    margin-bottom: 10px;
-    background-color: #fff; /* 白色背景 */
-    color: #333; /* 深色文字 */
-}
-
-.modal-content button[type="submit"],
-.modal-content button[type="button"] {
-    background-color: #ff69b4; /* HotPink background */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s, transform 0.3s;
-    margin-right: 10px;
-}
-
-.modal-content button[type="submit"]:hover,
-.modal-content button[type="button"]:hover {
-    background-color: #ff1493; /* DeepPink background */
-    transform: scale(1.05);
+.modalOverlay {
+    background-color: rgba(0, 0, 0, 0.5);
 }

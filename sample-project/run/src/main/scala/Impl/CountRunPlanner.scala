@@ -17,10 +17,7 @@ case class CountRunPlanner(student_id: Int, override val planContext: PlanContex
          |FROM ${schemaName}.run
          |WHERE student_id = ? AND is_checked = 1
        """.stripMargin
-
-    // Execute the query and return the count
-    readDBRows(sqlQuery, List(SqlParameter("Int", student_id.toString))).map { rows =>
-      rows.headOption.flatMap(row => row.hcursor.get[Int]("run_count").toOption).getOrElse(0)
-    }
+    readDBInt(sqlQuery, List(SqlParameter("Int", student_id.toString)))
   }
 }
+

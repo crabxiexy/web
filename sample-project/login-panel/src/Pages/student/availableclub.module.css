@@ -1,0 +1,211 @@
+.pageContainer {
+    display: flex;
+    height: 100vh;
+    background-color: #fff; /* Set background to white */
+}
+
+.mainContent {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #f0f2f5;
+}
+
+.clubTitle {
+    margin-bottom: 20px;
+    font-size: 36px; /* Increased font size for the club name */
+    color: #333;
+    text-align: center; /* Center align the title */
+}
+
+.errorMessage {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.clubDetails {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Align items to center */
+    margin-bottom: 20px;
+}
+
+.textInfo h2 {
+    font-size: 24px;
+    color: #555;
+}
+
+.textInfo p {
+    font-size: 14px; /* Smaller font size for intro */
+    line-height: 1.2; /* Reduced line height for closer spacing */
+}
+
+.leaderInfo h3 {
+    font-size: 20px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+.leaderInfo span {
+    font-size: 16px;
+    color: #333;
+}
+
+.profileImage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.clubProfileImg {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.memberList {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.memberList h3 {
+    font-size: 20px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+.memberRow {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.memberDetails {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 10px;
+}
+
+.profileCircle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.memberProfileImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.viewMoreButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+    align-self: center;
+}
+
+.viewMoreButton:hover {
+    background-color: #0056b3;
+}
+
+.activitySection {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.activitySection h3 {
+    font-size: 20px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+.activitiesList {
+    max-height: 300px; /* Set max height for activities list */
+    overflow-y: auto;
+}
+
+.activityDetails {
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalContent {
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    max-height: 80%;
+    overflow-y: auto;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.allMembers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.memberDetailsModal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px;
+    margin: 5px;
+    gap: 5px;
+}
+
+.profileCircleSmallModal {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 5px;
+}

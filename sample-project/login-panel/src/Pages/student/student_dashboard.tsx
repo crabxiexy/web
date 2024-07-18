@@ -37,7 +37,6 @@ export function StudentDashboard() {
             try {
                 const runResponse = await sendPostRequest(runMessage);
                 setRunCount(runResponse.data);
-
                 const groupexResponse = await sendPostRequest(groupexMessage);
                 setGroupexCount(groupexResponse.data);
                 const clubResponse = await sendPostRequest(new CountHWMessage(parseInt(Id)));

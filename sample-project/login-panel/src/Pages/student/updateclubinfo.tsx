@@ -10,8 +10,8 @@ import Sidebar from 'Pages/Sidebar';
 import updateclubinfo_style from './updateclubinfo.module.css';
 
 const minioClient = new Minio.Client({
-    endPoint: '183.172.236.220',
-    port: 9004,
+    endPoint: '183.173.41.206',
+    port: 5000,
     useSSL: false,
     accessKey: '12345678',
     secretKey: '12345678',
