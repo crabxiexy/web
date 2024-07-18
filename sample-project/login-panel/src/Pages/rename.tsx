@@ -32,8 +32,8 @@ export function Rename() {
                 <main>
                     {error && <p className={re_style.error_message}>{error}</p>}
                     <div className={re_style.form_group}>
-                        <label>旧密码</label>
-                        <input
+                        <label className={re_style.lbl}>旧密码</label>
+                        <input className={re_style.textInput}
                             type="text"
                             value={old_password}
                             onChange={e => setOldPassword(e.target.value)}
@@ -41,8 +41,8 @@ export function Rename() {
                         />
                     </div>
                     <div className={re_style.form_group}>
-                        <label>新密码</label>
-                        <input
+                        <label className={re_style.lbl}>新密码</label >
+                        <input className={re_style.textInput}
                             type="password"
                             value={new_password}
                             onChange={e => setNewPassword(e.target.value)}
@@ -50,10 +50,10 @@ export function Rename() {
                         />
                     </div>
                     <div className={re_style.button_group}>
-                        <button onClick={handleRename}>
+                        <button className={re_style.btn} onClick={handleRename}>
                             提交
                         </button>
-                        <button onClick={() => history.push("/admin/root")}>
+                        <button className={re_style.btn} onClick={() => history.push("/admin/root")}>
                             返回
                         </button>
                     </div>
