@@ -1,0 +1,103 @@
+/* checkgroupex.module.css */
+
+.App {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Center vertically */
+    min-height: 100vh;
+    background-image: url("https://wallpapercave.com/uwp/uwp3766952.jpeg");
+    background-size: cover;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.checkGroupexContainer {
+    padding: 20px;
+    margin-top: 80px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    max-height: 80%;
+    width: 60vw;
+}
+
+.sectionsContainer {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.section {
+    flex: 1; /* Each section takes equal width */
+    margin: 0 10px; /* Add some space between sections */
+}
+
+.exerciseCardContainer {
+    /* A card container for each exercise, can handle height overflow */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    max-height: 54vh;
+    overflow: auto;
+}
+
+.button {
+    background-color: #10b981;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+.error-message {
+    color: red;
+    margin-bottom: 20px;
+}
+
+.tableContainer {
+    overflow: auto; /* Makes the table scrollable on small screens */
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table th, .table td {
+    border: 2px solid #ccc; /* Gray lines */
+    color: #3b3f46;
+    text-align: center;
+}
+
+.table tr:hover {
+    background-color: #ddd; /* Lighter gray for hover */
+}
+
+.table th {
+    font-weight: bold;
+    padding: 12px;
+}
+
+.table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.table tr:hover {
+    background-color: #ddd; /* Highlight on hover */
+}

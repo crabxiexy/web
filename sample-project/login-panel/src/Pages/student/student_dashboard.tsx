@@ -101,7 +101,7 @@ export function StudentDashboard() {
                             onClick={() => handleNavigation("/student_runupload")}>阳光长跑登记
                     </button>
                     <button className={student_dashboard_style.btn}
-                            onClick={() => handleNavigation("/student_check")}>锻炼记录查询
+                            onClick={() => handleNavigation("/student_check")}>阳光长跑查询
                     </button>
                     <button className={student_dashboard_style.btn}
                             onClick={() => handleNavigation("/student_checkgroupex")}>集体锻炼查询

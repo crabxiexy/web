@@ -57,7 +57,7 @@ const Student_ExerciseCard: React.FC<ExerciseCardProps> = ({
                         value={token}
                         onChange={(e) => setToken(e.target.value)}
                     />
-                    <button onClick={() => onSignin(groupexID, token)}>签到</button>
+                    <button className={student_exercisecard_style.button} onClick={() => onSignin(groupexID, token)}>签到</button>
                 </div>
             )}
             {status === 3 && (
@@ -69,7 +69,7 @@ const Student_ExerciseCard: React.FC<ExerciseCardProps> = ({
                         value={token}
                         onChange={(e) => setToken(e.target.value)}
                     />
-                    <button onClick={() => onSignout(groupexID, token)}>签退</button>
+                    <button className={student_exercisecard_style.button} onClick={() => onSignout(groupexID, token)}>签退</button>
                 </div>
             )}
         </div>
