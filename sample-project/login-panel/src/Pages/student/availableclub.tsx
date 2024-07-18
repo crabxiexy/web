@@ -3,28 +3,27 @@ import { useHistory } from 'react-router-dom';
 import useClubNameStore from 'Pages/student/ClubNameStore';
 import { FetchInfoMessage } from 'Plugins/ClubAPI/FetchInfoMessage';
 import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
-import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage';
 import { QueryMemberMessage } from 'Plugins/ClubAPI/QueryMemberMessage';
 import { ApplyMemberMessage } from 'Plugins/ClubAPI/ApplyMemberMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { ShowActivityMessage } from 'Plugins/ActivityAPI/ShowActivityMessage';
-import student_availableclub_style from './manageclub.module.css';
+import availableclubinfo_style from './availableclub.module.css';
 import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
 import useIdStore from 'Pages/IdStore';
+import Sidebar from 'Pages/Sidebar';
+import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage'
 
 export const AvailableClubInfo: React.FC = () => {
     const history = useHistory();
     const { ClubName } = useClubNameStore();
     const { Id } = useIdStore();
     const [clubInfo, setClubInfo] = useState<any>(null);
-    const [leaderInfo, setLeaderInfo] = useState<any>(null);
     const [members, setMembers] = useState<any[]>([]);
     const [activities, setActivities] = useState<any[]>([]);
     const [showModal, setShowModal] = useState(false);
     const [allMembers, setAllMembers] = useState<any[]>([]);
     const [error, setError] = useState<string>('');
-    const [showMoreActivities, setShowMoreActivities] = useState(false);
-
+    const [leaderName,setLeaderName]=useState<string>(null);
     useEffect(() => {
         fetchClubInfo();
         fetchActivities();
@@ -35,18 +34,8 @@ export const AvailableClubInfo: React.FC = () => {
             const infoResponse = await sendPostRequest(new FetchInfoMessage(ClubName));
             const clubData = infoResponse.data[0];
             setClubInfo(clubData);
-
-            const leaderId = clubData?.leader;
-            if (leaderId) {
-                const leaderNameResponse = await sendPostRequest(new FetchNameMessage(leaderId));
-                const leaderProfileResponse = await sendPostRequest(new FetchProfileMessage(leaderId));
-
-                setLeaderInfo({
-                    name: leaderNameResponse.data,
-                    profile: leaderProfileResponse.data,
-                });
-            }
-
+            const leadernameResponse = await sendPostRequest(new FetchNameMessage(clubInfo.leader));
+            setLeaderName(leadernameResponse.data);
             const membersResponse = await sendPostRequest(new QueryMemberMessage(ClubName));
             const memberDetails = await Promise.all(membersResponse.data.map(async (member: any) => {
                 const nameResponse = await sendPostRequest(new FetchNameMessage(member.member));
@@ -54,12 +43,11 @@ export const AvailableClubInfo: React.FC = () => {
                 return {
                     ...member,
                     name: nameResponse.data,
-                    profile: profileResponse.data,
+                    profile:profileResponse.data,
                 };
             }));
             setMembers(memberDetails);
         } catch (error) {
-            setError('加载俱乐部信息失败，请重试。');
         }
     };
 
@@ -77,11 +65,9 @@ export const AvailableClubInfo: React.FC = () => {
         const allMembersResponse = await sendPostRequest(new QueryMemberMessage(ClubName));
         const allMemberDetails = await Promise.all(allMembersResponse.data.map(async (member: any) => {
             const nameResponse = await sendPostRequest(new FetchNameMessage(member.member));
-            const profileResponse = await sendPostRequest(new FetchProfileMessage(member.member));
             return {
                 ...member,
                 name: nameResponse.data,
-                profile: profileResponse.data,
             };
         }));
         setAllMembers(allMemberDetails);
@@ -120,101 +106,88 @@ export const AvailableClubInfo: React.FC = () => {
         }
     };
 
-
-    const toggleShowMoreActivities = () => {
-        setShowMoreActivities(!showMoreActivities);
-    };
-
     return (
-        <div className="managed-club-info">
-            <h1>俱乐部信息</h1>
-            {error && <p className="error-message">{error}</p>}
-            {clubInfo && (
-                <div className="club-details">
-                    <h2>{clubInfo.name}</h2>
-                    <p><strong>简介:</strong> {clubInfo.intro}</p>
-                    <div className="leader-info">
-                        <h3>负责人:</h3>
-                        {leaderInfo && (
-                            <div className="leader-details">
-                                <div className="profile-circle">
-                                    <img
-                                        src={leaderInfo.profile}
-                                        alt={leaderInfo.name}
-                                        className="leader-profile-img"
-                                    />
-                                </div>
-                                <span>{leaderInfo.name}</span>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            )}
+        <div className={availableclubinfo_style.pageContainer}>
+            <Sidebar />
+            <div className={availableclubinfo_style.mainContent}>
+                <h1 className={availableclubinfo_style.clubTitle}>俱乐部信息</h1>
+                {error && <p className={availableclubinfo_style.errorMessage}>{error}</p>}
+                {clubInfo && (
+                    <div className={availableclubinfo_style.clubDetails}>
+                        <div className={availableclubinfo_style.textInfo}>
+                            <h2>{clubInfo.name}</h2>
+                            <p><strong>简介:</strong> {clubInfo.intro}</p>
+                            <p><strong>负责人：</strong> {leaderName}</p>
+                            <p><strong>院系：</strong> {clubInfo.department}</p>
 
-            <div className="member-list">
-                <h3>成员:</h3>
-                {members.slice(0, 5).map(member => (
-                    <div key={member.student_id} className="member-details">
-                        <div className="profile-circle">
+                        </div>
+                        <div className={availableclubinfo_style.profileImage}>
                             <img
-                                src={member.profile}
-                                alt={member.name}
-                                className="member-profile-img"
+                                src={clubInfo.profile}
+                                alt="Club Profile"
+                                className={availableclubinfo_style.clubProfileImg}
                             />
                         </div>
-                        <span>{member.name}</span>
                     </div>
-                ))}
-                {members.length > 5 && (
-                    <button onClick={handleViewMoreMembers}>查看所有成员</button>
                 )}
-            </div>
 
-            <div className="activity-section">
-                <h3>活动:</h3>
-                {activities.slice(0, showMoreActivities ? activities.length : 2).map(activity => (
-                    <div key={activity.activityID} className="activity-details">
-                        <p><strong>活动名称:</strong> {activity.activityName}</p>
-                        <p><strong>介绍:</strong> {activity.intro}</p>
-                        <p><strong>开始时间:</strong> {new Date(parseInt(activity.starttime)).toLocaleString()}</p>
-                        <p><strong>结束时间:</strong> {new Date(parseInt(activity.finishtime)).toLocaleString()}</p>
-                    </div>
-                ))}
-                {activities.length > 2 && (
-                    <button onClick={toggleShowMoreActivities}>
-                        {showMoreActivities ? '显示更少' : '显示更多'}
-                    </button>
-                )}
-            </div>
-
-            {showModal && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <span className="close" onClick={() => setShowModal(false)}>&times;</span>
-                        <h2>所有成员</h2>
-                        {allMembers.map(member => (
-                            <div key={member.member} className="member-details">
-                                <div className="profile-circle">
+                <div className={availableclubinfo_style.memberList}>
+                    <h3>成员:</h3>
+                    <div className={availableclubinfo_style.memberRow}>
+                        {members.slice(0, 5).map(member => (
+                            <div key={member.student_id} className={availableclubinfo_style.memberDetails}>
+                                <div className={availableclubinfo_style.profileCircle}>
                                     <img
                                         src={member.profile}
                                         alt={member.name}
-                                        className="member-profile-img"
+                                        className={availableclubinfo_style.memberProfileImg}
                                     />
                                 </div>
                                 <span>{member.name}</span>
                             </div>
                         ))}
                     </div>
+                    {members.length > 5 && (
+                        <button className={availableclubinfo_style.viewMoreButton} onClick={handleViewMoreMembers}>查看所有成员</button>
+                    )}
                 </div>
-            )}
 
-            <div className="button-group">
-                <button className="apply-button" onClick={handleApplyToJoin}>
-                    申请加入
-                </button>
-                <button className="back-button" onClick={handleBack}>
-                    返回
-                </button>
+                <div className={availableclubinfo_style.activitySection}>
+                    <h3>活动:</h3>
+                    <div className={availableclubinfo_style.activitiesList}>
+                        {activities.map(activity => (
+                            <div key={activity.activityID} className={availableclubinfo_style.activityDetails}>
+                                <p><strong>活动名称:</strong> {activity.activityName}</p>
+                                <p><strong>介绍:</strong> {activity.intro}</p>
+                                <p><strong>开始时间:</strong> {new Date(parseInt(activity.starttime)).toLocaleString()}</p>
+                                <p><strong>结束时间:</strong> {new Date(parseInt(activity.finishtime)).toLocaleString()}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {showModal && (
+                    <div className={availableclubinfo_style.modal}>
+                        <div className={availableclubinfo_style.modalContent}>
+                            <span className={availableclubinfo_style.close} onClick={() => setShowModal(false)}>&times;</span>
+                            <h2>所有成员</h2>
+                            <div className={availableclubinfo_style.allMembers}>
+                                {allMembers.map(member => (
+                                    <div key={member.member} className={availableclubinfo_style.memberDetailsModal}>
+                                        <div className={availableclubinfo_style.profileCircleSmallModal}>
+                                            <img
+                                                src={member.profile}
+                                                alt={member.name}
+                                                className={availableclubinfo_style.memberProfileImg}
+                                            />
+                                        </div>
+                                        <span>{member.name}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -8,7 +8,9 @@ import useClubNameStore from 'Pages/student/ClubNameStore';
 import { CheckAvailableMessage } from 'Plugins/ClubAPI/CheckAvailableMessage';
 import { CheckJointClubMessage } from 'Plugins/ClubAPI/CheckJointClubMessage';
 import { parseInt } from 'lodash';
-import './viewclub.module.css'
+import Sidebar from 'Pages/Sidebar';
+import viewclub_styles from './viewclub.module.css';
+
 export const ViewClub: React.FC = () => {
     const history = useHistory();
     const { Id } = useIdStore();
@@ -88,119 +90,117 @@ export const ViewClub: React.FC = () => {
     };
 
     const ClubCard: React.FC<{ club: any; onClick: () => void; actionText?: string; onActionClick?: () => void }> = ({ club, onClick, actionText, onActionClick }) => (
-        <div className="club-card" onClick={onClick}>
-            <div className="club-image">
-                <img
-                    src={club.profile}
-                    alt={club.name}
-                    className="club-profile-img"
-                />
+        <div className={viewclub_styles.clubCard} onClick={onClick}>
+            <div className={viewclub_styles.clubImage}>
+                <img src={club.profile} alt={club.name} className={viewclub_styles.clubProfileImg} />
             </div>
-            <h3>{club.name}</h3>
-            <p><strong>简介:</strong> {club.intro}</p>
-            {actionText && (
-                <button onClick={onActionClick} className="action-button">{actionText}</button>
-            )}
+            <div className={viewclub_styles.clubInfo}>
+                <h3>{club.name}</h3>
+                <p><strong>简介:</strong> {club.intro}</p>
+                {actionText && (
+                    <button onClick={onActionClick} className={viewclub_styles.actionButton}>{actionText}</button>
+                )}
+            </div>
         </div>
     );
 
     return (
-        <div className="view-club-container">
-            <header className="view-club-header">
-                <h1>查看俱乐部</h1>
-                {error && <p className="error-message">{error}</p>}
-            </header>
+        <div className={viewclub_styles.viewClubContainer}>
+            <Sidebar />
 
-            <nav className="tab-nav">
+            <div className={viewclub_styles.content}>
+                <header className={viewclub_styles.header}>
+                    <h1>查看俱乐部</h1>
+                    {error && <p className={viewclub_styles.errorMessage}>{error}</p>}
+                </header>
+
+                <main className={viewclub_styles.main}>
+                    {activeTab === 'myClubs' && (
+                        <div className={viewclub_styles.clubList}>
+                            {myClubs.length > 0 ? (
+                                myClubs.map(club => (
+                                    <ClubCard
+                                        key={club.id}
+                                        club={club}
+                                        onClick={() => handleMyClubClick(club)}
+                                        actionText="查看俱乐部"
+                                    />
+                                ))
+                            ) : (
+                                <p>没有加入的俱乐部。</p>
+                            )}
+                        </div>
+                    )}
+                    {activeTab === 'availableClubs' && (
+                        <div className={viewclub_styles.clubList}>
+                            {availableClubs.length > 0 ? (
+                                availableClubs.map(club => (
+                                    <ClubCard
+                                        key={club.id}
+                                        club={club}
+                                        onClick={() => handleAvailableClubClick(club)}
+                                    />
+                                ))
+                            ) : (
+                                <p>没有可以加入的俱乐部。</p>
+                            )}
+                        </div>
+                    )}
+                    {activeTab === 'managedClubs' && (
+                        <div className={viewclub_styles.clubList}>
+                            {managedClubs.length > 0 ? (
+                                managedClubs.map(club => (
+                                    <ClubCard
+                                        key={club.id}
+                                        club={club}
+                                        onClick={() => handleManagedClubClick(club)}
+                                        actionText="查看管理"
+                                    />
+                                ))
+                            ) : (
+                                <p>没有管理的俱乐部。</p>
+                            )}
+                            <button onClick={() => setShowModal(true)}>申请建立新俱乐部</button>
+                        </div>
+                    )}
+                </main>
+
+                {showModal && (
+                    <div className={viewclub_styles.modal}>
+                        <div className={viewclub_styles.modalContent}>
+                            <span className={viewclub_styles.close} onClick={() => setShowModal(false)}>&times;</span>
+                            <h2>申请建立新俱乐部</h2>
+                            <input
+                                type="text"
+                                placeholder="俱乐部名字"
+                                value={clubName}
+                                onChange={(e) => setClubNameState(e.target.value)}
+                                required
+                            />
+                            <textarea
+                                placeholder="俱乐部简介"
+                                value={clubIntro}
+                                onChange={(e) => setClubIntro(e.target.value)}
+                                required
+                            />
+                            <input
+                                type="text"
+                                placeholder="俱乐部所在院系"
+                                value={clubDepartment}
+                                onChange={(e) => setClubDepartment(e.target.value)}
+                                required
+                            />
+                            <button onClick={handleCreateClub}>提交申请</button>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            <nav className={viewclub_styles.tabNav}>
                 <button onClick={() => setActiveTab('myClubs')}>我加入的俱乐部</button>
                 <button onClick={() => setActiveTab('availableClubs')}>可以加入的俱乐部</button>
                 <button onClick={() => setActiveTab('managedClubs')}>我管理的俱乐部</button>
             </nav>
-
-            <main className="club-content">
-                {activeTab === 'myClubs' && (
-                    <div>
-                        {myClubs.length > 0 ? (
-                            myClubs.map(club => (
-                                <ClubCard
-                                    key={club.id}
-                                    club={club}
-                                    onClick={() => handleMyClubClick(club)}
-                                    actionText="查看俱乐部"
-                                />
-                            ))
-                        ) : (
-                            <p>没有加入的俱乐部。</p>
-                        )}
-                    </div>
-                )}
-                {activeTab === 'availableClubs' && (
-                    <div>
-                        {availableClubs.length > 0 ? (
-                            availableClubs.map(club => (
-                                <ClubCard
-                                    key={club.id}
-                                    club={club}
-                                    onClick={() => handleAvailableClubClick(club)}
-                                />
-                            ))
-                        ) : (
-                            <p>没有可以加入的俱乐部。</p>
-                        )}
-                    </div>
-                )}
-                {activeTab === 'managedClubs' && (
-                    <div>
-                        {managedClubs.length > 0 ? (
-                            managedClubs.map(club => (
-                                <ClubCard
-                                    key={club.id}
-                                    club={club}
-                                    onClick={() => handleManagedClubClick(club)}
-                                    actionText="查看管理"
-                                />
-                            ))
-                        ) : (
-                            <p>没有管理的俱乐部。</p>
-                        )}
-                        <button onClick={() => setShowModal(true)}>申请建立新俱乐部</button>
-                    </div>
-                )}
-            </main>
-
-            {showModal && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <span className="close" onClick={() => setShowModal(false)}>&times;</span>
-                        <h2>申请建立新俱乐部</h2>
-                        <input
-                            type="text"
-                            placeholder="俱乐部名字"
-                            value={clubName}
-                            onChange={(e) => setClubNameState(e.target.value)}
-                            required
-                        />
-                        <textarea
-                            placeholder="俱乐部简介"
-                            value={clubIntro}
-                            onChange={(e) => setClubIntro(e.target.value)}
-                            required
-                        />
-                        <input
-                            type="text"
-                            placeholder="俱乐部所在院系"
-                            value={clubDepartment}
-                            onChange={(e) => setClubDepartment(e.target.value)}
-                            required
-                        />
-                        <button onClick={handleCreateClub}>提交申请</button>
-                    </div>
-                </div>
-            )}
-
-            <button className="button" onClick={() => history.push('/student_dashboard')}>
-                返回 Student Dashboard
-            </button>
         </div>
     );
 };
