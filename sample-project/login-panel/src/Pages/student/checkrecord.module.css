@@ -1,32 +1,35 @@
 /* checkrecord.module.css */
 
-.check-record-container {
+.App {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Center vertically */
+    min-height: 100vh;
+    background-image: url("https://www.gameuidatabase.com/uploads/Genshin-Impact01032021-021443-79651.jpg");
+    background-size: cover;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.checkRecordContainer {
     position: relative;
     margin: auto;
-    width: 90%; /* 或者使用你想要的百分比 */
+    width: 100%;
     max-width: 800px;
-    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px 15px;
     border-radius: 12px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: calc(100vh - 40px); /* 减去padding的总和 */
+    min-height: 10vh;
     box-sizing: border-box; /* 确保padding和border被包含在width和height内 */
     overflow-y: auto; /* 垂直滚动条 */
 }
 
-/* 动态圆角矩形效果可以通过在JavaScript中动态修改CSS变量实现，
-   这里先设定默认值 */
-.check-record-container {
-    --border-radius: 12px;
-    border-radius: var(--border-radius);
-}
-
-/* 你可以使用JavaScript来动态修改--border-radius变量，例如：
-document.documentElement.style.setProperty('--border-radius', '20px'); */
 
 .error-message {
     color: red;
@@ -63,6 +66,7 @@ document.documentElement.style.setProperty('--border-radius', '20px'); */
     border-radius: 4px;
     padding: 8px 16px;
     cursor: pointer;
+    font-weight: bold;
     transition: background-color 0.3s;
 }
 
@@ -70,31 +74,91 @@ document.documentElement.style.setProperty('--border-radius', '20px'); */
     background-color: #0056b3;
 }
 
-.cancel-button {
-    margin-top: 20px;
-    display: block;
+.cancelButton {
+    background-color: #10b981;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
 }
 
-.certificate-modal {
+.cancelButton:hover {
+    background-color: #047857;
+}
+
+.certificateModal {
     background-color: white;
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
 }
 
-.certificate-modal-overlay {
+.certificateModalOverlay {
     background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
 }
 
-.modal-header {
+.modalHeader {
     display: flex;
     justify-content: flex-end;
 }
 
-.close-button {
+.modalBody {
+    max-height: 500px; /* Adjust the max-height as needed */
+    overflow-y: auto; /* Allows scrolling for overflow content */
+    padding: 20px; /* Adds some padding around the content */
+}
+
+.closeButton {
     background: none;
     border: none;
     font-size: 24px;
     color: #aaa;
     cursor: pointer;
+}
+
+.tableReset {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 20px 0;
+}
+
+.tableReset th, .tableReset td {
+    text-align: left;
+    padding: 8px;
+}
+
+.modernTable {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    margin: 20px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.modernTable th, .modernTable td {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 12px 15px;
+}
+
+.modernTable th {
+    background-color: #f8f9fa;
+    color: #333;
+    font-weight: bold;
+}
+
+.modernTable tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Hover effect for rows */
+.modernTable tbody tr:hover {
+    background-color: #f2f2f2;
 }
