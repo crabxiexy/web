@@ -74,7 +74,6 @@ export function Login() {
                     <div className={login_style.form_group}>
                         <label htmlFor="user_id">用户ID</label>
                         <input
-                            align={"center"}
                             type="text"
                             id="user_id"
                             value={Id}

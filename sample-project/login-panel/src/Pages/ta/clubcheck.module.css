@@ -1,7 +1,21 @@
 /* 页面容器样式 */
+.App {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Center vertically */
+    min-height: 100vh;
+    background-image: url("https://wallpapercave.com/uwp/uwp3766950.jpeg");
+    background-size: cover;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
 .clubHwCheckContainer {
     padding: 20px; /* 增加页面边缘的内边距 */
-    background-color: #f9f9f9; /* 设置背景颜色以区分内容区域 */
+    margin-top: 80px; /* 使内容与顶部导航栏保持一定距离 */
+    background-color: rgba(255, 255, 255, 0.9); /* 设置背景颜色为白色，透明度为0.9 */
+    border-radius: 10px; /* 设置圆角 */
 }
 
 /* 标题样式 */
@@ -30,7 +44,7 @@
 /* 按钮样式 */
 .button {
     padding: 10px 20px;
-    margin-right: 10px;
+    margin-top: 20px;
     background-color: #007bff;
     color: white;
     border: none;
@@ -46,9 +60,6 @@
 .queryResult {
     margin: 20px 0; /* 增加表格与其他内容之间的外边距 */
     padding: 20px; /* 增加表格周围的内边距 */
-    border: 1px solid #ddd; /* 添加边框 */
-    border-radius: 10px; /* 添加圆角 */
-    background-color: #fff; /* 设置表格容器背景颜色 */
 }
 
 /* 表格样式 */

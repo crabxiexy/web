@@ -7,7 +7,8 @@ import useIdStore from 'Pages/IdStore';
 import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
 import { CheckHWMessage } from 'Plugins/ActivityAPI/CheckHWMessage';
-import styles from './club_hw_check.module.css';
+import Sidebar from 'Pages/Sidebar';
+import styles from './clubcheck.module.css';
 
 Modal.setAppElement('#root');
 
@@ -130,93 +131,99 @@ export const ClubHWCheck = () => {
     };
 
     return (
-        <div className={styles.clubHwCheckContainer}>
-            <h1>作业检查</h1>
-            {error && <p className={styles.errorMessage}>{error}</p>}
-            <div className={styles.buttonGroup}>
-                <button className={styles.button} onClick={() => history.push('/ta_dashboard')}>
-                    返回 TA 仪表盘
-                </button>
-            </div>
-            {result.length > 0 && (
-                <div className={styles.queryResult}>
-                    <h3>待检查作业:</h3>
-                    <table className={styles.table}>
-                        <thead>
-                        <tr>
-                            <th>学生姓名</th>
-                            <th>提交时间</th>
-                            <th>俱乐部名称</th>
-                            <th>活动名称</th>
-                            <th>查看图片</th>
-                            <th>回复</th>
-                            <th>操作</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {result.map((homework) => (
-                            <tr key={homework.activity_id}>
-                                <td>{homework.student_names.join(', ')}</td>
-                                <td>{homework.submitTime}</td>
-                                <td>{homework.club_name}</td>
-                                <td>{homework.activity_name}</td>
-                                <td>
-                                    <button
-                                        className={styles.button}
-                                        onClick={() => handleImageClick(homework.imgUrl, homework.activity_id)}
-                                    >
-                                        查看图片
-                                    </button>
-                                </td>
-                                <td>
-                                    <input
-                                        type="text"
-                                        value={editResponse[homework.activity_id] ?? ''}
-                                        onChange={(e) =>
-                                            setEditResponse((prevData) => ({
-                                                ...prevData,
-                                                [homework.activity_id]: e.target.value,
-                                            }))
-                                        }
-                                    />
-                                </td>
-                                <td>
-                                    <button className={styles.button} onClick={() => handleBatchCheck(homework.activity_id)}>
-                                        批量通过
-                                    </button>
-                                    <button className={styles.button} onClick={() => handleBatchReject(homework.activity_id)}>
-                                        批量拒绝
-                                    </button>
-                                </td>
+        <div className={styles.App}>
+            <Sidebar />
+            <div className={styles.clubHwCheckContainer}>
+                <h1>作业检查</h1>
+                {error && <p className={styles.errorMessage}>{error}</p>}
+                {result.length > 0 ? (
+                    <div className={styles.queryResult}>
+                        <h3>待检查作业:</h3>
+                        <table className={styles.table}>
+                            <thead>
+                            <tr>
+                                <th>学生姓名</th>
+                                <th>提交时间</th>
+                                <th>俱乐部名称</th>
+                                <th>活动名称</th>
+                                <th>查看图片</th>
+                                <th>回复</th>
+                                <th>操作</th>
                             </tr>
-                        ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            {result.map((homework) => (
+                                <tr key={homework.activity_id}>
+                                    <td>{homework.student_names.join(', ')}</td>
+                                    <td>{homework.submitTime}</td>
+                                    <td>{homework.club_name}</td>
+                                    <td>{homework.activity_name}</td>
+                                    <td>
+                                        <button
+                                            className={styles.button}
+                                            onClick={() => handleImageClick(homework.imgUrl, homework.activity_id)}
+                                        >
+                                            查看图片
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            value={editResponse[homework.activity_id] ?? ''}
+                                            onChange={(e) =>
+                                                setEditResponse((prevData) => ({
+                                                    ...prevData,
+                                                    [homework.activity_id]: e.target.value,
+                                                }))
+                                            }
+                                        />
+                                    </td>
+                                    <td>
+                                        <button className={styles.button}
+                                                onClick={() => handleBatchCheck(homework.activity_id)}>
+                                            通过
+                                        </button>
+                                        <button className={styles.button}
+                                                onClick={() => handleBatchReject(homework.activity_id)}>
+                                            拒绝
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+                    </div>
+                ) : <center>暂时没有需要审核的俱乐部活动作业。</center>}
+                <div className={styles.buttonGroup}>
+                    <button className={styles.button} onClick={() => history.push('/ta_dashboard')}>
+                        返回 TA 仪表盘
+                    </button>
                 </div>
-            )}
-            {result.map((homework) => (
-                <Modal
-                    key={homework.activity_id}
-                    isOpen={modalOpen[homework.activity_id] || false}
-                    onRequestClose={() => closeModal(homework.activity_id)}
-                    contentLabel="Image Modal"
-                    className={styles.imageModal}
-                    overlayClassName={styles.imageModalOverlay}
-                >
-                    <div className={styles.modalHeader}>
-                        <button className={styles.closeButton} onClick={() => closeModal(homework.activity_id)}>
-                            &times;
-                        </button>
-                    </div>
-                    <div className={styles.modalBody}>
-                        <img
-                            src={homework.imgUrl}
-                            alt="Selected"
-                            style={{ maxWidth: '100%', maxHeight: '100%' }}
-                        />
-                    </div>
-                </Modal>
-            ))}
+                {result.map((homework) => (
+                    <Modal
+                        key={homework.activity_id}
+                        isOpen={modalOpen[homework.activity_id] || false}
+                        onRequestClose={() => closeModal(homework.activity_id)}
+                        contentLabel="Image Modal"
+                        className={styles.imageModal}
+                        overlayClassName={styles.imageModalOverlay}
+                    >
+                        <div className={styles.modalHeader}>
+                            <button className={styles.closeButton} onClick={() => closeModal(homework.activity_id)}>
+                                &times;
+                            </button>
+                        </div>
+                        <div className={styles.modalBody}>
+                            <img
+                                src={homework.imgUrl}
+                                alt="Selected"
+                                style={{maxWidth: '100%', maxHeight: '100%'}}
+                            />
+                        </div>
+                    </Modal>
+                ))}
+
+            </div>
         </div>
     );
 };
