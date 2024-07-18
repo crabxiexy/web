@@ -27,10 +27,10 @@ case class CountGroupexPlanner(
     val parameters = List(
       SqlParameter("Int", student_id.toString)
     )
-
+    readDBInt(sqlQuery, parameters)
     // Execute the query and return the count
-    readDBRows(sqlQuery, parameters).map { rows =>
-      rows.headOption.flatMap(row => row.hcursor.get[Int]("exercise_count").toOption).getOrElse(0)
-    }
+//    readDBRows(sqlQuery, parameters).map { rows =>
+//      rows.headOption.flatMap(row => row.hcursor.get[Int]("exercise_count").toOption).getOrElse(0)
+//    }
   }
 }

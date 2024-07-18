@@ -11,11 +11,11 @@ import { SubmitHWMessage } from 'Plugins/ActivityAPI/SubmitHWMessage';
 import * as Minio from 'minio';
 
 const minioClient = new Minio.Client({
-    endPoint: '183.173.129.197',
-    port: 9500,
+    endPoint: '183.173.41.206',
+    port: 5000,
     useSSL: false,
-    accessKey: 'minioadmin',
-    secretKey: 'minioadmin',
+    accessKey: '12345678',
+    secretKey: '12345678',
 });
 
 interface Member {
@@ -132,7 +132,7 @@ export const MoreInfo: React.FC = () => {
                     parseInt(Id),
                     currentActivityID,
                     memberId,
-                    `http://183.172.236.220:9004/proof/${filename}`
+                    `http://183.173.41.206:5000/runproof/${filename}`
                 );
 
                 await sendPostRequest(submitMessage);

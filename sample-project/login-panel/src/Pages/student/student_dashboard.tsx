@@ -37,7 +37,6 @@ export function StudentDashboard() {
             try {
                 const runResponse = await sendPostRequest(runMessage);
                 setRunCount(runResponse.data);
-
                 const groupexResponse = await sendPostRequest(groupexMessage);
                 setGroupexCount(groupexResponse.data);
                 const clubResponse = await sendPostRequest(new CountHWMessage(parseInt(Id)));
@@ -104,7 +103,7 @@ export function StudentDashboard() {
                             onClick={() => handleNavigation("/student_checkgroupex")}>集体锻炼查询
                     </button>
                     <button className={student_dashboard_style.btn}
-                            onClick={() => handleNavigation("/ViewClub")}>俱乐部活动查询
+                            onClick={() => handleNavigation("/ViewClub")}>俱乐部查询
                     </button>
                     <button className={student_dashboard_style.btn}
                             onClick={() => handleNavigation("/student_check")}>锻炼记录查询

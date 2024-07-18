@@ -16,7 +16,7 @@ case class SignoutPlanner(
   override def plan(using planContext: PlanContext): IO[String] = {
     // 查找groupex_id对应的TA_id
     val getTAIdFromGroup: IO[Int] = readDBInt(
-      s"SELECT TA_id FROM group.group WHERE groupex_id = ?",
+      s"SELECT TA_id FROM groupex.groupex WHERE groupex_id = ?",
       List(SqlParameter("Int", groupex_id.toString))
     )
 
@@ -33,12 +33,12 @@ case class SignoutPlanner(
           case true =>
             // 检查groupex_id的sign_out值
             val checkSignOutValue: IO[Int] = readDBInt(
-              s"SELECT sign_out FROM group.group WHERE groupex_id = ?",
+              s"SELECT status FROM groupex.groupex WHERE groupex_id = ?",
               List(SqlParameter("Int", groupex_id.toString))
             )
 
             checkSignOutValue.flatMap {
-              case 1 =>
+              case 3 =>
                 // 检查是否已经有这个（student_id,groupex_id）数据
                 val checkSignOutRecord = readDBBoolean(
                   s"SELECT EXISTS(SELECT 1 FROM groupex.sign_out WHERE groupex_id = ? AND student_id = ?)",
@@ -49,7 +49,7 @@ case class SignoutPlanner(
                   case false =>
                     val checkToken = readDBBoolean(
                       s"SELECT EXISTS(SELECT 1 FROM groupex.groupex WHERE groupex_id = ? AND token = ?)",
-                      List(SqlParameter("Int", groupex_id.toString), SqlParameter("Text", token.toString))
+                      List(SqlParameter("Int", groupex_id.toString), SqlParameter("String", token))
                     )
 
                     checkToken.flatMap {

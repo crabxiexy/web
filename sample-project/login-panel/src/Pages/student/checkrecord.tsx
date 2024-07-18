@@ -181,7 +181,7 @@ export const CheckRecord: React.FC = () => {
                                     <td>
                                         <button className={checkrecord_style.button}
                                                 onClick={() => handleShowCertificate({imgUrl: record.imgurl})}>
-                                            显示凭证
+                                            显示
                                         </button>
                                     </td>
                                     <td>{status[record.isChecked]}</td>
@@ -240,7 +240,7 @@ export const CheckRecord: React.FC = () => {
                                     <td>
                                         <button className={checkrecord_style.button}
                                                 onClick={() => handleShowCertificate({imgUrl: activity.imgUrl})}>
-                                            显示凭证
+                                            显示
                                         </button>
                                     </td>
                                     <td>{status[activity.is_checked]}</td>

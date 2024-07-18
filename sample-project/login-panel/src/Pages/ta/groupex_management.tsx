@@ -10,7 +10,6 @@ import TA_ExerciseCard from './ta_ExerciseCard';
 import Sidebar from "Pages/Sidebar";
 import groupex_management_style from './groupex_management.module.css';
 
-
 Modal.setAppElement('#root');
 
 interface TAQueryResult {
@@ -91,15 +90,14 @@ export const GroupexManagement: React.FC = () => {
     };
 
     const currentTime = Date.now();
-    console.log(currentTime)
-    const notStarted = taQueryResult.filter(item => parseInt(item.starttime) > currentTime- 8 * 60 * 60 * 1000);
+    const notStarted = taQueryResult.filter(item => parseInt(item.starttime) > currentTime - 8 * 60 * 60 * 1000);
     const ongoing = taQueryResult.filter(item =>
-        parseInt(item.starttime) <= currentTime- 8 * 60 * 60 * 1000 &&
-        parseInt(item.finishtime) > currentTime- 8 * 60 * 60 * 1000 &&
+        parseInt(item.starttime) <= currentTime - 8 * 60 * 60 * 1000 &&
+        parseInt(item.finishtime) > currentTime - 8 * 60 * 60 * 1000 &&
         (item.status !== 4)
     );
     const ended = taQueryResult.filter(item =>
-        parseInt(item.finishtime) <= currentTime - 8 * 60 * 60 * 1000||
+        parseInt(item.finishtime) <= currentTime - 8 * 60 * 60 * 1000 ||
         (item.status === 4)
     );
 
@@ -112,7 +110,7 @@ export const GroupexManagement: React.FC = () => {
 
     return (
         <div className={groupex_management_style.App}>
-            <Sidebar/>
+            <Sidebar />
             <div className={groupex_management_style.groupexManagementContainer}>
                 <h1>集体锻炼管理</h1>
                 {error && <p className={groupex_management_style.errorMessage}>{error}</p>}
@@ -144,7 +142,7 @@ export const GroupexManagement: React.FC = () => {
                                             } : exercise
                                         )
                                     );
-                                }}/>
+                                }} />
                         ))}
                     </div>
                 </div>
@@ -160,8 +158,8 @@ export const GroupexManagement: React.FC = () => {
                     isOpen={modalIsOpen}
                     onRequestClose={closeModal}
                     contentLabel="Create Group Exercise"
-                    className="groupex-modal"
-                    overlayClassName="groupex-modal-overlay"
+                    className={groupex_management_style.groupexModal}
+                    overlayClassName={groupex_management_style.groupexModalOverlay}
                 >
                     <div className={groupex_management_style.modalHeader}>
                         <h2>创建 Group Exercise</h2>
@@ -175,35 +173,35 @@ export const GroupexManagement: React.FC = () => {
                             <input
                                 type="text"
                                 value={exName}
-                                onChange={(e) => setExName(e.target.value)}/>
+                                onChange={(e) => setExName(e.target.value)} />
                         </div>
                         <div>
                             <label>开始时间:</label>
                             <input
                                 type="datetime-local"
                                 value={startTime}
-                                onChange={(e) => setStartTime(e.target.value)}/>
+                                onChange={(e) => setStartTime(e.target.value)} />
                         </div>
                         <div>
                             <label>结束时间:</label>
                             <input
                                 type="datetime-local"
                                 value={finishTime}
-                                onChange={(e) => setFinishTime(e.target.value)}/>
+                                onChange={(e) => setFinishTime(e.target.value)} />
                         </div>
                         <div>
                             <label>地点:</label>
                             <input
                                 type="text"
                                 value={location}
-                                onChange={(e) => setLocation(e.target.value)}/>
+                                onChange={(e) => setLocation(e.target.value)} />
                         </div>
                     </div>
                     <div className={groupex_management_style.modalFooter}>
-                        <button className="button" onClick={handleCreateGroupex}>
+                        <button className={groupex_management_style.button} onClick={handleCreateGroupex}>
                             创建
                         </button>
-                        <button className="button" onClick={closeModal}>
+                        <button className={groupex_management_style.button} onClick={closeModal}>
                             取消
                         </button>
                     </div>
