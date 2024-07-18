@@ -1,28 +1,28 @@
-
+/* ta_dashboard.module.css */
 
 .App {
-    text-align: center;
-    background: linear-gradient(135deg, #FFDEE9, #B5FFFC);
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    font-family: 'Arial', sans-serif;
+    justify-content: center; /* Center vertically */
+    min-height: 100vh;
+    background-image: url("https://www.gameuidatabase.com/uploads/Genshin-Impact01032021-021443-79651.jpg");
+    background-size: cover;
+    text-align: center;
+    font-family: Arial, sans-serif;
 }
 
 .App-header {
-    background-color: #34495e;
+    background-color: transparent;
     padding: 20px;
     color: white;
-    width: 100%; /* Ensure the header spans the full width */
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: fixed; /* Fixes the header at the top */
+    position: fixed;
     top: 0;
-
 }
 
 .App-header h1 {
@@ -63,34 +63,24 @@
 }
 
 .dropdown-menu p:last-child {
-    border-bottom: none; /* Remove border from last item */
+    border-bottom: none;
 }
 
 .dropdown-menu p:hover {
-    background: #FFD3E8; /* Light background for hover */
+    background: #FFD3E8;
 }
 
-main {
-    width: 90%;
-    max-width: 1000px;
-    margin-top: 100px; /* Adjusted to give space for the fixed header */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-section {
+section.notifications {
     background: rgba(255, 255, 255, 0.9);
     margin: 20px 0;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 100%;
+    max-width: 100%;
     text-align: left;
 }
 
-section h2 {
+section.notifications h2 {
     border-bottom: 2px solid #63D1FF;
     padding-bottom: 10px;
     margin-bottom: 20px;
@@ -110,55 +100,83 @@ section h2 {
     margin-bottom: 10px;
 }
 
-.button-group {
+section.counts {
     display: flex;
-    justify-content: space-between;
     flex-wrap: wrap;
-    width: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 10px;
+    justify-content: center;
+    gap: 10px;
+    max-width: 100%;
 }
 
-.button-group button {
-    margin: 10px;
+.countcard {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: calc(33% - 20px);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.countcard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.countcardtitle {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.countcardvalue {
+    font-size: 2em;
+    font-weight: bold;
+    color: #555555;
+}
+
+section.btn_group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    max-width: 100%;
 }
 
 .btn {
+    background-color: rgba(255, 255, 255, 0.9);
+    flex: 1;
+    margin: 0 5px;
     padding: 15px 30px;
     font-size: 16px;
     border: none;
     border-radius: 10px;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
+    outline: none; /* Remove the blue outline on focus */
 }
 
-.login-btn {
-    background: linear-gradient(to right, #FF867C, #FEB2A8);
-    color: white;
-    box-shadow: 0 4px 12px rgba(255, 134, 124, 0.25);
-}
-
-.login-btn:hover {
+.btn:hover {
     transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(255, 134, 124, 0.35);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-.activity-btn {
-    background: linear-gradient(to right, #8e44ad, #3498db);
-    color: white;
-    box-shadow: 0 4px 12px rgba(142, 68, 173, 0.25);
+.user-avatar {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
 }
 
-.activity-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(142, 68, 173, 0.35);
-}
-
-.exercise-btn {
-    background: linear-gradient(to right, #27ae60, #2ecc71);
-    color: white;
-    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.25);
-}
-
-.exercise-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(39, 174, 96, 0.35);
+.avatar-image {
+    width: 50px; /* Set fixed width */
+    height: 50px; /* Set fixed height */
+    border-radius: 50%; /* Make it circular */
+    object-fit: cover; /* Ensure image covers the circle */
+    border: 2px solid #ccc; /* Optional: Add a border */
 }
