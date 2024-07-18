@@ -1,11 +1,9 @@
-// Sidebar.tsx
 import React, { useEffect, useState } from 'react';
 import useIdStore from './IdStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage';
 import { useHistory } from 'react-router';
-import { NavLink } from 'react-router-dom';
 import styles from './Sidebar.module.css';
 import useTokenStore from './TokenStore';
 
@@ -56,24 +54,40 @@ const Sidebar = () => {
         history.push("/");
     };
 
+    const handleBack = (): void => {
+        history.goBack();
+    };
+
+    const handleRename = () => {
+        history.push("/rename");
+    };
+
+    const handleUpdateProfile = () => {
+        history.push("/update_profile");
+    };
+
     return (
         <div className={styles.sidebar}>
-            <h1 className={styles.title}>Physical Exercise System</h1>
-            <a href="#" className={styles.homeLink} onClick={handleHome}>
-                Home
-            </a>
-            <div className={styles.userAvatar} onClick={toggleDropdown}>
-                {profileImage && (
-                    <img src={profileImage} alt="User Avatar" className={styles.avatarImage}/>
-                )}
-                <span className={styles.username}>{username}</span>
-                <button className={styles.logoutButton} onClick={handleLogout}>Logout</button>
+            <div className={styles.leftSection}>
+                <h1 className={styles.title}>Physical Exercise System</h1>
+
             </div>
-            {dropdownVisible && (
-                <div className={styles.dropdownMenu}>
-                    <p onClick={handleLogout}>Logout</p>
+            <div className={styles.rightSection}>
+                <button className={styles.navButton} onClick={handleBack}>Back</button>
+                <div className={styles.userAvatar} onClick={toggleDropdown}>
+                    {profileImage && (
+                        <img src={profileImage} alt="User Avatar" className={styles.avatarImage} />
+                    )}
+                    <span className={styles.username}>{username}</span>
                 </div>
-            )}
+                {dropdownVisible && (
+                    <div className={styles.dropdownMenu}>
+                        <p onClick={handleRename}>Rename</p>
+                        <p onClick={handleUpdateProfile}>Update Profile</p>
+                        <p onClick={handleLogout}>Logout</p>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
