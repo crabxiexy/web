@@ -6,9 +6,9 @@ import { Login } from 'Pages/login'
 import {Root} from 'Pages/admin/root'
 import {Rename} from 'Pages/rename'
 import {Register} from 'Pages/register'
-import { Dashboard } from 'Pages/student/dashboard'
+import { StudentDashboard } from 'Pages/student/student_dashboard'
 import { RunUpload } from 'Pages/student/runupload'
-import {TA_dashboard} from 'Pages/ta/ta_dashboard'
+import {TADashboard} from 'Pages/ta/ta_dashboard'
 import {AssignTA} from 'Pages/ta/student_management'
 import {RunningCheck} from 'Pages/ta/running_check'
 import {CheckRecord} from 'Pages/student/checkrecord'
@@ -31,9 +31,9 @@ const Layout = () => {
                 <Route path="/admin/root" exact component={Root} />
                 <Route path="/rename" exact component={Rename} />
                 <Route path="/register" exact component={Register} />
-                <Route path="/student_dashboard" exact component={Dashboard} />
+                <Route path="/student_dashboard" exact component={StudentDashboard} />
                 <Route path="/student_runupload" exact component={RunUpload}/>
-                <Route path="/ta_dashboard" exact component={TA_dashboard} />
+                <Route path="/ta_dashboard" exact component={TADashboard} />
                 <Route path="/ta_student_management" exact component={AssignTA} />
                 <Route path="/ta_running_check" exact component={RunningCheck} />
                 <Route path="/student_check" exact component={CheckRecord} />

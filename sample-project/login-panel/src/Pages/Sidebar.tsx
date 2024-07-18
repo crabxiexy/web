@@ -69,7 +69,7 @@ const Sidebar = () => {
     return (
         <div className={styles.sidebar}>
             <div className={styles.leftSection}>
-                <h1 className={styles.title}>Physical Exercise System</h1>
+                <h1 className={styles.title}>乐动力 Pro</h1>
 
             </div>
             <div className={styles.rightSection}>

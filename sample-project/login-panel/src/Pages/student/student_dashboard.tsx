@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
-import student_dashboard_style from './dashboard.module.css';
+import student_dashboard_style from './student_dashboard.module.css';
 import useIdStore from 'Pages/IdStore';
 import useTokenStore from 'Pages/TokenStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
@@ -10,7 +10,7 @@ import { CountGroupexMessage } from 'Plugins/GroupExAPI/CountGroupexMessage';
 import Sidebar from 'Pages/Sidebar';
 import { CountHWMessage } from 'Plugins/ActivityAPI/CountHWMessage';
 
-export function Dashboard() {
+export function StudentDashboard() {
     const history = useHistory();
     const { Id, setId } = useIdStore();
     const { setToken } = useTokenStore();
@@ -115,4 +115,4 @@ export function Dashboard() {
     );
 }
 
-export default Dashboard;
+export default StudentDashboard;

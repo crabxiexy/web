@@ -53,7 +53,7 @@ export function Rename() {
                         <button onClick={handleRename}>
                             提交
                         </button>
-                        <button onClick={() => history.push("/admin/root")}>
+                        <button onClick={() => history.goBack()}>
                             返回
                         </button>
                     </div>

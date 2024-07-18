@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import useIdStore from 'Pages/IdStore';
-import ta_dashboard_style from './dashboard.module.css'; // Ensure the correct path to your CSS file
+import ta_dashboard_style from './ta_dashboard.module.css'; // Ensure the correct path to your CSS file
 import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
 import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils'
 
-export function TA_dashboard() {
+export function TADashboard() {
     const history = useHistory();
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [isModalOpen, setModalOpen] = useState(false);
@@ -133,4 +133,4 @@ export function TA_dashboard() {
     );
 }
 
-export default TA_dashboard;
+export default TADashboard;
