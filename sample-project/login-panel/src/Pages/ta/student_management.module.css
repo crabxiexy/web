@@ -2,42 +2,31 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, #FFDEE9, #B5FFFC);
-    font-family: 'Arial', sans-serif;
-    color: #444;
-    padding: 40px; /* 为页面边缘留出更多空隙 */
+    background-image: url("https://www.gameuidatabase.com/uploads/Genshin-Impact01032021-021443-79651.jpg"); /* Add your background image URL */
+    background-size: cover;
+    text-align: center;
+    font-family: Arial, sans-serif;
 }
-
-.tableContainer {
-    margin: 20px 0; /* 增加表格与其他内容之间的外边距 */
-    padding: 20px; /* 增加表格周围的内边距 */
-    border: 1px solid #ddd; /* 添加边框 */
-    border-radius: 10px; /* 添加圆角 */
-    background-color: #fff; /* 设置表格容器背景颜色 */
-}
-
-
-.header h1 {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #000; /* 设置为黑色 */
-    padding: 10px 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    display: inline-block;
-    margin: 0;
-}
-
 
 .header {
+    background-color: transparent;
+    padding: 20px;
+    color: white;
     width: 100%;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 1rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+}
+
+.header .title {
+    margin: 0;
+    font-size: 1.5rem;
+    color: white;
 }
 
 .userSection {
@@ -46,148 +35,161 @@
 }
 
 .userAvatar {
+    margin-left: 20px;
     cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 50%;
-    background: #3498db;
-    color: white;
-    font-weight: bold;
-    margin-left: 1rem;
+    font-size: 24px;
 }
 
 .dropdownMenu {
     position: absolute;
-    top: 60px;
-    right: 10px;
     background: white;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
     border-radius: 10px;
-    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    right: 20px;
+    top: 60px;
+    width: 150px;
+    text-align: left;
 }
 
 .dropdownMenu p {
     margin: 0;
-    padding: 1rem;
+    padding: 10px;
     cursor: pointer;
-    transition: background 0.3s;
+    border-bottom: 1px solid #ddd;
+}
+
+.dropdownMenu p:last-child {
+    border-bottom: none;
 }
 
 .dropdownMenu p:hover {
-    background: #f2f2f2;
+    background: #FFD3E8;
 }
 
 .main {
+    margin-top: 80px; /* Adjust margin to avoid content being hidden under the header */
     width: 100%;
-    max-width: 1200px;
-    padding: 40px; /* 为主内容区留出更多空隙 */
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 2rem;
-    text-align: center;
+    max-width: 800px;
+    padding: 20px;
 }
 
-.errorMessage {
-    color: #FF867C;
-    margin-bottom: 1rem;
+.tableHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 .formContainer {
     display: flex;
-    justify-content: space-around;
-    margin-bottom: 1rem;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 .button {
-    padding: 0.5rem 1rem;
+    background-color: rgba(255, 255, 255, 0.9);
+    min-width: 12rem;
+    flex: 1;
+    margin: 0 5px;
+    padding: 15px 30px;
+    font-size: 16px;
     border: none;
     border-radius: 10px;
-    color: white;
     cursor: pointer;
-    margin: 0.5rem 0;
-    flex: 1;
-    margin: 5px;
     transition: transform 0.2s, box-shadow 0.2s;
-    background: linear-gradient(to right, #63D1FF, #3498db);
-    box-shadow: 0 4px 12px rgba(99, 209, 255, 0.25);
+    outline: none; /* Remove the blue outline on focus */
 }
 
 .button:hover {
     transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(99, 209, 255, 0.35);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-.taData {
-    margin-top: 1rem;
-    padding: 20px; /* 为表格容器增加内边距 */
+.tableContainer {
     background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    margin: 0 auto; /* Center the table container */
+    width: fit-content; /* Make the table container narrow */
+}
+
+.tableContainer h2 {
+    border-bottom: 2px solid #63D1FF;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    color: #444;
+    font-size: 1.5rem;
 }
 
 .table {
     width: 100%;
     border-collapse: collapse;
-    margin: 40px 0; /* 为表格留出更多上下空隙 */
 }
 
-.table th,
-.table td {
+.table th, .table td {
+    padding: 10px;
     border: 1px solid #ddd;
-    padding: 8px;
     text-align: center;
 }
 
-.table th {
-    background-color: #f2f2f2;
-    color: #333;
-}
-
 .input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ddd;
+    width: 80px;
+    padding: 5px;
     border-radius: 5px;
+    border: 1px solid #ddd;
+    text-align: center;
 }
 
 .studentModal {
-    width: 80%;
-    max-width: 600px;
+    background: white;
     padding: 20px;
     border-radius: 10px;
-    background: white;
-    position: fixed;
+    max-width: 600px;
+    width: 90%;
+    margin: auto;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.3s;
+    position: fixed; /* Make modal fixed */
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transform: translate(-50%, -50%); /* Center the modal */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .studentModalOverlay {
-    background-color: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
-    justify-content: center;
     align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    justify-content: center;
 }
 
 .modalHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: 20px;
 }
 
 .closeButton {
-    background: none;
+    background: transparent;
     border: none;
-    font-size: 2rem;
+    font-size: 24px;
     cursor: pointer;
-    color: #444;
 }
 
 .studentsList {
@@ -195,20 +197,7 @@
     overflow-y: auto;
 }
 
-.studentsList .table {
-    width: 100%;
-    border-collapse: collapse;
+.errorMessage {
+    color: red;
+    margin-bottom: 20px;
 }
-
-.studentsList .table th,
-.studentsList .table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
-}
-
-.studentsList .table th {
-    background-color: #f2f2f2;
-    color: #333;
-}
-
