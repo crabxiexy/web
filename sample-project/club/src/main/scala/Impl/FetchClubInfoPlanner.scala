@@ -9,11 +9,8 @@ import cats.effect.IO
 import io.circe.{Json, parser}
 import io.circe.generic.auto._
 import io.circe.syntax._
-import cats.syntax.all._ // Import all necessary cats syntax
+import cats.syntax.all._
 import Common.Model.{Club, Student}
-import io.circe.KeyEncoder
-import io.circe.syntax._
-
 
 case class FetchClubInfoPlanner(club_name: String, override val planContext: PlanContext) extends Planner[Option[Club]] {
 
@@ -38,17 +35,13 @@ case class FetchClubInfoPlanner(club_name: String, override val planContext: Pla
           val profile = json.hcursor.downField("profile").as[String].getOrElse("")
 
           // Step 2: Fetch student info for leader
-          val fetchLeaderInfo = parser.parse(FetchStudentInfoMessage(leaderId).send.data)
-          FetchStudentInfoMessage(leaderId).send.flatMap { jsonString =>
+          val fetchLeaderInfo = FetchStudentInfoMessage(leaderId).send.flatMap { jsonString =>
             parser.parse(jsonString) match {
               case Left(error) => IO.raiseError(new Exception(s"Failed to parse leader info JSON: ${error.getMessage}"))
               case Right(json) =>
-                json.as[List[Student]] match {
+                json.as[Student] match {
                   case Left(error) => IO.raiseError(new Exception(s"Failed to parse leader info: ${error.getMessage}"))
-                  case Right(students) => students.headOption match {
-                    case Some(student) => IO.pure(student)
-                    case None => IO.raiseError(new Exception("No leader info found"))
-                  }
+                  case Right(student) => IO.pure(student)
                 }
             }
           }
@@ -70,12 +63,9 @@ case class FetchClubInfoPlanner(club_name: String, override val planContext: Pla
                 parser.parse(jsonString) match {
                   case Left(error) => IO.raiseError(new Exception(s"Failed to parse member info JSON: ${error.getMessage}"))
                   case Right(json) =>
-                    json.as[List[Student]] match {
+                    json.as[Student] match {
                       case Left(error) => IO.raiseError(new Exception(s"Failed to parse member info: ${error.getMessage}"))
-                      case Right(students) => students.headOption match {
-                        case Some(student) => IO.pure(student)
-                        case None => IO.raiseError(new Exception(s"No member info found for student ID $memberId"))
-                      }
+                      case Right(student) => IO.pure(student)
                     }
                 }
               }
