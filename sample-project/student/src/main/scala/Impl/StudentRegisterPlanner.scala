@@ -13,8 +13,8 @@ case class StudentRegisterPlanner(student: Student, override val planContext: Pl
   override def plan(using planContext: PlanContext): IO[Student] = {
     val insertStatement =
       s"""
-         |INSERT INTO ${schemaName}.student (student_id, name, profile, TA_id, department, class_name )
-         |VALUES (?, ?, ?, ?, ?, ?)
+         |INSERT INTO ${schemaName}.student (student_id, name, profile, TA_id, department, class_name,score )
+         |VALUES (?, ?, ?, ?, ?, ?, ?)
        """.stripMargin
 
     val parameters = List(
@@ -23,7 +23,8 @@ case class StudentRegisterPlanner(student: Student, override val planContext: Pl
       SqlParameter("String", student.profile),
       SqlParameter("Int", student.TA_id.toString),
       SqlParameter("String", student.department),
-      SqlParameter("String", student.class_name)
+      SqlParameter("String", student.class_name),
+        SqlParameter("Int", 0.toString)
     )
 
     writeDB(insertStatement, parameters).map(_ => student)

@@ -45,7 +45,7 @@ object Routes:
             m.fullPlan.map(_.asJson.toString)
           }
       case "FetchClubInfoMessage" =>
-        IO(decode[UpdateIntroPlanner](str).getOrElse(throw new Exception("Invalid JSON for FetchClubIntroMessage")))
+        IO(decode[FetchClubInfoPlanner](str).getOrElse(throw new Exception("Invalid JSON for FetchClubIntroMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }

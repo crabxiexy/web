@@ -9,7 +9,7 @@ import io.circe.Json
 import io.circe.generic.auto._
 import Common.Model.Student
 
-case class FetchStudentInfoPlanner(student_id: Int, override val planContext: PlanContext) extends Planner[Option[Student]] {
+case class FetchStudentInfoPlanner(studentId: Int, override val planContext: PlanContext) extends Planner[Option[Student]] {
 
   override def plan(using planContext: PlanContext): IO[Option[Student]] = {
     val sqlQuery =
@@ -19,7 +19,7 @@ case class FetchStudentInfoPlanner(student_id: Int, override val planContext: Pl
          |WHERE student_id = ?
        """.stripMargin
 
-    readDBRows(sqlQuery, List(SqlParameter("Int", student_id.toString)))
+    readDBRows(sqlQuery, List(SqlParameter("Int", studentId.toString)))
       .map { rows =>
         rows.headOption.flatMap { json =>
           // Attempt to decode JSON into Student
