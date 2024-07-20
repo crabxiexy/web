@@ -1,10 +1,12 @@
 package APIs.StudentAPI
-import Common.Model.Student
-import io.circe._
-import io.circe.generic.semiauto._
 
-case class FetchStudentInfoMessage(student_id: Int) extends StudentMessage[Int]
-  object FetchStudentInfoMessage {
+import Common.Model.Student
+import io.circe.*
+import io.circe.generic.semiauto.*
+case class FetchStudentInfoMessage(studentID: Int) extends StudentMessage[List[Student]]
+
+
+object FetchStudentInfoMessage {
   implicit val encoder: Encoder[FetchStudentInfoMessage] = deriveEncoder[FetchStudentInfoMessage]
 }
 

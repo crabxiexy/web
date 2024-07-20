@@ -1,5 +1,0 @@
-package Impl
-
-class DeleteMemberPlanner {
-
-}
