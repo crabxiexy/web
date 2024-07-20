@@ -8,11 +8,9 @@ import Common.Object.SqlParameter
 import Common.ServiceUtils.schemaName
 import cats.effect.IO
 import io.circe.Json
-import io.circe.parser.parse
 import Common.Model.{Club, Student}
 import io.circe._
 import io.circe.generic.semiauto._
-import io.circe.syntax._
 import io.circe.generic.auto._
 
 case class FetchClubInfoPlanner(club_name: String, override val planContext: PlanContext) extends Planner[Option[Club]] {
@@ -36,7 +34,7 @@ case class FetchClubInfoPlanner(club_name: String, override val planContext: Pla
           val intro = json.hcursor.downField("intro").as[String].getOrElse("")
           val department = json.hcursor.downField("department").as[String].getOrElse("")
           val profile = json.hcursor.downField("profile").as[String].getOrElse("")
-          
+
           // Step 2: Fetch student info for leader
           FetchStudentInfoMessage(leaderId).send.flatMap { leaderJsonList =>
             leaderJsonList.headOption match {

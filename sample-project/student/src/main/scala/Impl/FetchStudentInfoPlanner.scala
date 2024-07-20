@@ -22,7 +22,9 @@ case class FetchStudentInfoPlanner(studentId: Int, override val planContext: Pla
     readDBRows(sqlQuery, List(SqlParameter("Int", studentId.toString)))
       .map { rows =>
         rows.headOption.flatMap { json =>
-          // Attempt to decode JSON into Student
+          // 打印JSON
+          println(s"Retrieved JSON: $json")
+          // 尝试将 JSON 解码为 Student
           json.as[Student].toOption
         }
       }
