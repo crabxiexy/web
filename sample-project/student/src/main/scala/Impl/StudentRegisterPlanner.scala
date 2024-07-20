@@ -18,12 +18,12 @@ case class StudentRegisterPlanner(student: Student, override val planContext: Pl
        """.stripMargin
 
     val parameters = List(
-      SqlParameter("Int", student.student_id.toString),
+      SqlParameter("Int", student.studentID.toString),
       SqlParameter("String", student.name),
       SqlParameter("String", student.profile),
-      SqlParameter("Int", student.TA_id.toString),
+      SqlParameter("Int", student.taID.toString),
       SqlParameter("String", student.department),
-      SqlParameter("String", student.class_name),
+      SqlParameter("String", student.className),
         SqlParameter("Int", 0.toString)
     )
 
