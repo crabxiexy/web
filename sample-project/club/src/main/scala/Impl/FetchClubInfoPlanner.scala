@@ -7,6 +7,8 @@ import Common.DBAPI.{ReadDBRowsMessage, readDBRows}
 import Common.Object.SqlParameter
 import Common.ServiceUtils.schemaName
 import cats.effect.IO
+import io.circe.Json
+import io.circe.parser.parse
 import Common.Model.{Club, Student}
 import io.circe._
 import io.circe.generic.semiauto._
@@ -34,11 +36,13 @@ case class FetchClubInfoPlanner(club_name: String, override val planContext: Pla
           val intro = json.hcursor.downField("intro").as[String].getOrElse("")
           val department = json.hcursor.downField("department").as[String].getOrElse("")
           val profile = json.hcursor.downField("profile").as[String].getOrElse("")
-
+          
           // Step 2: Fetch student info for leader
-          FetchStudentInfoMessage(leaderId).send.flatMap { students =>
-            students.headOption match {
-              case Some(leader) =>
+          FetchStudentInfoMessage(leaderId).send.flatMap { leaderJsonList =>
+            leaderJsonList.headOption match {
+              case Some(leaderJson) =>
+                val leader = leaderJson.as[Student].getOrElse(throw new Exception("Failed to decode leader info"))
+
                 // Step 3: Query members of the club
                 val sqlQueryMembers =
                   s"""
@@ -50,8 +54,12 @@ case class FetchClubInfoPlanner(club_name: String, override val planContext: Pla
                 readDBRows(sqlQueryMembers, List(SqlParameter("String", club_name))).flatMap { jsonList =>
                   val memberIds = jsonList.flatMap(_.hcursor.downField("member").as[Int].toOption)
                   memberIds.traverse { memberId =>
-                    FetchStudentInfoMessage(memberId).send.flatMap { members =>
-                      IO.pure(members.headOption.getOrElse(throw new Exception("Empty member info")))
+                    FetchStudentInfoMessage(memberId).send.flatMap { memberJsonList =>
+                      memberJsonList.headOption match {
+                        case Some(memberJson) =>
+                          IO.pure(memberJson.as[Student].getOrElse(throw new Exception("Failed to decode member info")))
+                        case None => IO.raiseError(new Exception("Empty member info"))
+                      }
                     }
                   }.map { members =>
                     Some(Club(clubId, clubName, leader, intro, department, profile, members))

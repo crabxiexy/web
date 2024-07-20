@@ -60,7 +60,7 @@ object Routes:
             m.fullPlan.map(_.asJson.toString)
           }
       case "FetchStudentInfoMessage" =>
-        IO(decode[FetchStudentInfoPlanner](str).getOrElse(throw new Exception("Invalid JSON for AssignClassMessage")))
+        IO(decode[FetchStudentInfoPlanner](str).getOrElse(throw new Exception("Invalid JSON for FetchStudentInfoMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
