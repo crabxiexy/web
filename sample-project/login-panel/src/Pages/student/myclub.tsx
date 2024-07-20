@@ -156,9 +156,9 @@ export const MyClubInfo: React.FC = () => {
                         <div className={student_myclub_style.clubDetailsBox}>
                             <div className={student_myclub_style.textInfo}>
                                 <h2>{clubInfo.name}</h2>
-                                <p><strong>简介:</strong> {clubInfo.intro}</p>
-                                <p><strong>负责人:</strong> {leaderInfo}</p>
-                                <p><strong>院系:</strong> {clubInfo.department}</p>
+                                <p><strong>简介: </strong> {clubInfo.intro}</p>
+                                <p><strong>负责人: </strong> {leaderInfo}</p>
+                                <p><strong>院系: </strong> {clubInfo.department}</p>
                             </div>
                         </div>
                     )}
@@ -198,9 +198,9 @@ export const MyClubInfo: React.FC = () => {
                                     <div key={activity.activityID} className={student_myclub_style.activityDetails}>
                                         <h4>{activity.activityName}</h4>
                                         <p>{activity.intro}</p>
-                                        <p><strong>开始时间:</strong> {new Date(parseInt(activity.starttime)).toLocaleString()}</p>
-                                        <p><strong>结束时间:</strong> {new Date(parseInt(activity.finishtime)).toLocaleString()}</p>
-                                        <p><strong>当前人数:</strong> {activity.num}</p>
+                                        <p><strong>开始时间: </strong> {new Date(parseInt(activity.starttime)).toLocaleString()}</p>
+                                        <p><strong>结束时间: </strong> {new Date(parseInt(activity.finishtime)).toLocaleString()}</p>
+                                        <p><strong>当前人数: </strong> {activity.num}</p>
                                         {viewMode === 'available' && (
                                             <button onClick={() => handleJoinActivity(activity.activityID)}>加入活动</button>
                                         )}

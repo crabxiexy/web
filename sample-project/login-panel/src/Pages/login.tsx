@@ -66,13 +66,13 @@ export function Login() {
         <div className={login_style.login_container}>
             <div className={login_style.login_box}>
                 <header className={login_style.login_header}>
-                    <h1>欢迎回来!</h1>
+                    <h1>欢迎回来<s>，旅行者</s>!</h1>
                     <p>请登录你的用户</p>
                 </header>
                 <div className={`${login_style.formContainer}`}>
                     {error && <p className={`${login_style.error_message}`}>{error}</p>}
                     <div className={login_style.form_group}>
-                        <label htmlFor="user_id">用户ID</label>
+                        <label htmlFor="user_id">用户 ID</label>
                         <input
                             type="text"
                             id="user_id"
@@ -99,8 +99,8 @@ export function Login() {
                             onChange={(e) => setIdentity(e.target.value)}
                             required
                         >
-                            <option value="admin">Admin</option>
-                            <option value="student">Student</option>
+                            <option value="admin">管理员</option>
+                            <option value="student">学生</option>
                             <option value="ta">TA</option>
                         </select>
                     </div>

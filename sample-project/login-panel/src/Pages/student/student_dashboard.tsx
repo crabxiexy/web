@@ -67,10 +67,10 @@ export function StudentDashboard() {
             <Sidebar />
             <div>
                 <section className={student_dashboard_style.notifications}>
-                    <h2>Notifications</h2>
+                    <h2>通知</h2>
                     <div className={student_dashboard_style.notificationBoard}>
                         {notifications.length === 0 ? (
-                            <p>No notifications available.</p>
+                            <p>目前没有通知。</p>
                         ) : (
                             notifications.map((notification, index) => (
                                 <div key={index} className={student_dashboard_style.notificationItem}>

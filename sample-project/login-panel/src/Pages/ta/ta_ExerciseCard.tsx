@@ -168,7 +168,7 @@ const TA_ExerciseCard: React.FC<ExerciseCardProps> = ({
                     <input
                         className={ta_exercisecard_style.tokenInput}
                         type="text"
-                        placeholder="输入token"
+                        placeholder="输入 token"
                         value={token}
                         onChange={(e) => setToken(e.target.value)}
                         disabled={status === 1 || status === 3}
@@ -193,7 +193,7 @@ const TA_ExerciseCard: React.FC<ExerciseCardProps> = ({
 
             {queryResult.length > 0 && (
                 <div className={ta_exercisecard_style.queryResults}>
-                    <h5>查询结果:</h5>
+                    <h5>查询结果</h5>
                     <ul>
                         {queryResult.map((item) => (
                             <li key={item}>

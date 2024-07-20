@@ -317,7 +317,7 @@ export const ManagedClubInfo: React.FC = () => {
                                     <p>{activity.intro}</p>
                                     <p><strong>开始时间:</strong> {activity.startTime}</p>
                                     <p><strong>结束时间:</strong> {activity.finishTime}</p>
-                                    <p><strong>组织者ID:</strong> {activity.organizorId}</p>
+                                    <p><strong>组织者 ID:</strong> {activity.organizorId}</p>
                                     <p><strong>人数限制:</strong> {activity.lowLimit} - {activity.upLimit}</p>
                                     <p><strong>当前人数:</strong> {activity.num}</p>
                                 </div>
@@ -355,7 +355,7 @@ export const ManagedClubInfo: React.FC = () => {
                                     {applications.length > 0 ? (
                                         applications.map(application => (
                                             <div key={application.studentID} className={student_manageclub_style.applicationDetails}>
-                                                <h3>学生ID: {application.studentID}</h3>
+                                                <h3>学生 ID: {application.studentID}</h3>
                                                 <div className={student_manageclub_style.applicationMemberInfo}>
                                                     <p>姓名: {application.name}</p>
                                                     <div className={student_manageclub_style.profileCircle}>

@@ -255,7 +255,7 @@ export const CheckRecord: React.FC = () => {
                 </div>
 
                 <button className={checkrecord_style.cancelButton} onClick={handleCancel}>
-                    返回学生 Dashboard
+                    返回学生仪表盘
                 </button>
 
                 <Modal

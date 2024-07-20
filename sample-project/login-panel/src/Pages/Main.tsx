@@ -43,7 +43,6 @@ export function Main(): JSX.Element {
                 <h1>乐动力 Pro</h1>
                 <div className={`${main_styles.buttonGroup}`}>
                     <button className={`${main_styles.btn}`} onClick={handleLogin}>登录</button>
-                    <button className={`${main_styles.btn}`} onClick={handleRegister}>注册（仅内测）</button>
                 </div>
             </header>
             {loading ? (

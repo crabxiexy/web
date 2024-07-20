@@ -1,79 +1,55 @@
 import React, { useState } from 'react';
 import { RegisterMessage } from 'Plugins/DoctorAPI/RegisterMessage';
-import { AssignDepartmentMessage } from 'Plugins/StudentAPI/AssignDepartmentMessage';
-import { AssignClassMessage } from 'Plugins/StudentAPI/AssignClassMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { useHistory } from 'react-router';
 import register_style from './register.module.css';
 
-interface Student {
-    student_id: string;
-    name: string;
-    password: string;
-    department: string;
-    classname: string;
+// Define enum for identity mapping
+enum Identity {
+    admin = 1,
+    student = 2,
+    ta = 3,
 }
 
 export function Register() {
     const history = useHistory();
-    const [students, setStudents] = useState<Student[]>([
-        { student_id: '', name: '', password: '', department: '', classname: '' }
+    const [students, setStudents] = useState<{ student_id: string; name: string; password: string; department: string; class_name: string }[]>([
+        { student_id: '', name: '', password: '', department: '', class_name: '' }
     ]);
     const [error, setError] = useState<string>('');
 
-    // State for bulk inputs
-    const [bulkDepartment, setBulkDepartment] = useState<string>('');
-    const [bulkClassname, setBulkClassname] = useState<string>('');
-    const [bulkPassword, setBulkPassword] = useState<string>('');
-
     // Identity selection
     const [identity, setIdentity] = useState('student');
-    const identityMap: Record<string, number> = {
-        admin: 1,
-        student: 2,
-        ta: 3,
-    };
 
     const addStudentField = () => {
-        setStudents([...students, { student_id: '', name: '', password: '', department: '', classname: '' }]);
+        setStudents([...students, { student_id: '', name: '', password: '', department: '', class_name: '' }]);
     };
 
-    const handleChange = (index: number, field: keyof Student, value: string) => {
+    const handleChange = (index: number, field: keyof typeof students[0], value: string) => {
         const updatedStudents = [...students];
         updatedStudents[index][field] = value;
-        setStudents(updatedStudents);
-    };
-
-    const handleBulkUpdate = (field: keyof Student, value: string) => {
-        const updatedStudents = students.map(student => ({
-            ...student,
-            [field]: value,
-        }));
         setStudents(updatedStudents);
     };
 
     const handleRegister = async () => {
         try {
             for (const student of students) {
-                const { student_id, name, password, department, classname } = student;
-                const identityNumber = identityMap[identity];
+                const { student_id, name, password, department, class_name } = student;
+                const identityNumber = Identity[identity as keyof typeof Identity]; // Convert string to enum number
+
                 const message = new RegisterMessage(
                     parseInt(student_id),
                     name,
                     password,
                     identityNumber,
-                    "http://127.0.0.1:5000/proof/test.jpg"
+                    "http://127.0.0.1:5000/proof/test.jpg",
+                    department,
+                    class_name
                 );
+
                 const response = await sendPostRequest(message);
 
-                if (response.status === 200) {
-                    if (identity === 'student') {
-                        const assignDepartmentMessage = new AssignDepartmentMessage(parseInt(student_id), department);
-                        const assignClassMessage = new AssignClassMessage(parseInt(student_id), classname);
-                        await sendPostRequest(assignDepartmentMessage);
-                        await sendPostRequest(assignClassMessage);
-                    }
-                } else {
+                if (response.status !== 200) {
                     setError(`Error registering student ID ${student_id}: ${response.data}`);
                     return;
                 }
@@ -86,7 +62,6 @@ export function Register() {
 
     return (
         <div className={register_style.register_container}>
-
             <main className={register_style.main_content}>
                 <div className={register_style.form_container}>
                     <h2>注册用户</h2>
@@ -99,15 +74,13 @@ export function Register() {
                             onChange={e => {
                                 setIdentity(e.target.value);
                                 // Reset additional fields when identity changes
-                                setBulkDepartment('');
-                                setBulkClassname('');
-                                setBulkPassword('');
+                                setStudents([{ student_id: '', name: '', password: '', department: '', class_name: '' }]);
                             }}
                             required
                         >
                             <option value="admin">管理员</option>
                             <option value="student">学生</option>
-                            <option value="ta">助教</option>
+                            <option value="ta">TA</option>
                         </select>
                     </div>
 
@@ -146,8 +119,8 @@ export function Register() {
                                     />
                                     <input
                                         type="text"
-                                        value={student.classname}
-                                        onChange={e => handleChange(index, 'classname', e.target.value)}
+                                        value={student.class_name}
+                                        onChange={e => handleChange(index, 'class_name', e.target.value)}
                                         required
                                         placeholder="班级号"
                                     />
@@ -156,7 +129,6 @@ export function Register() {
                         </div>
                     ))}
                     <div className={register_style.button_group}>
-
                         <button className={register_style.submit_button} onClick={handleRegister}>提交</button>
                         <button className={register_style.back_button} onClick={() => history.push('/admin/root')}>返回主页</button>
                     </div>

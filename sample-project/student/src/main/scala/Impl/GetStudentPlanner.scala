@@ -20,7 +20,7 @@ case class GetStudentPlanner(
     // Construct the SQL query to fetch all fields where TA_id is NULL
     val sqlQuery =
       s"""
-         |SELECT student_id, TA_id, score, department, class
+         |SELECT student_id, name, TA_id, score, department, class
          |FROM ${schemaName}.student
          |WHERE TA_id IS NULL
        """.stripMargin

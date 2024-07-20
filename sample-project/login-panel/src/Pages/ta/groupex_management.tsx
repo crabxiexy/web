@@ -148,7 +148,7 @@ export const GroupexManagement: React.FC = () => {
                 </div>
 
                 <button className={groupex_management_style.button} onClick={openModal}>
-                    创建 Group Exercise
+                    创建集体锻炼
                 </button>
                 <button className={groupex_management_style.button} onClick={() => history.push('/ta_dashboard')}>
                     返回 TA 仪表盘

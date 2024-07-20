@@ -138,7 +138,7 @@ export const ClubHWCheck = () => {
                 {error && <p className={styles.errorMessage}>{error}</p>}
                 {result.length > 0 ? (
                     <div className={styles.queryResult}>
-                        <h3>待检查作业:</h3>
+                        <h3>待检查作业</h3>
                         <table className={styles.table}>
                             <thead>
                             <tr>

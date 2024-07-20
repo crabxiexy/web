@@ -1,5 +1,5 @@
 package Impl
-
+import Common.Model.Student
 import java.security.MessageDigest
 import java.util.Base64
 import cats.effect.IO
@@ -8,9 +8,9 @@ import Common.API.{PlanContext, Planner}
 import Common.DBAPI.*
 import Common.Object.{ParameterList, SqlParameter}
 import Common.ServiceUtils.schemaName
-import APIs.StudentAPI.RegisterMessage
+import APIs.StudentAPI.StudentRegisterMessage
 
-case class RegisterMessagePlanner(student_id: Int, name: String, password: String, identity: Int, profile:String, override val planContext: PlanContext) extends Planner[String] {
+case class RegisterMessagePlanner(student_id: Int, name: String, password: String, identity: Int, profile:String, department:String,class_name:String,override val planContext: PlanContext) extends Planner[String] {
   override def plan(using planContext: PlanContext): IO[String] = {
 
     // Check if the identity is already registered
@@ -24,7 +24,7 @@ case class RegisterMessagePlanner(student_id: Int, name: String, password: Strin
       case _ => throw new Exception("Unknown user identity")
     }
      */
-
+    val studentToRegister = new Student(student_id = student_id, name=name , profile=profile , -1, 0, department , class_name)
     val checkUserExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.user WHERE student_id = ?)",
       List(SqlParameter("Int", student_id.toString))
     )
@@ -34,9 +34,10 @@ case class RegisterMessagePlanner(student_id: Int, name: String, password: Strin
       } else {
         // Hash the password
         val hashedPassword = hashPassword(password)
+        println(s"Student information to register: $studentToRegister,$department,$class_name")
         val insertIdentity = identity.toString match{
           case "1" => IO.unit
-          case "2" => RegisterMessage(student_id).send
+          case "2" => StudentRegisterMessage(studentToRegister).send
           case "3" => IO.unit
           case _=> throw new Exception("Unknown user identity")
         }

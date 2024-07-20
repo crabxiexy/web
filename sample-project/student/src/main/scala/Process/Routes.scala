@@ -54,8 +54,23 @@ object Routes:
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
+      case "AssignClassMessage" =>
+        IO(decode[AssignClassPlanner](str).getOrElse(throw new Exception("Invalid JSON for AssignClassMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "FetchStudentInfoMessage" =>
+        IO(decode[FetchStudentInfoPlanner](str).getOrElse(throw new Exception("Invalid JSON for AssignClassMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
       case "QueryNameMessage" =>
         IO(decode[QueryNamePlanner](str).getOrElse(throw new Exception("Invalid JSON for QueryClassMessage")))
+          .flatMap{m=>
+            m.fullPlan.map(_.asJson.toString)
+          }
+      case "StudentRegisterMessage" =>
+        IO(decode[StudentRegisterPlanner](str).getOrElse(throw new Exception("Invalid JSON for StudentRegisterMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }

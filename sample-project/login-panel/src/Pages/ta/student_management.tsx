@@ -228,7 +228,7 @@ export const AssignTA: React.FC = () => {
             <main className={styles.main}>
                 {error && <p className={styles.errorMessage}>{error}</p>}
                 <div className={styles.tableHeader}>
-                    <h2>已分配TA</h2>
+                    <h2>已分配至当前 TA 的学生</h2>
                     <button className={styles.button} onClick={handleSubmitScores}>提交成绩</button>
                     <button className={styles.button} onClick={openModal}>增加学生</button>
                 </div>
@@ -236,7 +236,7 @@ export const AssignTA: React.FC = () => {
                     <table className={styles.table}>
                         <thead>
                         <tr>
-                            <th>学生ID</th>
+                            <th>学生 ID</th>
                             <th>姓名</th>
                             <th>得分</th>
                             <th>系别</th>
@@ -301,9 +301,8 @@ export const AssignTA: React.FC = () => {
                             <tr>
                                 <th>选择</th>
                                 <th>ID</th>
-                                <th>名字</th>
-                                {students.some(student => student.name) && <th>姓名</th>}
-                                <th>系</th>
+
+                                <th>系别</th>
                                 <th>班级</th>
                             </tr>
                             </thead>
@@ -318,8 +317,7 @@ export const AssignTA: React.FC = () => {
                                         />
                                     </td>
                                     <td>{student.studentID}</td>
-                                    {student.name && <td>{student.name}</td>}
-                                    <td>{student.name}</td>
+
                                     <td>{student.department}</td>
                                     <td>{student.class}</td>
                                 </tr>
@@ -328,7 +326,7 @@ export const AssignTA: React.FC = () => {
                         </table>
                     </div>
                     <button className={styles.button} onClick={handleAssignTA}>
-                        分配选中的TA
+                        选为学生
                     </button>
                 </Modal>
             </main>

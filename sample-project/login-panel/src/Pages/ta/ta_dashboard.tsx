@@ -2,14 +2,10 @@ import React, {useEffect, useState} from 'react';
 import { useHistory } from 'react-router';
 import useIdStore from 'Pages/IdStore';
 import ta_dashboard_style from './ta_dashboard.module.css'; // Ensure the correct path to your CSS file
-import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
-import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils'
 import Sidebar from 'Pages/Sidebar';
 import {QueryReceivedMessage} from "Plugins/NotificationAPI/QueryReceivedMessage";
-import {CountRunMessage} from "Plugins/RunAPI/CountRunMessage";
-import {CountGroupexMessage} from "Plugins/GroupExAPI/CountGroupexMessage";
-import {CountHWMessage} from "Plugins/ActivityAPI/CountHWMessage";
+
 
 export function TADashboard() {
     const history = useHistory();
@@ -57,10 +53,10 @@ export function TADashboard() {
 
             <div>
                 <section className={ta_dashboard_style.notifications}>
-                    <h2>Notifications</h2>
+                    <h2>通知</h2>
                     <div className={ta_dashboard_style.notificationBoard}>
                         {notifications.length === 0 ? (
-                            <p>No notifications available.</p>
+                            <p>目前没有通知。</p>
                         ) : (
                             notifications.map((notification, index) => (
                                 <div key={index} className={ta_dashboard_style.notificationItem}>

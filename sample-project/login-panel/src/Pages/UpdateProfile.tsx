@@ -95,7 +95,7 @@ export const UpdateProfilePage: React.FC = () => {
             <h1>更新头像</h1>
             {error && <p className={updateprofilestyle.error}>{error}</p>}
             <div className={updateprofilestyle.imageContainer}>
-                <h2>当前用户头像:</h2>
+                <h2>当前用户头像</h2>
                 {currentProfileImage ? (
                     <img src={currentProfileImage} alt="Current Profile" className={updateprofilestyle.currentImage} />
                 ) : (

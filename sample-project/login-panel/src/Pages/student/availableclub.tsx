@@ -118,9 +118,9 @@ export const AvailableClubInfo: React.FC = () => {
                     <div className={availableclubinfo_style.clubDetails}>
                         <div className={availableclubinfo_style.textInfo}>
                             <h2>{clubInfo.name}</h2>
-                            <p><strong>简介:</strong> {clubInfo.intro}</p>
-                            <p><strong>负责人：</strong> {leaderName}</p>
-                            <p><strong>院系：</strong> {clubInfo.department}</p>
+                            <p><strong>简介: </strong> {clubInfo.intro}</p>
+                            <p><strong>负责人: </strong> {leaderName}</p>
+                            <p><strong>院系: </strong> {clubInfo.department}</p>
                         </div>
                         <div className={availableclubinfo_style.profileImage}>
                             <img
@@ -158,10 +158,10 @@ export const AvailableClubInfo: React.FC = () => {
                     <div className={availableclubinfo_style.activitiesList}>
                         {activities.map(activity => (
                             <div key={activity.activityID} className={availableclubinfo_style.activityDetails}>
-                                <p><strong>活动名称:</strong> {activity.activityName}</p>
-                                <p><strong>介绍:</strong> {activity.intro}</p>
-                                <p><strong>开始时间:</strong> {new Date(parseInt(activity.starttime)).toLocaleString()}</p>
-                                <p><strong>结束时间:</strong> {new Date(parseInt(activity.finishtime)).toLocaleString()}</p>
+                                <p><strong>活动名称: </strong> {activity.activityName}</p>
+                                <p><strong>介绍: </strong> {activity.intro}</p>
+                                <p><strong>开始时间: </strong> {new Date(parseInt(activity.starttime)).toLocaleString()}</p>
+                                <p><strong>结束时间: </strong> {new Date(parseInt(activity.finishtime)).toLocaleString()}</p>
                             </div>
                         ))}
                     </div>

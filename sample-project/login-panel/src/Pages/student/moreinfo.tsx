@@ -155,10 +155,10 @@ export const MoreInfo: React.FC = () => {
                 {activities.length > 0 ? (
                     activities.map((activity: Activity) => (
                         <div key={activity.activityID} className={moreinfo_styles.activityDetails}>
-                            <p><strong>活动名称:</strong> {activity.activityName}</p>
-                            <p><strong>开始时间:</strong> {new Date(parseInt(activity.starttime)).toLocaleString()}</p>
-                            <p><strong>结束时间:</strong> {new Date(parseInt(activity.finishtime)).toLocaleString()}</p>
-                            <p><strong>人数限制:</strong> {activity.lowlimit} - {activity.uplimit}</p>
+                            <p><strong>活动名称: </strong> {activity.activityName}</p>
+                            <p><strong>开始时间: </strong> {new Date(parseInt(activity.starttime)).toLocaleString()}</p>
+                            <p><strong>结束时间: </strong> {new Date(parseInt(activity.finishtime)).toLocaleString()}</p>
+                            <p><strong>人数限制: </strong> {activity.lowlimit} - {activity.uplimit}</p>
 
                             <button onClick={() => handleOpenModal(activity.activityID)}>提交作业</button>
 

@@ -7,13 +7,12 @@ import { LeaderQueryMessage } from 'Plugins/ClubAPI/LeaderQueryMessage';
 import useClubNameStore from 'Pages/student/ClubNameStore';
 import { CheckAvailableMessage } from 'Plugins/ClubAPI/CheckAvailableMessage';
 import { CheckJointClubMessage } from 'Plugins/ClubAPI/CheckJointClubMessage';
-import { parseInt } from 'lodash';
 import Sidebar from 'Pages/Sidebar';
 import viewclub_styles from './viewclub.module.css';
-import {ApplyMemberMessage} from "Plugins/ClubAPI/ApplyMemberMessage";
-import {FetchInfoMessage} from "Plugins/ClubAPI/FetchInfoMessage";
-import {FetchNameMessage} from "Plugins/DoctorAPI/FetchNameMessage";
-import {ReleaseNotificationMessage} from "Plugins/NotificationAPI/ReleaseNotificationMessage";
+import { ApplyMemberMessage } from 'Plugins/ClubAPI/ApplyMemberMessage';
+import { FetchInfoMessage } from 'Plugins/ClubAPI/FetchInfoMessage';
+import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
+import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
 
 export const ViewClub: React.FC = () => {
     const history = useHistory();
@@ -124,27 +123,27 @@ export const ViewClub: React.FC = () => {
     };
 
     const ClubCard: React.FC<{ club: any; onClick: () => void; actionText?: string; onActionClick?: () => void }> = ({ club, onClick, actionText, onActionClick }) => (
-    <div className={viewclub_styles.clubCard} onClick={onClick}>
-        <div className={viewclub_styles.clubImage}>
-            <img src={club.profile} alt={club.name} className={viewclub_styles.fixedSizeImage} />
+        <div className={viewclub_styles.clubCard} onClick={onClick}>
+            <div className={viewclub_styles.clubImage}>
+                <img src={club.profile} alt={club.name} className={viewclub_styles.fixedSizeImage} />
+            </div>
+            <div className={viewclub_styles.clubInfo}>
+                <h3>{club.name}</h3>
+                <p><strong>简介:</strong> {club.intro}</p>
+                {actionText && (
+                    <button onClick={(e) => {
+                        e.stopPropagation();
+                        onActionClick?.();
+                    }} className={viewclub_styles.actionButton}>{actionText}</button>
+                )}
+                {activeTab === "availableClubs" &&
+                    <button onClick={(e) => {
+                        e.stopPropagation();
+                        handleApplyToJoin(club.name);
+                    }} className={viewclub_styles.actionButton}>申请加入
+                    </button>}
+            </div>
         </div>
-        <div className={viewclub_styles.clubInfo}>
-            <h3>{club.name}</h3>
-            <p><strong>简介:</strong> {club.intro}</p>
-            {actionText && (
-                <button onClick={(e) => {
-                    e.stopPropagation();
-                    onActionClick?.();
-                }} className={viewclub_styles.actionButton}>{actionText}</button>
-            )}
-            {activeTab === "availableClubs" &&
-                <button onClick={(e) => {
-                e.stopPropagation();
-                handleApplyToJoin(club.name);
-            }} className={viewclub_styles.actionButton}>申请加入
-            </button>}
-        </div>
-    </div>
     );
 
     return (

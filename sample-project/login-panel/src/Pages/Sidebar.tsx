@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import useIdStore from './IdStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
-import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
+import { FetchStudentInfoMessage } from 'Plugins/StudentAPI/FetchStudentInfoMessage';
 import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage';
 import { useHistory } from 'react-router';
 import styles from './Sidebar.module.css';
@@ -24,7 +24,7 @@ const Sidebar = () => {
 
     const fetchUsername = async () => {
         try {
-            const response = await sendPostRequest(new FetchNameMessage(parseInt(Id)));
+            const response = await sendPostRequest(new FetchStudentInfoMessage(parseInt(Id)));
             setUsername(response.data || 'Guest');
         } catch (error) {
             console.error('Error fetching username:', error);

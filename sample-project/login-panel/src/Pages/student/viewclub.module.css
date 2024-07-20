@@ -1,12 +1,10 @@
-/* viewclub.module.css */
-
 .App {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; /* Center vertically */
+    justify-content: center;
     min-height: 100vh;
-    background-image: url("https://www.gameuidatabase.com/uploads/Genshin-Impact01032021-021443-79651.jpg");
+    background-image: url("https://www.gameuidatabase.com/uploads/Genshin-Impact01032021-021443-79651.jpg"); /* Add your background image URL */
     background-size: cover;
     text-align: center;
     font-family: Arial, sans-serif;
@@ -63,6 +61,8 @@
     flex-wrap: wrap;
     justify-content: center;
     flex-direction: column;
+    max-height: 500px; /* Set a fixed height */
+    overflow-y: auto; /* Add vertical scroll */
 }
 
 .clubCard {

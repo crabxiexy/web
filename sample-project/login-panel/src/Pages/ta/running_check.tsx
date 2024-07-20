@@ -146,7 +146,7 @@ export const RunningCheck = () => {
                 {error && <p className={styles.errorMessage}>{error}</p>}
                 {result.length > 0 && (
                     <div className={styles.queryResult}>
-                        <h3>TA 查询结果:</h3>
+                        <h3>查询结果</h3>
                         <table className={styles.table}>
                             <thead>
                             <tr>
