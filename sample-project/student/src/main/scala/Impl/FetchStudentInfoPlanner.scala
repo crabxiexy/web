@@ -9,9 +9,9 @@ import io.circe.Json
 import io.circe.generic.auto._
 import Common.Model.Student
 
-case class FetchStudentInfoPlanner(studentId: Int, override val planContext: PlanContext) extends Planner[Option[Student]] {
+case class FetchStudentInfoPlanner(studentId: Int, override val planContext: PlanContext) extends Planner[List[Json]]{
 
-  override def plan(using planContext: PlanContext): IO[Option[Student]] = {
+  override def plan(using planContext: PlanContext): IO[List[Json]]={
     val sqlQuery =
       s"""
          |SELECT student_id, name, profile, TA_id, score, department, class_name
@@ -20,13 +20,5 @@ case class FetchStudentInfoPlanner(studentId: Int, override val planContext: Pla
        """.stripMargin
 
     readDBRows(sqlQuery, List(SqlParameter("Int", studentId.toString)))
-      .map { rows =>
-        rows.headOption.flatMap { json =>
-          // 打印JSON
-          println(s"Retrieved JSON: $json")
-          // 尝试将 JSON 解码为 Student
-          json.as[Student].toOption
-        }
-      }
   }
 }
