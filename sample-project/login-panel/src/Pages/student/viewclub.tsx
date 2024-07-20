@@ -10,7 +10,7 @@ import { CheckJointClubMessage } from 'Plugins/ClubAPI/CheckJointClubMessage';
 import Sidebar from 'Pages/Sidebar';
 import viewclub_styles from './viewclub.module.css';
 import { ApplyMemberMessage } from 'Plugins/ClubAPI/ApplyMemberMessage';
-import { FetchInfoMessage } from 'Plugins/ClubAPI/FetchInfoMessage';
+import { FetchClubInfoMessage } from 'Plugins/ClubAPI/FetchClubInfoMessage';
 import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
 
@@ -100,7 +100,7 @@ export const ViewClub: React.FC = () => {
             alert('申请加入成功！');
 
             // Fetch the club leader's ID
-            const infoResponse = await sendPostRequest(new FetchInfoMessage(clubName));
+            const infoResponse = await sendPostRequest(new FetchClubInfoMessage(clubName));
             const leaderId = infoResponse.data[0]?.leader;
 
             // Fetch the student's name

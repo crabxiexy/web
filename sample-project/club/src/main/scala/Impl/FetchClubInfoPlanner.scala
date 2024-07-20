@@ -1,16 +1,17 @@
 package Impl
 
+import cats.Traverse.nonInheritedOps.toTraverseOps
 import Common.API.{PlanContext, Planner}
 import APIs.StudentAPI.FetchStudentInfoMessage
-import Common.DBAPI.{readDBRows, writeDB}
-import Common.Object.{SqlParameter}
+import Common.DBAPI.{ReadDBRowsMessage, readDBRows}
+import Common.Object.SqlParameter
 import Common.ServiceUtils.schemaName
 import cats.effect.IO
-import io.circe.{Json, parser}
-import io.circe.generic.auto._
-import io.circe.syntax._
-import cats.syntax.all._
 import Common.Model.{Club, Student}
+import io.circe._
+import io.circe.generic.semiauto._
+import io.circe.syntax._
+import io.circe.generic.auto._
 
 case class FetchClubInfoPlanner(club_name: String, override val planContext: PlanContext) extends Planner[Option[Club]] {
 
@@ -35,48 +36,31 @@ case class FetchClubInfoPlanner(club_name: String, override val planContext: Pla
           val profile = json.hcursor.downField("profile").as[String].getOrElse("")
 
           // Step 2: Fetch student info for leader
-          val fetchLeaderInfo = FetchStudentInfoMessage(leaderId).send.flatMap { jsonString =>
-            parser.parse(jsonString) match {
-              case Left(error) => IO.raiseError(new Exception(s"Failed to parse leader info JSON: ${error.getMessage}"))
-              case Right(json) =>
-                json.as[Student] match {
-                  case Left(error) => IO.raiseError(new Exception(s"Failed to parse leader info: ${error.getMessage}"))
-                  case Right(student) => IO.pure(student)
-                }
-            }
-          }
+          FetchStudentInfoMessage(leaderId).send.flatMap { students =>
+            students.headOption match {
+              case Some(leader) =>
+                // Step 3: Query members of the club
+                val sqlQueryMembers =
+                  s"""
+                     |SELECT member
+                     |FROM ${schemaName}.member
+                     |WHERE club_name = ?
+                   """.stripMargin
 
-          // Step 3: Query members of the club
-          val sqlQueryMembers =
-            s"""
-               |SELECT member
-               |FROM ${schemaName}.member
-               |WHERE club_name = ?
-             """.stripMargin
-
-          val membersQuery = readDBRows(sqlQueryMembers, List(SqlParameter("String", club_name))).flatMap { jsonList =>
-            val memberIds = jsonList.flatMap { json =>
-              json.hcursor.downField("member").as[Int].toOption
-            }
-            memberIds.traverse { memberId =>
-              FetchStudentInfoMessage(memberId).send.flatMap { jsonString =>
-                parser.parse(jsonString) match {
-                  case Left(error) => IO.raiseError(new Exception(s"Failed to parse member info JSON: ${error.getMessage}"))
-                  case Right(json) =>
-                    json.as[Student] match {
-                      case Left(error) => IO.raiseError(new Exception(s"Failed to parse member info: ${error.getMessage}"))
-                      case Right(student) => IO.pure(student)
+                readDBRows(sqlQueryMembers, List(SqlParameter("String", club_name))).flatMap { jsonList =>
+                  val memberIds = jsonList.flatMap(_.hcursor.downField("member").as[Int].toOption)
+                  memberIds.traverse { memberId =>
+                    FetchStudentInfoMessage(memberId).send.flatMap { members =>
+                      IO.pure(members.headOption.getOrElse(throw new Exception("Empty member info")))
                     }
+                  }.map { members =>
+                    Some(Club(clubId, clubName, leader, intro, department, profile, members))
+                  }
                 }
-              }
+
+              case None => IO.raiseError(new Exception("Empty leader info"))
             }
           }
-
-          // Step 4: Create Club object with fetched leader and members
-          for {
-            leader <- fetchLeaderInfo
-            members <- membersQuery
-          } yield Some(Club(clubId, clubName, leader, intro, department, profile, members))
 
         case None =>
           IO.pure(None) // Club not found
