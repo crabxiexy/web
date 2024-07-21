@@ -3,104 +3,62 @@ import { useHistory } from 'react-router-dom';
 import Modal from 'react-modal';
 import useClubNameStore from 'Pages/student/ClubNameStore';
 import useIdStore from 'Pages/IdStore';
-import { FetchInfoMessage } from 'Plugins/ClubAPI/FetchInfoMessage';
-import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
-import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage';
-import { QueryMemberMessage } from 'Plugins/ClubAPI/QueryMemberMessage';
-import { QueryApplyMessage } from 'Plugins/ClubAPI/QueryApplyMessage';
-import { ResponseStudentApplyMessage } from 'Plugins/ClubAPI/ResponseStudentApplyMessage';
-import { AddMemberMessage } from 'Plugins/ClubAPI/AddMemberMessage';
-import { CreateActivityMessage } from 'Plugins/ActivityAPI/CreateActivityMessage';
-import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
+import { FetchClubInfoMessage} from 'Plugins/ClubAPI/FetchClubInfoMessage';
+import { QueryApplyMessage } from 'Plugins/ClubAPI/QueryApplyMessage'
+import { QueryMemberMessage } from 'Plugins/ClubAPI/QueryMemberMessage'
+import { Student, Club, StudentApplication, Activity } from 'Plugins/type';
 import student_manageclub_style from './manageclub.module.css';
 import Sidebar from 'Pages/Sidebar';
-
-interface Application {
-    studentID: number;
-    clubName: string;
-    is_checked: number;
-    result: number;
-    name?: string;
-    profile?: string;
-}
-
-interface Activity {
-    clubName: string;
-    activityName: string;
-    intro: string;
-    startTime: string;
-    finishTime: string;
-    organizorId: number;
-    lowLimit: number;
-    upLimit: number;
-    num: number;
-}
+import { ResponseStudentApplyMessage } from 'Plugins/ClubAPI/ResponseStudentApplyMessage'
+import { AddMemberMessage } from 'Plugins/ClubAPI/AddMemberMessage'
+import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
+import { CreateActivityMessage } from 'Plugins/ActivityAPI/CreateActivityMessage'
+import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
 
 export const ManagedClubInfo: React.FC = () => {
     const { Id } = useIdStore();
     const studentIdNumber = parseInt(Id);
     const history = useHistory();
-    const [memberId, setMemberId] = useState('');
     const { ClubName } = useClubNameStore();
-    const [clubInfo, setClubInfo] = useState<any>(null);
-    const [leaderInfo, setLeaderInfo] = useState<any>(null);
-    const [members, setMembers] = useState<any[]>([]);
+    const [clubInfo, setClubInfo] = useState<Club | null>(null);
+    const [leaderInfo, setLeaderInfo] = useState<Student | null>(null);
+    const [members, setMembers] = useState<Student[]>([]);
     const [showModal, setShowModal] = useState(false);
-    const [allMembers, setAllMembers] = useState<any[]>([]);
+    const [allMembers, setAllMembers] = useState<Student[]>([]);
     const [error, setError] = useState<string>('');
     const [showApplyModal, setShowApplyModal] = useState(false);
-    const [applications, setApplications] = useState<Application[]>([]);
+    const [applications, setApplications] = useState<StudentApplication[]>([]);
     const [activities, setActivities] = useState<Activity[]>([]);
     const [newActivity, setNewActivity] = useState<Activity>({
-        clubName: ClubName,
+        activityID: 0,
+        club: null,
         activityName: '',
         intro: '',
         startTime: new Date().toISOString().slice(0, 16),
         finishTime: '',
-        organizorId: 0,
-        lowLimit: undefined,
-        upLimit: undefined,
+        organizor: null,
+        lowLimit: 0,
+        upLimit: 0,
         num: 0,
+        members: [],
     });
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
-    const [leaderName,setLeaderName] = useState<string>('');
+    const [leaderName, setLeaderName] = useState<string>('');
+
     useEffect(() => {
         fetchClubInfo();
     }, [ClubName]);
 
     const fetchClubInfo = async () => {
         try {
-            const infoResponse = await sendPostRequest(new FetchInfoMessage(ClubName));
-            const clubData = infoResponse.data[0];
+            const clubInfoResponse = await sendPostRequest(new FetchClubInfoMessage(ClubName));
+            const clubData: Club = clubInfoResponse.data;
+
             setClubInfo(clubData);
-
-            const leaderId = clubData?.leader;
-
-            if (leaderId) {
-                const leaderNameResponse = await sendPostRequest(new FetchNameMessage(leaderId));
-                setLeaderName(leaderNameResponse.data)
-                const leaderProfileResponse = await sendPostRequest(new FetchProfileMessage(leaderId));
-                setLeaderInfo({
-                    id: leaderId,
-                    profile: leaderProfileResponse.data
-                });
-            }
-
-            const membersResponse = await sendPostRequest(new QueryMemberMessage(ClubName));
-            const membersWithDetails = await Promise.all(
-                membersResponse.data.map(async (member: any) => {
-                    const profileResponse = await sendPostRequest(new FetchProfileMessage(member.member));
-                    const nameResponse = await sendPostRequest(new FetchNameMessage(member.member));
-
-                    return {
-                        ...member,
-                        name: nameResponse.data,
-                        profile: profileResponse.data,
-                    };
-                })
-            );
-            setMembers(membersWithDetails);
+            setLeaderInfo(clubData.leader);
+            setLeaderName(clubData.leader.name);
+            setMembers(clubData.members);
         } catch (error) {
             setError('加载俱乐部信息失败，请重试。');
         }
@@ -109,28 +67,19 @@ export const ManagedClubInfo: React.FC = () => {
     const handleViewMoreMembers = async () => {
         setShowModal(true);
         const allMembersResponse = await sendPostRequest(new QueryMemberMessage(ClubName));
-        const allMembersWithDetails = await Promise.all(
-            allMembersResponse.data.map(async (member: any) => {
-                const profileResponse = await sendPostRequest(new FetchProfileMessage(member.studentID));
-                const nameResponse = await sendPostRequest(new FetchNameMessage(member.studentID));
+        const allMembersData: Student[] = allMembersResponse.data;
 
-                return {
-                    ...member,
-                    name: nameResponse.data,
-                    profile: profileResponse.data,
-                };
-            })
-        );
-
-        setAllMembers(allMembersWithDetails);
+        setAllMembers(allMembersData);
     };
 
     const handleUpdate = () => {
         history.push('/update_clubinfo');
     };
+
     const handleMoreInfo = () => {
         history.push('/moreinfo');
     };
+
     const handleOpenApplyModal = async () => {
         setShowApplyModal(true);
         await fetchApplications();
@@ -143,21 +92,9 @@ export const ManagedClubInfo: React.FC = () => {
     const fetchApplications = async () => {
         try {
             const response = await sendPostRequest(new QueryApplyMessage(ClubName));
+            const applicationsData: StudentApplication[] = response.data;
 
-            const applicationsWithDetails = await Promise.all(
-                response.data.map(async (application: Application) => {
-                    const profileResponse = await sendPostRequest(new FetchProfileMessage(application.studentID));
-                    const nameResponse = await sendPostRequest(new FetchNameMessage(application.studentID));
-
-                    return {
-                        ...application,
-                        name: nameResponse.data,
-                        profile: profileResponse.data,
-                    };
-                })
-            );
-
-            setApplications(applicationsWithDetails);
+            setApplications(applicationsData);
         } catch (error) {
             setError('加载申请信息失败，请重试。');
         }
@@ -203,7 +140,7 @@ export const ManagedClubInfo: React.FC = () => {
             const startTimestamp = new Date(newActivity.startTime).getTime();
             const finishTimestamp = new Date(newActivity.finishTime).getTime();
             const response = await sendPostRequest(new CreateActivityMessage(
-                newActivity.clubName,
+                newActivity.club.name,
                 newActivity.activityName,
                 newActivity.intro,
                 startTimestamp.toString(),
@@ -215,17 +152,19 @@ export const ManagedClubInfo: React.FC = () => {
             ));
 
             if (response.data === 'Activity created successfully') {
-                setActivities([...activities, { ...newActivity, organizorId: studentIdNumber }]);
+                setActivities([...activities, { ...newActivity, organizor: leaderInfo }]);
                 setNewActivity({
-                    clubName: ClubName,
+                    activityID: 0,
+                    club: clubInfo,
                     activityName: '',
                     intro: '',
                     startTime: '',
                     finishTime: '',
-                    organizorId: 0,
+                    organizor: null,
                     lowLimit: 0,
                     upLimit: 0,
                     num: 0,
+                    members: [],
                 });
                 setModalIsOpen(false); // 关闭模态框
                 alert('活动创建成功！');
@@ -269,11 +208,7 @@ export const ManagedClubInfo: React.FC = () => {
                             <h2>{clubInfo.name}</h2>
                             <p><strong>简介: </strong> {clubInfo.intro}</p>
                             <p><strong>负责人: </strong> {leaderName}</p>
-
-
-                            <button onClick={handleUpdate}
-                                    className={student_manageclub_style.updateButton}>查看俱乐部信息
-                            </button>
+                            <button onClick={handleUpdate} className={student_manageclub_style.updateButton}>查看俱乐部信息</button>
                         </div>
                     )}
 
@@ -294,13 +229,10 @@ export const ManagedClubInfo: React.FC = () => {
                             ))}
                         </div>
                         {members.length > 5 && (
-                            <button onClick={handleViewMoreMembers}
-                                    className={student_manageclub_style.viewMoreButton}>查看所有成员</button>
+                            <button onClick={handleViewMoreMembers} className={student_manageclub_style.viewMoreButton}>查看所有成员</button>
                         )}
                         <div className={student_manageclub_style.buttonGroup}>
-                            <button className={student_manageclub_style.applyButton} onClick={handleOpenApplyModal}>
-                                审核新成员
-                            </button>
+                            <button className={student_manageclub_style.applyButton} onClick={handleOpenApplyModal}>审核新成员</button>
                         </div>
                     </div>
 
@@ -317,7 +249,7 @@ export const ManagedClubInfo: React.FC = () => {
                                     <p>{activity.intro}</p>
                                     <p><strong>开始时间:</strong> {activity.startTime}</p>
                                     <p><strong>结束时间:</strong> {activity.finishTime}</p>
-                                    <p><strong>组织者 ID:</strong> {activity.organizorId}</p>
+                                    <p><strong>组织者:</strong> {activity.organizor.name}</p>
                                     <p><strong>人数限制:</strong> {activity.lowLimit} - {activity.upLimit}</p>
                                     <p><strong>当前人数:</strong> {activity.num}</p>
                                 </div>
@@ -354,24 +286,20 @@ export const ManagedClubInfo: React.FC = () => {
                                 <div className={student_manageclub_style.applicationList}>
                                     {applications.length > 0 ? (
                                         applications.map(application => (
-                                            <div key={application.studentID} className={student_manageclub_style.applicationDetails}>
-                                                <h3>学生 ID: {application.studentID}</h3>
+                                            <div key={application.student.studentID} className={student_manageclub_style.applicationDetails}>
+                                                <h3>学生 ID: {application.student.studentID}</h3>
                                                 <div className={student_manageclub_style.applicationMemberInfo}>
-                                                    <p>姓名: {application.name}</p>
+                                                    <p>姓名: {application.student.name}</p>
                                                     <div className={student_manageclub_style.profileCircle}>
                                                         <img
-                                                            src={application.profile}
-                                                            alt={application.name}
+                                                            src={application.student.profile}
+                                                            alt={application.student.name}
                                                             className={student_manageclub_style.memberProfileImg}
                                                         />
                                                     </div>
                                                     <div className={student_manageclub_style.applicationActions}>
-                                                        <button onClick={() => handleResponseApplication(application.studentID, 1)}>
-                                                            通过
-                                                        </button>
-                                                        <button onClick={() => handleResponseApplication(application.studentID, 0)}>
-                                                            不通过
-                                                        </button>
+                                                        <button onClick={() => handleResponseApplication(application.student.studentID, 1)}>通过</button>
+                                                        <button onClick={() => handleResponseApplication(application.student.studentID, 0)}>不通过</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -430,8 +358,8 @@ export const ManagedClubInfo: React.FC = () => {
                                 <input
                                     type="number"
                                     placeholder="请输入最低人数"
-                                    value={newActivity.lowLimit ?? ''}
-                                    onChange={(e) => setNewActivity({ ...newActivity, lowLimit: e.target.value ? parseInt(e.target.value) : undefined })}
+                                    value={newActivity.lowLimit}
+                                    onChange={(e) => setNewActivity({ ...newActivity, lowLimit: parseInt(e.target.value) })}
                                 />
                             </div>
                             <div>
@@ -439,15 +367,13 @@ export const ManagedClubInfo: React.FC = () => {
                                 <input
                                     type="number"
                                     placeholder="请输入最高人数"
-                                    value={newActivity.upLimit ?? ''}
-                                    onChange={(e) => setNewActivity({ ...newActivity, upLimit: e.target.value ? parseInt(e.target.value) : undefined })}
+                                    value={newActivity.upLimit}
+                                    onChange={(e) => setNewActivity({ ...newActivity, upLimit: parseInt(e.target.value) })}
                                 />
                             </div>
                             <div className={student_manageclub_style.buttonGroup}>
                                 <button type="submit" className={student_manageclub_style.submitButton}>提交</button>
-                                <button type="button" onClick={closeModal}
-                                        className={student_manageclub_style.cancelButton}>取消
-                                </button>
+                                <button type="button" onClick={closeModal} className={student_manageclub_style.cancelButton}>取消</button>
                             </div>
                         </form>
                     </Modal>
