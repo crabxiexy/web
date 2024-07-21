@@ -24,53 +24,47 @@ case class FetchClubInfoPlanner(club_name: String, override val planContext: Pla
          |WHERE name = ?
        """.stripMargin
 
-    readDBRows(sqlQuery, List(SqlParameter("String", club_name))).flatMap { rows =>
-      rows.headOption match {
-        case Some(json) =>
-          // Extract club info from the query result
-          val clubId = json.hcursor.downField("club_id").as[Int].getOrElse(0)
-          val clubName = json.hcursor.downField("name").as[String].getOrElse("")
-          val leaderId = json.hcursor.downField("leader").as[Int].getOrElse(0)
-          val intro = json.hcursor.downField("intro").as[String].getOrElse("")
-          val department = json.hcursor.downField("department").as[String].getOrElse("")
-          val profile = json.hcursor.downField("profile").as[String].getOrElse("")
+    readDBRows(sqlQuery, List(SqlParameter("String", club_name))).flatMap {
+      case json :: _ =>
+        // Extract club info from the query result
+        val clubId = json.hcursor.downField("club_id").as[Int].getOrElse(0)
+        val clubName = json.hcursor.downField("name").as[String].getOrElse("")
+        val leaderId = json.hcursor.downField("leader").as[Int].getOrElse(0)
+        val intro = json.hcursor.downField("intro").as[String].getOrElse("")
+        val department = json.hcursor.downField("department").as[String].getOrElse("")
+        val profile = json.hcursor.downField("profile").as[String].getOrElse("")
 
-          // Step 2: Fetch student info for leader
-          FetchStudentInfoMessage(leaderId).send.flatMap { leaderJsonList =>
-            leaderJsonList.headOption match {
-              case Some(leaderJson) =>
-                val leader = leaderJson.as[Student].getOrElse(throw new Exception("Failed to decode leader info"))
+        // Step 2: Fetch student info for leader
+        FetchStudentInfoMessage(leaderId).send.flatMap {
+          case leaderJson :: _ =>
+            val leader = leaderJson.as[Student].getOrElse(throw new Exception("Failed to decode leader info"))
 
-                // Step 3: Query members of the club
-                val sqlQueryMembers =
-                  s"""
-                     |SELECT member
-                     |FROM ${schemaName}.member
-                     |WHERE club_name = ?
-                   """.stripMargin
+            // Step 3: Query members of the club
+            val sqlQueryMembers =
+              s"""
+                 |SELECT member
+                 |FROM ${schemaName}.member
+                 |WHERE club_name = ?
+               """.stripMargin
 
-                readDBRows(sqlQueryMembers, List(SqlParameter("String", club_name))).flatMap { jsonList =>
-                  val memberIds = jsonList.flatMap(_.hcursor.downField("member").as[Int].toOption)
-                  memberIds.traverse { memberId =>
-                    FetchStudentInfoMessage(memberId).send.flatMap { memberJsonList =>
-                      memberJsonList.headOption match {
-                        case Some(memberJson) =>
-                          IO.pure(memberJson.as[Student].getOrElse(throw new Exception("Failed to decode member info")))
-                        case None => IO.raiseError(new Exception("Empty member info"))
-                      }
-                    }
-                  }.map { members =>
-                    Some(Club(clubId, clubName, leader, intro, department, profile, members))
-                  }
+            readDBRows(sqlQueryMembers, List(SqlParameter("String", club_name))).flatMap { jsonList =>
+              val memberIds = jsonList.flatMap(_.hcursor.downField("member").as[Int].toOption)
+              memberIds.traverse { memberId =>
+                FetchStudentInfoMessage(memberId).send.flatMap {
+                  case memberJson :: _ =>
+                    IO.pure(memberJson.as[Student].getOrElse(throw new Exception("Failed to decode member info")))
+                  case Nil => IO.raiseError(new Exception("Empty member info"))
                 }
-
-              case None => IO.raiseError(new Exception("Empty leader info"))
+              }.map { members =>
+                Some(Club(clubId, clubName, leader, intro, department, profile, members))
+              }
             }
-          }
 
-        case None =>
-          IO.pure(None) // Club not found
-      }
+          case Nil => IO.raiseError(new Exception("Empty leader info"))
+        }
+
+      case Nil =>
+        IO.pure(None) // Club not found
     }
   }
 }
