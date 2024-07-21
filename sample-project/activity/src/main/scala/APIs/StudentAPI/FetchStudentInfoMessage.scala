@@ -9,3 +9,4 @@ case class FetchStudentInfoMessage(studentId: Int) extends StudentMessage[Studen
 object FetchStudentInfoMessage {
   implicit val encoder: Encoder[FetchStudentInfoMessage] = deriveEncoder[FetchStudentInfoMessage]
 }
+
