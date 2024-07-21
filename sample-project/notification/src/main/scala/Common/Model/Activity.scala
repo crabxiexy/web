@@ -1,8 +1,8 @@
 
 package Common.Model
 
-import io.circe._
-import io.circe.syntax._
+import io.circe.*
+import io.circe.syntax.*
 
 
 case class Activity(

@@ -1,7 +1,7 @@
 package Common.Model
 
-import io.circe.*
-import io.circe.generic.semiauto.*
+import io.circe._
+import io.circe.generic.semiauto._
 case class UserInfo(
                      UserID: Int,
                      name: String,
