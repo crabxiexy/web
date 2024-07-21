@@ -32,7 +32,7 @@ export const RunUpload: React.FC = () => {
     const [uploadedImage, setUploadedImage] = useState<File | null>(null);
     const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
-
+    const {Token} = useTokenStore()
     const handleStartFinishRunning = () => {
         if (clickCount === 0) {
             setStartTime(new Date());
@@ -63,7 +63,7 @@ export const RunUpload: React.FC = () => {
             const filename = uploadedImage.name;
 
             // Validate token before proceeding
-            const {Token} = useTokenStore() // Replace with actual token retrieval logic
+           // Replace with actual token retrieval logic
             const isValidToken = await validateToken(Id, Token);
 
             if (!isValidToken) {

@@ -14,7 +14,7 @@ case class StudentQueryHWPlanner(student_id: Int, override val planContext: Plan
     // Construct the SQL query with schemaName to fetch all fields
     val sqlQuery =
       s"""
-      |SELECT activity_id, submitTime INT, imgUrl TEXT, is_checked INT, response TEXT
+      |SELECT activity_id , submitTime , imgUrl , is_checked , response
       |FROM ${schemaName}.HW
       |WHERE student_id = ?
        """.stripMargin

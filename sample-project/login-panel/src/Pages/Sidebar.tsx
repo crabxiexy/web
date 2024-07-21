@@ -81,9 +81,9 @@ const Sidebar = () => {
                 </div>
                 {dropdownVisible && (
                     <div className={styles.dropdownMenu}>
-                        <p onClick={handleRename}>Rename</p>
-                        <p onClick={handleUpdateProfile}>Update Profile</p>
-                        <p onClick={handleLogout}>Logout</p>
+                        <p onClick={handleRename}>更改密码</p>
+                        <p onClick={handleUpdateProfile}>更新照片</p>
+                        <p onClick={handleLogout}>退出</p>
                     </div>
                 )}
             </div>

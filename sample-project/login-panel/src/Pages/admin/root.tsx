@@ -92,7 +92,7 @@ export function Root() {
                     selectedApplication.leader.studentID,
                     selectedApplication.intro,
                     selectedApplication.department,
-                    ''
+                    `http://127.0.0.1:5000/proof/test.jpg`
                 );
                 await sendPostRequest(foundClubMessage);
 

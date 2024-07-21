@@ -109,7 +109,7 @@ export const MoreInfo: React.FC = () => {
                     parseInt(Id),
                     currentActivityID!,
                     studentID,
-                    filename // Add filename to the message
+                    `http://127.0.0.1:5000/proof/${filename}` // Add filename to the message
                 );
 
                 await sendPostRequest(submitMessage);

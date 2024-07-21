@@ -34,10 +34,10 @@ interface Application {
 }
 
 interface ClubActivity {
-    activity_id: number;
-    submitTime: number;
+    activityID: number;
+    submittime: number;
     imgUrl: string;
-    is_checked: number;
+    isChecked: number;
     response: string;
 }
 
@@ -234,16 +234,16 @@ export const CheckRecord: React.FC = () => {
                             </thead>
                             <tbody>
                             {clubActivities.map((activity) => (
-                                <tr key={activity.activity_id}>
-                                    <td>{activity.activity_id}</td>
-                                    <td>{decodeTimestamp(activity.submitTime.toString())}</td>
+                                <tr key={activity.activityID}>
+                                    <td>{activity.activityID}</td>
+                                    <td>{new Date(activity.submittime).toLocaleString()}</td>
                                     <td>
                                         <button className={checkrecord_style.button}
                                                 onClick={() => handleShowCertificate({imgUrl: activity.imgUrl})}>
                                             显示
                                         </button>
                                     </td>
-                                    <td>{status[activity.is_checked]}</td>
+                                    <td>{status[activity.isChecked]}</td>
                                     <td>{activity.response}</td>
                                 </tr>
                             ))}
