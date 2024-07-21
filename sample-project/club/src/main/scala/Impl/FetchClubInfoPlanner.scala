@@ -1,6 +1,7 @@
+
 package Impl
 
-import cats.Traverse.nonInheritedOps.toTraverseOps
+import cats.implicits._
 import Common.API.{PlanContext, Planner}
 import APIs.StudentAPI.FetchStudentInfoMessage
 import Common.DBAPI.{ReadDBRowsMessage, readDBRows}
@@ -24,21 +25,19 @@ case class FetchClubInfoPlanner(club_name: String, override val planContext: Pla
          |WHERE name = ?
        """.stripMargin
 
-    readDBRows(sqlQuery, List(SqlParameter("String", club_name))).flatMap {
-      case json :: _ =>
-        // Extract club info from the query result
-        val clubId = json.hcursor.downField("club_id").as[Int].getOrElse(0)
-        val clubName = json.hcursor.downField("name").as[String].getOrElse("")
-        val leaderId = json.hcursor.downField("leader").as[Int].getOrElse(0)
-        val intro = json.hcursor.downField("intro").as[String].getOrElse("")
-        val department = json.hcursor.downField("department").as[String].getOrElse("")
-        val profile = json.hcursor.downField("profile").as[String].getOrElse("")
+    readDBRows(sqlQuery, List(SqlParameter("String", club_name))).flatMap { rows =>
+      rows.headOption match {
+        case Some(json) =>
+          // Extract club info from the query result
+          val clubId = json.hcursor.downField("club_id").as[Int].getOrElse(0)
+          val clubName = json.hcursor.downField("name").as[String].getOrElse("")
+          val leaderId = json.hcursor.downField("leader").as[Int].getOrElse(0)
+          val intro = json.hcursor.downField("intro").as[String].getOrElse("")
+          val department = json.hcursor.downField("department").as[String].getOrElse("")
+          val profile = json.hcursor.downField("profile").as[String].getOrElse("")
 
-        // Step 2: Fetch student info for leader
-        FetchStudentInfoMessage(leaderId).send.flatMap {
-          case leaderJson :: _ =>
-            val leader = leaderJson.as[Student].getOrElse(throw new Exception("Failed to decode leader info"))
-
+          // Step 2: Fetch student info for leader
+          FetchStudentInfoMessage(leaderId).send.flatMap { leader =>
             // Step 3: Query members of the club
             val sqlQueryMembers =
               s"""
@@ -50,21 +49,16 @@ case class FetchClubInfoPlanner(club_name: String, override val planContext: Pla
             readDBRows(sqlQueryMembers, List(SqlParameter("String", club_name))).flatMap { jsonList =>
               val memberIds = jsonList.flatMap(_.hcursor.downField("member").as[Int].toOption)
               memberIds.traverse { memberId =>
-                FetchStudentInfoMessage(memberId).send.flatMap {
-                  case memberJson :: _ =>
-                    IO.pure(memberJson.as[Student].getOrElse(throw new Exception("Failed to decode member info")))
-                  case Nil => IO.raiseError(new Exception("Empty member info"))
-                }
+                FetchStudentInfoMessage(memberId).send
               }.map { members =>
                 Some(Club(clubId, clubName, leader, intro, department, profile, members))
               }
             }
+          }
 
-          case Nil => IO.raiseError(new Exception("Empty leader info"))
-        }
-
-      case Nil =>
-        IO.pure(None) // Club not found
+        case None =>
+          IO.pure(None) // Club not found
+      }
     }
   }
 }

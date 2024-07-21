@@ -5,10 +5,9 @@ import useIdStore from 'Pages/IdStore';
 import useTokenStore from 'Pages/TokenStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { QueryReceivedMessage } from 'Plugins/NotificationAPI/QueryReceivedMessage';
-import { CountRunMessage } from 'Plugins/RunAPI/CountRunMessage';
-import { CountGroupexMessage } from 'Plugins/GroupExAPI/CountGroupexMessage';
+import { FetchStudentInfo} from 'Plugins/RunAPI/CountRunMessage';
 import Sidebar from 'Pages/Sidebar';
-import { CountHWMessage } from 'Plugins/ActivityAPI/CountHWMessage';
+
 
 export function StudentDashboard() {
     const history = useHistory();

@@ -50,7 +50,7 @@ object Routes:
             m.fullPlan.map(_.asJson.toString)
           }
       case "AdminQueryAppMessage" =>
-        IO(decode[AdminQueryAppPlanner](str).getOrElse(throw new Exception("Invalid JSON for AdminQueryAppMessage")))
+        IO(decode[AdminQueryClubAppPlanner](str).getOrElse(throw new Exception("Invalid JSON for AdminQueryAppMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }
@@ -65,7 +65,7 @@ object Routes:
             m.fullPlan.map(_.asJson.toString)
           }
       case "CheckClubMessage" =>
-        IO(decode[CheckClubPlanner](str).getOrElse(throw new Exception("Invalid JSON for CheckClubMessage")))
+        IO(decode[CheckClubExistPlanner](str).getOrElse(throw new Exception("Invalid JSON for CheckClubMessage")))
           .flatMap{m=>
             m.fullPlan.map(_.asJson.toString)
           }

@@ -8,7 +8,7 @@ import cats.effect.IO
 import io.circe.Json
 import io.circe.generic.auto._
 
-case class CheckClubPlanner(club_name: String, override val planContext: PlanContext) extends Planner[Boolean] {
+case class CheckClubExistPlanner(club_name: String, override val planContext: PlanContext) extends Planner[Boolean] {
   override def plan(using planContext: PlanContext): IO[Boolean] = {
     val checkClubExistsQuery = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.info WHERE name = ?)",
       List(SqlParameter("String", club_name)))

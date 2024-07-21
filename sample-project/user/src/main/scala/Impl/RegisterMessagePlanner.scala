@@ -1,5 +1,6 @@
 package Impl
 import Common.Model.Student
+import Common.Model.Score
 import java.security.MessageDigest
 import java.util.Base64
 import cats.effect.IO
@@ -24,7 +25,7 @@ case class RegisterMessagePlanner(student_id: Int, name: String, password: Strin
       case _ => throw new Exception("Unknown user identity")
     }
      */
-    val studentToRegister = new Student(student_id = student_id, name=name , profile=profile , -1, 0, department , class_name)
+    val studentToRegister = new Student(student_id = student_id, name=name , profile=profile , -1, Score(0,0,0,0), department , class_name)
     val checkUserExists = readDBBoolean(s"SELECT EXISTS(SELECT 1 FROM ${schemaName}.user WHERE student_id = ?)",
       List(SqlParameter("Int", student_id.toString))
     )

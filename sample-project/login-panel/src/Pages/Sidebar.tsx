@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import useIdStore from './IdStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
-import { FetchStudentInfoMessage } from 'Plugins/StudentAPI/FetchStudentInfoMessage';
+import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage';
 import { useHistory } from 'react-router';
 import styles from './Sidebar.module.css';
@@ -24,7 +24,7 @@ const Sidebar = () => {
 
     const fetchUsername = async () => {
         try {
-            const response = await sendPostRequest(new FetchStudentInfoMessage(parseInt(Id)));
+            const response = await sendPostRequest(new FetchNameMessage(parseInt(Id)));
             setUsername(response.data || 'Guest');
         } catch (error) {
             console.error('Error fetching username:', error);
@@ -72,7 +72,7 @@ const Sidebar = () => {
                 <h1 className={styles.title}>乐动力 Pro</h1>
             </div>
             <div className={styles.rightSection}>
-                <button className={styles.navButton} onClick={handleBack}>返回</button>
+                <button className={styles.navButton} onClick={handleBack}>Back</button>
                 <div className={styles.userAvatar} onClick={toggleDropdown}>
                     {profileImage && (
                         <img src={profileImage} alt="User Avatar" className={styles.avatarImage} />
@@ -81,9 +81,9 @@ const Sidebar = () => {
                 </div>
                 {dropdownVisible && (
                     <div className={styles.dropdownMenu}>
-                        <p onClick={handleRename}>更改密码</p>
-                        <p onClick={handleUpdateProfile}>更改头像</p>
-                        <p onClick={handleLogout}>退出</p>
+                        <p onClick={handleRename}>Rename</p>
+                        <p onClick={handleUpdateProfile}>Update Profile</p>
+                        <p onClick={handleLogout}>Logout</p>
                     </div>
                 )}
             </div>

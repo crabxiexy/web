@@ -6,7 +6,7 @@ case class Student(
                     name: String,
                     profile: String,
                     taID: Int,
-                    score: Int,
+                    score: Score,
                     department: String,
                     className: String
                   )

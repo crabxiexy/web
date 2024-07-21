@@ -1,10 +1,10 @@
 import { StudentMessage } from 'Plugins/StudentAPI/StudentMessage'
 
 export class FetchStudentInfoMessage extends StudentMessage {
-    student_id: number;
-    constructor(student_id:number) {
+    studentId: number;
+    constructor(studentId:number) {
         super();
-        this.student_id = student_id;
+        this.studentId = studentId;
     }
 }
 
