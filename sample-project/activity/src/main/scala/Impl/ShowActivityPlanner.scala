@@ -10,6 +10,7 @@ import cats.implicits._
 import io.circe.Json
 import io.circe.generic.auto._
 import Common.Model.{Activity, Club, Student}
+import java.time.OffsetDateTime
 import APIs.ClubAPI.FetchClubInfoMessage
 
 case class ShowActivityPlanner(
@@ -53,17 +54,14 @@ case class ShowActivityPlanner(
         // Fetch members info
         val membersQuery =
           s"""
-             |SELECT member
+             |SELECT member_id
              |FROM ${schemaName}.member
              |WHERE activity_id = ?
            """.stripMargin
 
         val fetchMembers = readDBRows(membersQuery, List(SqlParameter("Int", activityID.toString))).flatMap { memberRows =>
-          val memberIds = memberRows.flatMap { memberJson =>
-            memberJson.hcursor.downField("member").as[List[Int]].getOrElse(List.empty[Int])
-          }
-
-          memberIds.traverse { memberId =>
+          memberRows.traverse { memberJson =>
+            val memberId = memberJson.hcursor.downField("memberID").as[Int].getOrElse(0)
             FetchStudentInfoMessage(memberId).send
           }
         }

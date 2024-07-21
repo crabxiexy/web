@@ -12,7 +12,6 @@ import io.circe.generic.auto._
 import Common.Model.{Activity, Club, Student}
 import APIs.ClubAPI.FetchClubInfoMessage
 import APIs.ClubAPI.CheckMemberMessage
-
 case class MemberQueryActivityPlanner(
                                        member_id: Int,
                                        club_name: String,
@@ -67,14 +66,13 @@ case class MemberQueryActivityPlanner(
              |  SELECT 1 FROM ${schemaName}.member am
              |  WHERE am.activity_id = a.activity_id AND am.member_id = ?
              |) $status3Condition
-           """.stripMargin
+                    """.stripMargin
 
-        // Prepare query parameters
+        // 准备查询参数
         val parameters = List(SqlParameter("String", club_name), SqlParameter("DateTime", currentTime)) ++
           (if (status1 != 0 && status1 != 3) List(SqlParameter("DateTime", currentTime)) else Nil) ++
           List(SqlParameter("Int", member_id.toString)) ++
-          (if (status3 == 1) List(SqlParameter("Int", member_id.toString), SqlParameter("DateTime", currentTime)) else Nil)
-
+          (if (status3 == 1) List(SqlParameter("Int", member_id.toString), SqlParameter("DateTime", currentTime)) else (Nil++Nil))
         // Execute the query and return the results
         for {
           activityRows <- readDBRows(sqlQuery, parameters)
@@ -86,8 +84,8 @@ case class MemberQueryActivityPlanner(
             val startTime = json.hcursor.downField("starttime").as[String].getOrElse("")
             val finishTime = json.hcursor.downField("finishtime").as[String].getOrElse("")
             val organizorId = json.hcursor.downField("organizorID").as[Int].getOrElse(0)
-            val lowLimit = json.hcursor.downField("lowlimit").as[Int].getOrElse(0)
-            val upLimit = json.hcursor.downField("upkimit").as[Int].getOrElse(0)
+            val lowLimit = json.hcursor.downField("lowLimit").as[Int].getOrElse(0)
+            val upLimit = json.hcursor.downField("upLimit").as[Int].getOrElse(0)
             val num = json.hcursor.downField("num").as[Int].getOrElse(0)
 
             // Fetch club info
@@ -105,12 +103,8 @@ case class MemberQueryActivityPlanner(
                """.stripMargin
 
             val fetchMembers = readDBRows(membersQuery, List(SqlParameter("Int", activityID.toString))).flatMap { memberRows =>
-              val memberIds = memberRows.flatMap { memberJson =>
-                // Assuming the `member_id` field is an array in the returned JSON
-                memberJson.hcursor.downField("member_id").as[List[Int]].getOrElse(List.empty[Int])
-              }
-
-              memberIds.traverse { memberId =>
+              memberRows.traverse { memberJson =>
+                val memberId = memberJson.hcursor.downField("memberID").as[Int].getOrElse(0)
                 FetchStudentInfoMessage(memberId).send
               }
             }
