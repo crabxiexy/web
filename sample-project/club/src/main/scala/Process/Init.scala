@@ -20,7 +20,7 @@ object Init {
       _ <- writeDB(s"CREATE TABLE IF NOT EXISTS ${schemaName}.member (club_name TEXT, member INT)", List())
       _ <- writeDB(s"CREATE TABLE IF NOT EXISTS ${schemaName}.application (name TEXT, leader INT, intro TEXT, department TEXT, is_checked INT, result INT, response TEXT)", List())
       _ <- writeDB(s"CREATE TABLE IF NOT EXISTS ${schemaName}.student_application (student_id INT, club_name TEXT, is_checked INT, result INT)", List())
-      _ <- writeDB(s"CREATE TABLE IF NOT EXISTS ${schemaName}.photo (club_name TEXT, uploader_id INT, image TEXT, submit_time TIMESTAMPTZ)", List())
+
     } yield ()
 
 }
