@@ -10,6 +10,7 @@ import useIdStore from 'Pages/IdStore';
 import { QueryMemberMessage } from 'Plugins/ClubAPI/QueryMemberMessage';
 import { MemberQueryActivityMessage } from 'Plugins/ActivityAPI/MemberQueryActivityMessage';
 import { JoinActivityMessage } from 'Plugins/ActivityAPI/JoinActivityMessage';
+import { ActivityStatus, JoinStatus, AdditionalStatus } from 'Plugins/ActivityStatus';
 
 interface Activity {
     activityID: number;
@@ -61,10 +62,28 @@ export const MyClubInfo: React.FC = () => {
             const currentTime = new Date().toISOString();
             const currentTimestamp = new Date(currentTime).getTime();
             let activitiesResponse;
+            let requestMessage;
             if (mode === 'available') {
-                activitiesResponse = await sendPostRequest(new MemberQueryActivityMessage(studentIdNumber, ClubName, currentTimestamp.toString(), 3, 1, 1));
+                requestMessage = new MemberQueryActivityMessage(
+                    studentIdNumber,
+                    ClubName,
+                    currentTimestamp.toString(),
+                    ActivityStatus.NotFinished,
+                    JoinStatus.NotJoined,
+                    AdditionalStatus.AvailableToJoin
+                );
+                console.log('Sending request:', requestMessage);
+
+                activitiesResponse = await sendPostRequest(requestMessage);
             } else {
-                activitiesResponse = await sendPostRequest(new MemberQueryActivityMessage(studentIdNumber, ClubName, currentTimestamp.toString(), 3, 0, 0));
+                activitiesResponse = await sendPostRequest(new MemberQueryActivityMessage(
+                    studentIdNumber,
+                    ClubName,
+                    currentTimestamp.toString(),
+                    ActivityStatus.NotFinished,
+                    JoinStatus.Joined,
+                    AdditionalStatus.All
+                ));
             }
             setActivities(activitiesResponse.data);
         } catch (error) {
