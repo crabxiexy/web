@@ -6,11 +6,9 @@ import { FetchClubInfoMessage } from 'Plugins/ClubAPI/FetchClubInfoMessage';
 import Sidebar from 'Pages/Sidebar';
 import student_myclub_style from './myclub.module.css';
 import useIdStore from 'Pages/IdStore';
-import { QueryMemberMessage } from 'Plugins/ClubAPI/QueryMemberMessage';
 import { MemberQueryActivityMessage } from 'Plugins/ActivityAPI/MemberQueryActivityMessage';
 import { JoinActivityMessage } from 'Plugins/ActivityAPI/JoinActivityMessage';
-import { ActivityStatus, JoinStatus, AdditionalStatus } from 'Plugins/ActivityStatus';
-import {Activity,Club,Student} from "Pages/types"
+import { Activity, Club, Student } from 'Pages/types';
 
 export const MyClubInfo: React.FC = () => {
     const history = useHistory();
@@ -39,6 +37,7 @@ export const MyClubInfo: React.FC = () => {
             setClubInfo(clubData);
             setLeaderInfo(clubData.leader);
             setMembers(clubData.members);
+            setAllMembers(clubData.members); // Initialize allMembers with the current members
         } catch (error) {
             setError('加载俱乐部信息失败，请重试。');
         }
@@ -48,30 +47,29 @@ export const MyClubInfo: React.FC = () => {
         try {
             const currentTime = new Date().toISOString();
             const currentTimestamp = new Date(currentTime).getTime();
-            let activitiesResponse;
+
             let requestMessage;
             if (mode === 'available') {
                 requestMessage = new MemberQueryActivityMessage(
                     studentIdNumber,
                     ClubName,
                     currentTimestamp.toString(),
-                    ActivityStatus.NotFinished,
-                    JoinStatus.NotJoined,
-                    AdditionalStatus.AvailableToJoin
+                    3,  // Not started
+                    1,  // Not joined
+                    1   // Available to join
                 );
-                console.log('Sending request:', requestMessage);
-
-                activitiesResponse = await sendPostRequest(requestMessage);
             } else {
-                activitiesResponse = await sendPostRequest(new MemberQueryActivityMessage(
+                requestMessage = new MemberQueryActivityMessage(
                     studentIdNumber,
                     ClubName,
                     currentTimestamp.toString(),
-                    ActivityStatus.NotFinished,
-                    JoinStatus.Joined,
-                    AdditionalStatus.All
-                ));
+                    3,  // Not started
+                    0,  // Joined
+                    0   // All
+                );
             }
+            console.log('Sending request:', requestMessage);
+            const activitiesResponse = await sendPostRequest(requestMessage);
             setActivities(activitiesResponse.data);
         } catch (error) {
             setError('加载活动信息失败，请重试。');
@@ -88,12 +86,9 @@ export const MyClubInfo: React.FC = () => {
         }
     };
 
-    const handleViewMoreMembers = async () => {
+    const handleViewMoreMembers = () => {
         setShowModal(true);
-        const allMembersResponse = await sendPostRequest(new QueryMemberMessage(ClubName));
-        const allMembersData: Student[] = allMembersResponse.data;
-
-        setAllMembers(allMembersData);
+        // Use allMembers already set in fetchClubInfo
     };
 
     const handleViewAvailableActivities = () => {
