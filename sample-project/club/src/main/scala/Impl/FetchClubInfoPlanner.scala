@@ -1,6 +1,7 @@
+
 package Impl
 
-import cats.Traverse.nonInheritedOps.toTraverseOps
+import cats.implicits._
 import Common.API.{PlanContext, Planner}
 import APIs.StudentAPI.FetchStudentInfoMessage
 import Common.DBAPI.{ReadDBRowsMessage, readDBRows}
@@ -36,35 +37,22 @@ case class FetchClubInfoPlanner(club_name: String, override val planContext: Pla
           val profile = json.hcursor.downField("profile").as[String].getOrElse("")
 
           // Step 2: Fetch student info for leader
-          FetchStudentInfoMessage(leaderId).send.flatMap { leaderJsonList =>
-            leaderJsonList.headOption match {
-              case Some(leaderJson) =>
-                val leader = leaderJson.as[Student].getOrElse(throw new Exception("Failed to decode leader info"))
+          FetchStudentInfoMessage(leaderId).send.flatMap { leader =>
+            // Step 3: Query members of the club
+            val sqlQueryMembers =
+              s"""
+                 |SELECT member
+                 |FROM ${schemaName}.member
+                 |WHERE club_name = ?
+               """.stripMargin
 
-                // Step 3: Query members of the club
-                val sqlQueryMembers =
-                  s"""
-                     |SELECT member
-                     |FROM ${schemaName}.member
-                     |WHERE club_name = ?
-                   """.stripMargin
-
-                readDBRows(sqlQueryMembers, List(SqlParameter("String", club_name))).flatMap { jsonList =>
-                  val memberIds = jsonList.flatMap(_.hcursor.downField("member").as[Int].toOption)
-                  memberIds.traverse { memberId =>
-                    FetchStudentInfoMessage(memberId).send.flatMap { memberJsonList =>
-                      memberJsonList.headOption match {
-                        case Some(memberJson) =>
-                          IO.pure(memberJson.as[Student].getOrElse(throw new Exception("Failed to decode member info")))
-                        case None => IO.raiseError(new Exception("Empty member info"))
-                      }
-                    }
-                  }.map { members =>
-                    Some(Club(clubId, clubName, leader, intro, department, profile, members))
-                  }
-                }
-
-              case None => IO.raiseError(new Exception("Empty leader info"))
+            readDBRows(sqlQueryMembers, List(SqlParameter("String", club_name))).flatMap { jsonList =>
+              val memberIds = jsonList.flatMap(_.hcursor.downField("member").as[Int].toOption)
+              memberIds.traverse { memberId =>
+                FetchStudentInfoMessage(memberId).send
+              }.map { members =>
+                Some(Club(clubId, clubName, leader, intro, department, profile, members))
+              }
             }
           }
 

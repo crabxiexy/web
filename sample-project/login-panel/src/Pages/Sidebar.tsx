@@ -25,7 +25,7 @@ const Sidebar = () => {
     const fetchUsername = async () => {
         try {
             const response = await sendPostRequest(new FetchStudentInfoMessage(parseInt(Id)));
-            setUsername(response.data || 'Guest');
+            setUsername(response.data.name|| 'Guest');
         } catch (error) {
             console.error('Error fetching username:', error);
         }
