@@ -25,7 +25,7 @@ case class UpdateProfilePlanner(club_name: String, new_profile: String, override
         writeDB(s"UPDATE ${schemaName}.info SET profile = ? WHERE name = ?",
           List(SqlParameter("String", new_profile), SqlParameter("String", club_name))
         ).flatMap { _ =>
-          IO.pure("Introduction updated successfully")
+          IO.pure("Profile updated successfully")
         }
       }
     }
