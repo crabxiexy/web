@@ -1,29 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import useClubNameStore from 'Pages/student/ClubNameStore';
-import { FetchInfoMessage } from 'Plugins/ClubAPI/FetchInfoMessage';
-import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
-import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage';
-import { QueryMemberMessage } from 'Plugins/ClubAPI/QueryMemberMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
-import { MemberQueryActivityMessage } from 'Plugins/ActivityAPI/MemberQueryActivityMessage';
-import { JoinActivityMessage } from 'Plugins/ActivityAPI/JoinActivityMessage';
+import { FetchClubInfoMessage } from 'Plugins/ClubAPI/FetchClubInfoMessage';
+import { Student, Club } from 'Plugins/type';
 import Sidebar from 'Pages/Sidebar';
 import student_myclub_style from './myclub.module.css';
 import useIdStore from 'Pages/IdStore';
-
-interface Member {
-    student_id: number;
-    member: number; // Assuming member is an ID of type number
-}
-
-interface ClubInfo {
-    name: string;
-    intro: string;
-    leader: number;
-    profile: string;
-    department:string;
-}
+import { QueryMemberMessage } from 'Plugins/ClubAPI/QueryMemberMessage';
+import { MemberQueryActivityMessage } from 'Plugins/ActivityAPI/MemberQueryActivityMessage';
+import { JoinActivityMessage } from 'Plugins/ActivityAPI/JoinActivityMessage';
 
 interface Activity {
     activityID: number;
@@ -43,11 +29,11 @@ export const MyClubInfo: React.FC = () => {
     const { ClubName, setClubName } = useClubNameStore();
     const { Id } = useIdStore();
     const studentIdNumber = parseInt(Id);
-    const [clubInfo, setClubInfo] = useState<ClubInfo | null>(null);
-    const [leaderInfo, setLeaderInfo] = useState<string | null>(null);
-    const [members, setMembers] = useState<any[]>([]);
+    const [clubInfo, setClubInfo] = useState<Club | null>(null);
+    const [leaderInfo, setLeaderInfo] = useState<Student | null>(null);
+    const [members, setMembers] = useState<Student[]>([]);
     const [showModal, setShowModal] = useState(false);
-    const [allMembers, setAllMembers] = useState<any[]>([]);
+    const [allMembers, setAllMembers] = useState<Student[]>([]);
     const [activities, setActivities] = useState<Activity[]>([]);
     const [error, setError] = useState<string>('');
     const [viewMode, setViewMode] = useState<'available' | 'joined'>('available');
@@ -59,32 +45,12 @@ export const MyClubInfo: React.FC = () => {
 
     const fetchClubInfo = async () => {
         try {
-            const infoResponse = await sendPostRequest(new FetchInfoMessage(ClubName));
-            const clubData = infoResponse.data[0];
+            const clubInfoResponse = await sendPostRequest(new FetchClubInfoMessage(ClubName));
+            const clubData: Club = clubInfoResponse.data;
+
             setClubInfo(clubData);
-
-            const leaderId = clubData?.leader;
-            if (leaderId) {
-                const leaderNameResponse = await sendPostRequest(new FetchNameMessage(leaderId));
-                setLeaderInfo(leaderNameResponse.data);
-            }
-
-            const membersResponse = await sendPostRequest(new QueryMemberMessage(ClubName));
-            const membersData: Member[] = membersResponse.data;
-
-            // Fetch names for each member
-            const membersWithNames = await Promise.all(membersData.map(async (member: Member) => {
-                const nameResponse = await sendPostRequest(new FetchNameMessage(member.member));
-                const profileResponse = await sendPostRequest(new FetchProfileMessage(member.member));
-
-                return {
-                    student_id: member.student_id,
-                    name: nameResponse.data,
-                    profile: profileResponse.data,
-                };
-            }));
-
-            setMembers(membersWithNames);
+            setLeaderInfo(clubData.leader);
+            setMembers(clubData.members);
         } catch (error) {
             setError('加载俱乐部信息失败，请重试。');
         }
@@ -119,21 +85,9 @@ export const MyClubInfo: React.FC = () => {
     const handleViewMoreMembers = async () => {
         setShowModal(true);
         const allMembersResponse = await sendPostRequest(new QueryMemberMessage(ClubName));
-        const allMembersData: Member[] = allMembersResponse.data;
+        const allMembersData: Student[] = allMembersResponse.data;
 
-        // Fetch names for all members
-        const allMembersWithNames = await Promise.all(allMembersData.map(async (member: Member) => {
-            const nameResponse = await sendPostRequest(new FetchNameMessage(member.member));
-            const profileResponse = await sendPostRequest(new FetchProfileMessage(member.member));
-
-            return {
-                student_id: member.student_id,
-                name: nameResponse.data,
-                profile: profileResponse.data,
-            };
-        }));
-
-        setAllMembers(allMembersWithNames);
+        setAllMembers(allMembersData);
     };
 
     const handleViewAvailableActivities = () => {
@@ -157,7 +111,7 @@ export const MyClubInfo: React.FC = () => {
                             <div className={student_myclub_style.textInfo}>
                                 <h2>{clubInfo.name}</h2>
                                 <p><strong>简介: </strong> {clubInfo.intro}</p>
-                                <p><strong>负责人: </strong> {leaderInfo}</p>
+                                <p><strong>负责人: </strong> {leaderInfo?.name}</p>
                                 <p><strong>院系: </strong> {clubInfo.department}</p>
                             </div>
                         </div>
@@ -167,7 +121,7 @@ export const MyClubInfo: React.FC = () => {
                         <h3>成员</h3>
                         <div className={student_myclub_style.memberRow}>
                             {members.slice(0, 5).map(member => (
-                                <div key={member.student_id} className={student_myclub_style.memberDetails}>
+                                <div key={member.studentID} className={student_myclub_style.memberDetails}>
                                     <div className={student_myclub_style.profileCircleSmall}>
                                         <img
                                             src={member.profile}
@@ -219,7 +173,7 @@ export const MyClubInfo: React.FC = () => {
                                 <h2>所有成员</h2>
                                 <div className={student_myclub_style.allMembers}>
                                     {allMembers.map(member => (
-                                        <div key={member.student_id} className={student_myclub_style.memberDetailsModal}>
+                                        <div key={member.studentID} className={student_myclub_style.memberDetailsModal}>
                                             <div className={student_myclub_style.profileCircleSmallModal}>
                                                 <img
                                                     src={member.profile}
