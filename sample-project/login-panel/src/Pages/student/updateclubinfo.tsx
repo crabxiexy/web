@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
-import { FetchInfoMessage } from 'Plugins/ClubAPI/FetchInfoMessage';
+import { FetchClubInfoMessage } from 'Plugins/ClubAPI/FetchClubInfoMessage';
 import { UpdateIntroMessage } from 'Plugins/ClubAPI/UpdateIntroMessage';
 import { UpdateProfileMessage } from 'Plugins/ClubAPI/UpdateProfileMessage';
 import * as Minio from 'minio';
@@ -29,12 +29,12 @@ export const UpdateClubInfo = () => {
 
     useEffect(() => {
         const fetchClubInfo = async () => {
-            const message = new FetchInfoMessage(ClubName);
+            const message = new FetchClubInfoMessage(ClubName);
             try {
                 const response = await sendPostRequest(message);
                 setClubInfo({
-                    profile: response.data[0].profile,
-                    intro: response.data[0].intro,
+                    profile: response.data.profile,
+                    intro: response.data.intro,
                 });
                 setNewIntro(response.data.intro);
                 setProfileImageUrl(response.data.profile);

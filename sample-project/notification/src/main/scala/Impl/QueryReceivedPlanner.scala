@@ -9,7 +9,7 @@ import io.circe.Json
 import io.circe.parser.*
 import io.circe.generic.auto.*
 import Common.Model.{Notification, Student}
-import APIs.StudentAPI.FetchStudentInfoMessage
+import APIs.UserAPI.FetchUserInfoMessage
 import cats.implicits.*
 
 import java.time.OffsetDateTime
@@ -33,8 +33,8 @@ case class QueryReceivedPlanner(receiverId: Int) extends Planner[List[Notificati
         val checked = json.hcursor.downField("checked").as[Int].getOrElse(0)
 
         // Fetch sender and receiver info
-        val fetchSenderInfo = FetchStudentInfoMessage(senderID).send
-        val fetchReceiverInfo = FetchStudentInfoMessage(receiverID).send
+        val fetchSenderInfo = FetchUserInfoMessage(senderID).send
+        val fetchReceiverInfo = FetchUserInfoMessage(receiverID).send
 
         for {
           sender <- fetchSenderInfo

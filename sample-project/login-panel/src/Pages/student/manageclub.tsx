@@ -13,6 +13,8 @@ import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotif
 import { Student, Club, StudentApplication, Activity } from 'Plugins/type';
 import student_manageclub_style from './manageclub.module.css';
 import Sidebar from 'Pages/Sidebar';
+
+
 export const ManagedClubInfo: React.FC = () => {
     const { Id } = useIdStore();
     const studentIdNumber = parseInt(Id);
@@ -107,6 +109,8 @@ export const ManagedClubInfo: React.FC = () => {
     };
 
     const handleCreateActivity = async () => {
+        console.log(ClubName)
+        console.log(studentIdNumber)
         if (!newActivity.startTime || !newActivity.finishTime || !newActivity.activityName || !newActivity.lowLimit || !newActivity.upLimit) {
             setError('请填写活动基本信息！');
             return;

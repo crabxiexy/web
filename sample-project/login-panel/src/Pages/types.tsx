@@ -63,7 +63,12 @@ export interface Notification{
         notificationID: number,
         releaseTime: string,
         content: string,
-        sender: Student,
-        receiver: Student,
+        sender: UserInfo,
+        receiver: UserInfo,
         checked: number
+}
+interface UserInfo {
+    userID: number;
+    name: string;
+    profile: string;
 }

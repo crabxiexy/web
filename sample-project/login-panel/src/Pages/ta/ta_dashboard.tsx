@@ -9,9 +9,6 @@ import {QueryReceivedMessage} from "Plugins/NotificationAPI/QueryReceivedMessage
 
 export function TADashboard() {
     const history = useHistory();
-    const [dropdownVisible, setDropdownVisible] = useState(false);
-    const [isModalOpen, setModalOpen] = useState(false);
-    const [notificationContent, setNotificationContent] = useState('');
     const { Id, setId } = useIdStore();
     const [notifications, setNotifications] = useState<{ content: string; releaserName: string }[]>([]);
 

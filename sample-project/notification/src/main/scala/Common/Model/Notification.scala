@@ -6,8 +6,8 @@ case class Notification(
                          notificationID: Int,
                          releaseTime: String,
                          content: String,
-                         sender: Student,
-                         receiver: Student,
+                         sender: UserInfo,
+                         receiver: UserInfo,
                          checked: Int
                        )
 object Notification {
