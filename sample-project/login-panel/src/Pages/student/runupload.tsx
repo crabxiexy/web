@@ -85,7 +85,6 @@ export const RunUpload: React.FC = () => {
                 const studentName = await fetchStudentName(studentIdNumber);
                 const taId = await fetchTAId(studentIdNumber); // Fetch TA ID based on student ID
                 const notificationMessage = new ReleaseNotificationMessage(
-                    studentName,
                     studentIdNumber,
                     taId,
                     `有待审核的跑步记录，来自学生 ${studentName}`

@@ -69,7 +69,6 @@ export const AvailableClubInfo: React.FC = () => {
             // Send notification to the club leader
             if (leaderId && studentName) {
                 const notificationMessage = new ReleaseNotificationMessage(
-                    studentName,
                     parseInt(Id),
                     leaderId,
                     `学生 ${studentName} 申请加入俱乐部 ${ClubName}`

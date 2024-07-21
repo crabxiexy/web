@@ -3,7 +3,6 @@ import { useHistory } from 'react-router-dom';
 import useClubNameStore from 'Pages/student/ClubNameStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { FetchClubInfoMessage } from 'Plugins/ClubAPI/FetchClubInfoMessage';
-import { Student, Club } from 'Plugins/type';
 import Sidebar from 'Pages/Sidebar';
 import student_myclub_style from './myclub.module.css';
 import useIdStore from 'Pages/IdStore';
@@ -11,19 +10,7 @@ import { QueryMemberMessage } from 'Plugins/ClubAPI/QueryMemberMessage';
 import { MemberQueryActivityMessage } from 'Plugins/ActivityAPI/MemberQueryActivityMessage';
 import { JoinActivityMessage } from 'Plugins/ActivityAPI/JoinActivityMessage';
 import { ActivityStatus, JoinStatus, AdditionalStatus } from 'Plugins/ActivityStatus';
-
-interface Activity {
-    activityID: number;
-    clubName: string;
-    activityName: string;
-    intro: string;
-    starttime: string;
-    finishtime: string;
-    organizorID: number;
-    lowLimit: number;
-    upLimit: number;
-    num: number;
-}
+import {Activity,Club,Student} from "Pages/types"
 
 export const MyClubInfo: React.FC = () => {
     const history = useHistory();
@@ -171,8 +158,8 @@ export const MyClubInfo: React.FC = () => {
                                     <div key={activity.activityID} className={student_myclub_style.activityDetails}>
                                         <h4>{activity.activityName}</h4>
                                         <p>{activity.intro}</p>
-                                        <p><strong>开始时间: </strong> {new Date(parseInt(activity.starttime)).toLocaleString()}</p>
-                                        <p><strong>结束时间: </strong> {new Date(parseInt(activity.finishtime)).toLocaleString()}</p>
+                                        <p><strong>开始时间: </strong> {new Date(parseInt(activity.startTime)).toLocaleString()}</p>
+                                        <p><strong>结束时间: </strong> {new Date(parseInt(activity.finishTime)).toLocaleString()}</p>
                                         <p><strong>当前人数: </strong> {activity.num}</p>
                                         {viewMode === 'available' && (
                                             <button onClick={() => handleJoinActivity(activity.activityID)}>加入活动</button>

@@ -8,7 +8,7 @@ case class ClubApplication(
                         leader: Student,
                         intro: String,
                         department: String,
-                        is_checked: Int,
+                        isChecked: Int,
                         result: Int,
                         response: String
                       )
@@ -21,7 +21,7 @@ object ClubApplication {
         leader <- c.downField("leader").as[Student]
         intro <- c.downField("intro").as[String]
         department <- c.downField("department").as[String]
-        is_checked <- c.downField("is_checked").as[Int]
+        is_checked <- c.downField("isChecked").as[Int]
         result <- c.downField("result").as[Int]
         response <- c.downField("response").as[String]
       } yield ClubApplication(name, leader, intro, department, is_checked, result, response)
@@ -33,7 +33,7 @@ object ClubApplication {
       ("leader", app.leader.asJson),
       ("intro", Json.fromString(app.intro)),
       ("department", Json.fromString(app.department)),
-      ("is_checked", Json.fromInt(app.is_checked)),
+      ("isChecked", Json.fromInt(app.isChecked)),
       ("result", Json.fromInt(app.result)),
       ("response", Json.fromString(app.response))
     )

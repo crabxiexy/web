@@ -29,7 +29,7 @@ case class FetchClubInfoPlanner(club_name: String, override val planContext: Pla
       rows.headOption match {
         case Some(json) =>
           // Extract club info from the query result
-          val clubId = json.hcursor.downField("club_id").as[Int].getOrElse(0)
+          val clubId = json.hcursor.downField("clubID").as[Int].getOrElse(0)
           val clubName = json.hcursor.downField("name").as[String].getOrElse("")
           val leaderId = json.hcursor.downField("leader").as[Int].getOrElse(0)
           val intro = json.hcursor.downField("intro").as[String].getOrElse("")

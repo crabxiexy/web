@@ -55,3 +55,15 @@ export interface Activity {
     num: number;
     members: Student[];
 }
+export interface TA {
+    taID: number,
+    students:Student[]
+}
+export interface Notification{
+        notificationID: number,
+        releaseTime: string,
+        content: string,
+        sender: Student,
+        receiver: Student,
+        checked: number
+}

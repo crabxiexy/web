@@ -4,7 +4,7 @@ import io.circe._
 import io.circe.syntax._
 
 case class Club(
-                 club_id: Int,
+                 clubID: Int,
                  name: String,
                  leader: Student,
                  intro: String,
@@ -17,7 +17,7 @@ object Club {
   implicit val decoder: Decoder[Club] = new Decoder[Club] {
     final def apply(c: HCursor): Decoder.Result[Club] =
       for {
-        club_id <- c.downField("club_id").as[Int]
+        club_id <- c.downField("clubID").as[Int]
         name <- c.downField("name").as[String]
         leader <- c.downField("leader").as[Student]
         intro <- c.downField("intro").as[String]
@@ -29,7 +29,7 @@ object Club {
 
   implicit val encoder: Encoder[Club] = new Encoder[Club] {
     final def apply(c: Club): Json = Json.obj(
-      ("club_id", Json.fromInt(c.club_id)),
+      ("clubID", Json.fromInt(c.clubID)),
       ("name", Json.fromString(c.name)),
       ("leader", c.leader.asJson),
       ("intro", Json.fromString(c.intro)),

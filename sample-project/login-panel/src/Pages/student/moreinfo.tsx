@@ -2,15 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import useClubNameStore from 'Pages/student/ClubNameStore';
 import { ShowActivityMessage } from 'Plugins/ActivityAPI/ShowActivityMessage';
-import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
-import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage';
 import useIdStore from 'Pages/IdStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
-import { QueryMemberMessage } from 'Plugins/ActivityAPI/QueryMemberMessage';
 import { SubmitHWMessage } from 'Plugins/ActivityAPI/SubmitHWMessage';
 import * as Minio from 'minio';
 import Sidebar from 'Pages/Sidebar';
 import moreinfo_styles from './moreinfo_style.module.css'; // Import the CSS module
+import { Activity, Student } from 'Pages/types'; // Import interfaces from types.ts
 
 const minioClient = new Minio.Client({
     endPoint: '127.0.0.1',
@@ -20,23 +18,6 @@ const minioClient = new Minio.Client({
     secretKey: '12345678',
 });
 
-interface Member {
-    memberId: number;
-    name: string;
-    profile: string;
-}
-
-interface Activity {
-    activityID: number;
-    activityName: string;
-    intro: string;
-    starttime: string;
-    finishtime: string;
-    lowlimit: number;
-    uplimit: number;
-    members: Member[];
-}
-
 export const MoreInfo: React.FC = () => {
     const history = useHistory();
     const { ClubName } = useClubNameStore();
@@ -44,7 +25,6 @@ export const MoreInfo: React.FC = () => {
     const [activities, setActivities] = useState<Activity[]>([]);
     const [error, setError] = useState<string>('');
     const [selectedMembers, setSelectedMembers] = useState<number[]>([]);
-    const [membersDetails, setMembersDetails] = useState<Member[]>([]);
     const [showModal, setShowModal] = useState(false);
     const [currentActivityID, setCurrentActivityID] = useState<number | null>(null);
     const [uploadedImage, setUploadedImage] = useState<File | null>(null);
@@ -63,25 +43,6 @@ export const MoreInfo: React.FC = () => {
         }
     };
 
-    const fetchMemberDetails = async (activityID: number) => {
-        const memberResponse = await sendPostRequest(new QueryMemberMessage(activityID));
-        const memberDetails = await Promise.all(
-            memberResponse.data.map(async (memberObject: { memberID: number }) => {
-                const memberId = memberObject.memberID;
-                const [nameResponse, profileResponse] = await Promise.all([
-                    sendPostRequest(new FetchNameMessage(memberId)),
-                    sendPostRequest(new FetchProfileMessage(memberId)),
-                ]);
-                return {
-                    memberId,
-                    name: nameResponse.data,
-                    profile: profileResponse.data,
-                };
-            })
-        );
-        setMembersDetails(memberDetails);
-    };
-
     const handleBack = () => {
         history.goBack();
     };
@@ -90,7 +51,6 @@ export const MoreInfo: React.FC = () => {
         setShowModal(true);
         setSelectedMembers([]);
         setCurrentActivityID(activityID);
-        await fetchMemberDetails(activityID);
     };
 
     const handleCloseModal = () => {
@@ -99,11 +59,11 @@ export const MoreInfo: React.FC = () => {
         setUploadedImageUrl(null);
     };
 
-    const handleMemberSelect = (memberId: number) => {
+    const handleMemberSelect = (studentID: number) => {
         setSelectedMembers((prevSelected) =>
-            prevSelected.includes(memberId)
-                ? prevSelected.filter((id) => id !== memberId)
-                : [...prevSelected, memberId]
+            prevSelected.includes(studentID)
+                ? prevSelected.filter((id) => id !== studentID)
+                : [...prevSelected, studentID]
         );
     };
 
@@ -123,17 +83,22 @@ export const MoreInfo: React.FC = () => {
     };
 
     const handleSubmitHomework = async () => {
+        if (!uploadedImage) {
+            setError('请选择要上传的图片文件。');
+            return;
+        }
+
         const filename = uploadedImage.name;
         try {
             // Upload image to MinIO
             await minioClient.fPutObject('proof', filename, uploadedImage.path, {});
 
-            for (const memberId of selectedMembers) {
+            for (const studentID of selectedMembers) {
                 const submitMessage = new SubmitHWMessage(
                     parseInt(Id),
                     currentActivityID,
-                    memberId,
-                    `http://127.0.0.1:5000/proof/${filename}`
+                    studentID,
+                    filename // Add filename to the message
                 );
 
                 await sendPostRequest(submitMessage);
@@ -156,9 +121,9 @@ export const MoreInfo: React.FC = () => {
                     activities.map((activity: Activity) => (
                         <div key={activity.activityID} className={moreinfo_styles.activityDetails}>
                             <p><strong>活动名称: </strong> {activity.activityName}</p>
-                            <p><strong>开始时间: </strong> {new Date(parseInt(activity.starttime)).toLocaleString()}</p>
-                            <p><strong>结束时间: </strong> {new Date(parseInt(activity.finishtime)).toLocaleString()}</p>
-                            <p><strong>人数限制: </strong> {activity.lowlimit} - {activity.uplimit}</p>
+                            <p><strong>开始时间: </strong> {new Date(activity.startTime).toLocaleString()}</p>
+                            <p><strong>结束时间: </strong> {new Date(activity.finishTime).toLocaleString()}</p>
+                            <p><strong>人数限制: </strong> {activity.lowLimit} - {activity.upLimit}</p>
 
                             <button onClick={() => handleOpenModal(activity.activityID)}>提交作业</button>
 
@@ -167,12 +132,12 @@ export const MoreInfo: React.FC = () => {
                                     <div className={moreinfo_styles.modalContent}>
                                         <h2>提交作业</h2>
                                         <p>选择要提交作业的成员:</p>
-                                        {membersDetails.map((member) => (
-                                            <div key={member.memberId} className={moreinfo_styles.memberItem}>
+                                        {activity.members.map((member: Student) => (
+                                            <div key={member.studentID} className={moreinfo_styles.memberItem}>
                                                 <input
                                                     type="checkbox"
-                                                    checked={selectedMembers.includes(member.memberId)}
-                                                    onChange={() => handleMemberSelect(member.memberId)}
+                                                    checked={selectedMembers.includes(member.studentID)}
+                                                    onChange={() => handleMemberSelect(member.studentID)}
                                                 />
                                                 <img src={member.profile} alt={member.name} className={moreinfo_styles.memberProfile} />
                                                 <span>{member.name}</span>

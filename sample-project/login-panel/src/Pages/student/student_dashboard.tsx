@@ -5,20 +5,15 @@ import useIdStore from 'Pages/IdStore';
 import useTokenStore from 'Pages/TokenStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { QueryReceivedMessage } from 'Plugins/NotificationAPI/QueryReceivedMessage';
-import { CountRunMessage } from 'Plugins/RunAPI/CountRunMessage';
-import { CountGroupexMessage } from 'Plugins/GroupExAPI/CountGroupexMessage';
-import { CountHWMessage } from 'Plugins/ActivityAPI/CountHWMessage';
+import { FetchStudentInfoMessage } from 'Plugins/StudentAPI/FetchStudentInfoMessage';
 import Sidebar from 'Pages/Sidebar';
-
 
 export function StudentDashboard() {
     const history = useHistory();
     const { Id, setId } = useIdStore();
     const { setToken } = useTokenStore();
-    const [notifications, setNotifications] = useState<{ content: string; releaserName: string }[]>([]);
-    const [runCount, setRunCount] = useState<number | null>(null);
-    const [groupexCount, setGroupexCount] = useState<number | null>(null);
-    const [clubCount, setClubCount] = useState<number | null>(null);
+    const [notifications, setNotifications] = useState([]);
+    const [studentInfo, setStudentInfo] = useState(null);
 
     useEffect(() => {
         const fetchNotifications = async () => {
@@ -31,25 +26,19 @@ export function StudentDashboard() {
             }
         };
 
-        const fetchCounts = async () => {
-            const runMessage = new CountRunMessage(parseInt(Id));
-            const groupexMessage = new CountGroupexMessage(parseInt(Id));
-
+        const fetchStudentInfo = async () => {
+            const fetchStudentInfoMessage = new FetchStudentInfoMessage(parseInt(Id));
             try {
-                const runResponse = await sendPostRequest(runMessage);
-                setRunCount(runResponse.data);
-                const groupexResponse = await sendPostRequest(groupexMessage);
-                setGroupexCount(groupexResponse.data);
-                const clubResponse = await sendPostRequest(new CountHWMessage(parseInt(Id)));
-                setClubCount(clubResponse.data);
+                const response = await sendPostRequest(fetchStudentInfoMessage);
+                setStudentInfo(response.data);
             } catch (error) {
-                console.error('Error fetching counts:', error);
+                console.error('Error fetching student info:', error);
             }
         };
 
         if (Id) {
-            fetchCounts();
             fetchNotifications();
+            fetchStudentInfo();
         }
     }, [Id]);
 
@@ -75,26 +64,32 @@ export function StudentDashboard() {
                         ) : (
                             notifications.map((notification, index) => (
                                 <div key={index} className={student_dashboard_style.notificationItem}>
-                                    <p><strong>{notification.releaserName}</strong>: {notification.content}</p>
+                                    <p><strong>{notification.sender.name}</strong>: {notification.content}</p>
                                 </div>
                             ))
                         )}
                     </div>
                 </section>
-                <section className={student_dashboard_style.counts}>
-                    <div className={student_dashboard_style.countcard}>
-                        <h3 className={student_dashboard_style.countcardtitle}>阳光长跑</h3>
-                        <p className={student_dashboard_style.countcardvalue}>{runCount !== null ? runCount : 'Loading...'}</p>
-                    </div>
-                    <div className={student_dashboard_style.countcard}>
-                        <h3 className={student_dashboard_style.countcardtitle}>集体锻炼</h3>
-                        <p className={student_dashboard_style.countcardvalue}>{groupexCount !== null ? groupexCount : 'Loading...'}</p>
-                    </div>
-                    <div className={student_dashboard_style.countcard}>
-                        <h3 className={student_dashboard_style.countcardtitle}>俱乐部活动</h3>
-                        <p className={student_dashboard_style.countcardvalue}>{clubCount !== null ? clubCount : 'Loading...'}</p>
-                    </div>
-                </section>
+                {studentInfo && (
+                    <section className={student_dashboard_style.counts}>
+                        <div className={student_dashboard_style.countcard}>
+                            <h3 className={student_dashboard_style.countcardtitle}>阳光长跑</h3>
+                            <p className={student_dashboard_style.countcardvalue}>{studentInfo.score.run}</p>
+                        </div>
+                        <div className={student_dashboard_style.countcard}>
+                            <h3 className={student_dashboard_style.countcardtitle}>集体锻炼</h3>
+                            <p className={student_dashboard_style.countcardvalue}>{studentInfo.score.groupex}</p>
+                        </div>
+                        <div className={student_dashboard_style.countcard}>
+                            <h3 className={student_dashboard_style.countcardtitle}>俱乐部活动</h3>
+                            <p className={student_dashboard_style.countcardvalue}>{studentInfo.score.activity}</p>
+                        </div>
+                        <div className={student_dashboard_style.countcard}>
+                            <h3 className={student_dashboard_style.countcardtitle}>总分</h3>
+                            <p className={student_dashboard_style.countcardvalue}>{studentInfo.score.total}</p>
+                        </div>
+                    </section>
+                )}
 
                 <section className={student_dashboard_style.btn_group}>
                     <button className={student_dashboard_style.btn}

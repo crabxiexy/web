@@ -46,3 +46,7 @@ export interface Activity {
     num: number;
     members: Student[];
 }
+export interface TA {
+    taID: number,
+    students: Student[]
+}

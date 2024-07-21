@@ -3,15 +3,15 @@ package Common.Model
 
 import io.circe._
 import io.circe.syntax._
-import java.time.OffsetDateTime
+
 
 case class Activity(
                      activityID: Int,
                      club:Club,
                      activityName: String,
                      intro: String,
-                     startTime: OffsetDateTime,
-                     finishTime: OffsetDateTime,
+                     startTime: String,
+                     finishTime: String,
                      organizor:Student,
                      lowLimit: Int,
                      upLimit: Int,
@@ -27,8 +27,8 @@ object Activity {
         club <- c.downField("club").as[Club]
         activityName <- c.downField("activityName").as[String]
         intro <- c.downField("intro").as[String]
-        startTime <- c.downField("startTime").as[OffsetDateTime]
-        finishTime <- c.downField("finishTime").as[OffsetDateTime]
+        startTime <- c.downField("startTime").as[String]
+        finishTime <- c.downField("finishTime").as[String]
         organizor<- c.downField("organizor").as[Student]
         lowLimit <- c.downField("lowLimit").as[Int]
         upLimit <- c.downField("upLimit").as[Int]
@@ -40,7 +40,7 @@ object Activity {
   implicit val encoder: Encoder[Activity] = new Encoder[Activity] {
     final def apply(a: Activity): Json = Json.obj(
       ("activityID", Json.fromInt(a.activityID)),
-      ("clubName", a.club.asJson),
+      ("club", a.club.asJson),
       ("activityName", Json.fromString(a.activityName)),
       ("intro", Json.fromString(a.intro)),
       ("startTime", a.startTime.asJson),

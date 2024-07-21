@@ -10,7 +10,6 @@ import io.circe.parser._
 import io.circe.generic.auto._
 
 case class ReleaseNotificationPlanner(
-                                       releaserName: String,
                                        senderId: Int,
                                        receiverId: Int,
                                        content: String
@@ -24,14 +23,13 @@ case class ReleaseNotificationPlanner(
          |  SELECT COALESCE(MAX(notification_id), 0) + 1 AS notification_id
          |  FROM ${schemaName}.${schemaName}
          |)
-         |INSERT INTO ${schemaName}.${schemaName} (notification_id, releaser_name, release_time, content, sender_id, receiver_id, checked)
-         |SELECT new_id.notification_id, ?, NOW(), ?, ?, ?, 0
+         |INSERT INTO ${schemaName}.${schemaName} (notification_id,release_time, content, sender_id, receiver_id, checked)
+         |SELECT new_id.notification_id, NOW(), ?, ?, ?, 0
          |FROM new_id
        """.stripMargin
 
     for {
       _ <- writeDB(query, List(
-        SqlParameter("String", releaserName),
         SqlParameter("String", content),
         SqlParameter("Int", senderId.toString),
         SqlParameter("Int", receiverId.toString)
