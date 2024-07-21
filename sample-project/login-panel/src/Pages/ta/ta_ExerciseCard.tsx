@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import useIdStore from 'Plugins/IdStore';
 import { TASignMessage } from 'Plugins/GroupExAPI/TASignMessage';
 import { ExQueryMessage } from 'Plugins/GroupExAPI/ExQueryMessage';
-import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage'; // Import the FetchNameMessage
+import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
+import { validateToken } from 'Plugins/ValidateToken'; // Import validateToken
 import ta_exercisecard_style from './ta_ExerciseCard.module.css';
+import useTokenStore from 'Plugins/TokenStore'
 
 interface ExerciseCardProps {
     groupexID: number;
@@ -14,26 +16,42 @@ interface ExerciseCardProps {
     exName: string;
     status: number;
     updateStatus: (newStatus: number) => void;
-    studentIDs: number[]; // Accept student IDs as a prop
+    studentIDs: number[];
 }
 
 const TA_ExerciseCard: React.FC<ExerciseCardProps> = ({
-                                                       groupexID,
-                                                       startTime,
-                                                       finishTime,
-                                                       location,
-                                                       exName,
-                                                       status,
-                                                       updateStatus,
-                                                       studentIDs, // Include studentIDs here
-                                                   }) => {
+                                                          groupexID,
+                                                          startTime,
+                                                          finishTime,
+                                                          location,
+                                                          exName,
+                                                          status,
+                                                          updateStatus,
+                                                          studentIDs,
+                                                      }) => {
     const { Id } = useIdStore();
     const taId = parseInt(Id);
-    const [token, setToken] = useState('');
+    const [token, setToken] = useState<string>('');
     const [error, setError] = useState<string>('');
     const [inProcess, setInProcess] = useState<boolean>(false);
     const [queryResult, setQueryResult] = useState<any[]>([]);
-    const [studentNames, setStudentNames] = useState<{ [key: number]: string }>({}); // Store names by ID
+    const [studentNames, setStudentNames] = useState<{ [key: number]: string }>({});
+    const [isTokenValid, setIsTokenValid] = useState<boolean | null>(null);
+    const {Token} = useTokenStore();
+    useEffect(() => {
+        if (Token) {
+            const checkToken = async () => {
+                try {
+                    const valid = await validateToken(Id,Token);
+                    setIsTokenValid(valid);
+                } catch {
+                    setError('Token 验证失败，请重新登录。');
+                    setIsTokenValid(false);
+                }
+            };
+            checkToken();
+        }
+    }, [Id,Token]);
 
     const isOngoing = (Date.now() >= parseInt(startTime) && Date.now() <= parseInt(finishTime) && status !== 4);
 
@@ -44,15 +62,19 @@ const TA_ExerciseCard: React.FC<ExerciseCardProps> = ({
                 const response = await sendPostRequest(new FetchNameMessage(studentID));
                 names[studentID] = response.data;
             } catch {
-                names[studentID] = '未知'; // Default if name fetch fails
+                names[studentID] = '未知';
             }
         }
         setStudentNames(names);
     };
 
     const handleSignIn = async () => {
+        if (!isTokenValid) {
+            setError('Token 无效。');
+            return;
+        }
         if (!token) {
-            setError('请填写token。');
+            setError('请填写 token。');
             return;
         }
         setError('');
@@ -60,7 +82,7 @@ const TA_ExerciseCard: React.FC<ExerciseCardProps> = ({
         try {
             const response = await sendPostRequest(new TASignMessage(groupexID, taId, 1, token));
             if (response.status === 200) {
-                updateStatus(1); // Update status to 1 (end sign in)
+                updateStatus(1);
             } else {
                 setError('签到失败，请重试。');
             }
@@ -70,12 +92,16 @@ const TA_ExerciseCard: React.FC<ExerciseCardProps> = ({
     };
 
     const handleEndSignIn = async () => {
+        if (!isTokenValid) {
+            setError('Token 无效。');
+            return;
+        }
         setError('');
 
         try {
             const response = await sendPostRequest(new TASignMessage(groupexID, taId, 2, ''));
             if (response.status === 200) {
-                updateStatus(2); // Update status to 2 (start sign out)
+                updateStatus(2);
             } else {
                 setError('结束签到失败，请重试。');
             }
@@ -85,8 +111,12 @@ const TA_ExerciseCard: React.FC<ExerciseCardProps> = ({
     };
 
     const handleSignOut = async () => {
+        if (!isTokenValid) {
+            setError('Token 无效。');
+            return;
+        }
         if (!token) {
-            setError('请填写token。');
+            setError('请填写 token。');
             return;
         }
         setError('');
@@ -94,7 +124,7 @@ const TA_ExerciseCard: React.FC<ExerciseCardProps> = ({
         try {
             const response = await sendPostRequest(new TASignMessage(groupexID, taId, 3, token));
             if (response.status === 200) {
-                updateStatus(3); // Update status to 3 (end sign out)
+                updateStatus(3);
             } else {
                 setError('签退失败，请重试。');
             }
@@ -104,13 +134,17 @@ const TA_ExerciseCard: React.FC<ExerciseCardProps> = ({
     };
 
     const handleEndSignOut = async () => {
+        if (!isTokenValid) {
+            setError('Token 无效。');
+            return;
+        }
         setError('');
 
         try {
             const response = await sendPostRequest(new TASignMessage(groupexID, taId, 4, ''));
             if (response.status === 200) {
                 setInProcess(true);
-                updateStatus(4); // Update status to 4 (completed)
+                updateStatus(4);
             } else {
                 setError('结束签退失败，请重试。');
             }
@@ -139,14 +173,17 @@ const TA_ExerciseCard: React.FC<ExerciseCardProps> = ({
     };
 
     const handleQueryStatus = async (queryType: number) => {
+        if (!isTokenValid) {
+            setError('Token 无效。');
+            return;
+        }
         setError('');
 
         try {
             const response = await sendPostRequest(new ExQueryMessage(groupexID, queryType));
             if (response.status === 200) {
                 setQueryResult(response.data);
-                studentIDs = response.data;// Set the results to state
-                await fetchStudentNames(); // Fetch student names after getting query results
+                await fetchStudentNames();
             } else {
                 setError('查询失败，请重试。');
             }
