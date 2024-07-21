@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import useClubNameStore from 'Pages/student/ClubNameStore';
+import useClubNameStore from 'Plugins/ClubNameStore';
 import { ShowActivityMessage } from 'Plugins/ActivityAPI/ShowActivityMessage';
-import useIdStore from 'Pages/IdStore';
+import useIdStore from 'Plugins/IdStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { SubmitHWMessage } from 'Plugins/ActivityAPI/SubmitHWMessage';
 import * as Minio from 'minio';
 import Sidebar from 'Pages/Sidebar';
 import moreinfo_styles from './moreinfo_style.module.css'; // Import the CSS module
-import { Activity, Student } from 'Pages/types'; // Import interfaces from types.ts
+import { Activity, Student } from 'Plugins/types'; // Import interfaces from types.ts
+import useTokenStore from 'Plugins/TokenStore'; // Import the token store
+import { validateToken } from 'Plugins/ValidateToken'; // Import the validateToken function
 
 const minioClient = new Minio.Client({
     endPoint: '127.0.0.1',
@@ -22,6 +24,7 @@ export const MoreInfo: React.FC = () => {
     const history = useHistory();
     const { ClubName } = useClubNameStore();
     const { Id } = useIdStore();
+    const { Token } = useTokenStore(); // Get the token from the store
     const [activities, setActivities] = useState<Activity[]>([]);
     const [error, setError] = useState<string>('');
     const [selectedMembers, setSelectedMembers] = useState<number[]>([]);
@@ -88,6 +91,14 @@ export const MoreInfo: React.FC = () => {
             return;
         }
 
+        // Validate token before proceeding
+        const isValidToken = await validateToken(Id, Token);
+
+        if (!isValidToken) {
+            setError('Token 验证失败，请重新登录。');
+            return;
+        }
+
         const filename = uploadedImage.name;
         try {
             // Upload image to MinIO
@@ -96,7 +107,7 @@ export const MoreInfo: React.FC = () => {
             for (const studentID of selectedMembers) {
                 const submitMessage = new SubmitHWMessage(
                     parseInt(Id),
-                    currentActivityID,
+                    currentActivityID!,
                     studentID,
                     filename // Add filename to the message
                 );
@@ -121,8 +132,8 @@ export const MoreInfo: React.FC = () => {
                     activities.map((activity: Activity) => (
                         <div key={activity.activityID} className={moreinfo_styles.activityDetails}>
                             <p><strong>活动名称: </strong> {activity.activityName}</p>
-                            <p><strong>开始时间: </strong> {new Date(activity.startTime).toLocaleString()}</p>
-                            <p><strong>结束时间: </strong> {new Date(activity.finishTime).toLocaleString()}</p>
+                            <p><strong>开始时间: </strong> {new Date(parseInt(activity.startTime)).toLocaleString()}</p>
+                            <p><strong>结束时间: </strong> {new Date(parseInt(activity.finishTime)).toLocaleString()}</p>
                             <p><strong>人数限制: </strong> {activity.lowLimit} - {activity.upLimit}</p>
 
                             <button onClick={() => handleOpenModal(activity.activityID)}>提交作业</button>

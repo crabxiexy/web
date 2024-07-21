@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import student_dashboard_style from './student_dashboard.module.css';
-import useIdStore from 'Pages/IdStore';
-import useTokenStore from 'Pages/TokenStore';
+import useIdStore from 'Plugins/IdStore';
+import useTokenStore from 'Plugins/TokenStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { QueryReceivedMessage } from 'Plugins/NotificationAPI/QueryReceivedMessage';
 import { FetchStudentInfoMessage } from 'Plugins/StudentAPI/FetchStudentInfoMessage';

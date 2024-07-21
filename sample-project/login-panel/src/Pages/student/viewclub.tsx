@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
-import useIdStore from 'Pages/IdStore';
+import useIdStore from 'Plugins/IdStore';
+import useTokenStore from 'Plugins/TokenStore';
 import { CreateAppMessage } from 'Plugins/ClubAPI/CreateAppMessage';
 import { LeaderQueryMessage } from 'Plugins/ClubAPI/LeaderQueryMessage';
-import useClubNameStore from 'Pages/student/ClubNameStore';
+import useClubNameStore from 'Plugins/ClubNameStore';
 import { CheckAvailableMessage } from 'Plugins/ClubAPI/CheckAvailableMessage';
 import { CheckJointClubMessage } from 'Plugins/ClubAPI/CheckJointClubMessage';
 import Sidebar from 'Pages/Sidebar';
 import viewclub_styles from './viewclub.module.css';
-import { ApplyMemberMessage } from 'Plugins/ClubAPI/ApplyMemberMessage';
-import { FetchClubInfoMessage } from 'Plugins/ClubAPI/FetchClubInfoMessage';
-import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
-import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
+import { validateToken } from 'Plugins/ValidateToken'; // Adjust the path as necessary
 
 export const ViewClub: React.FC = () => {
     const history = useHistory();
@@ -27,6 +25,7 @@ export const ViewClub: React.FC = () => {
     const [clubIntro, setClubIntro] = useState('');
     const [clubDepartment, setClubDepartment] = useState('');
     const [error, setError] = useState<string>('');
+    const token = useTokenStore(state => state.Token); // Fetch the token from the token store
 
     useEffect(() => {
         fetchMyClubs();
@@ -67,6 +66,12 @@ export const ViewClub: React.FC = () => {
             return;
         }
 
+        const isValidToken = await validateToken(Id, token);
+        if (!isValidToken) {
+            setError('Token 无效。请重新登录。');
+            return;
+        }
+
         const createAppMessage = new CreateAppMessage(clubName, parseInt(Id), clubIntro, clubDepartment);
         try {
             await sendPostRequest(createAppMessage);
@@ -76,6 +81,7 @@ export const ViewClub: React.FC = () => {
             setError('俱乐部申请失败，请重试。');
         }
     };
+
 
     const handleManagedClubClick = (club: any) => {
         setClubName(club.name);
@@ -92,35 +98,6 @@ export const ViewClub: React.FC = () => {
         history.push(`/available_club`);
     };
 
-    const handleApplyToJoin = async (clubName: string) => {
-        try {
-            setClubName(clubName); // Update the clubName state
-            const applyMessage = new ApplyMemberMessage(parseInt(Id), clubName);
-            await sendPostRequest(applyMessage);
-            alert('申请加入成功！');
-
-            // Fetch the club leader's ID
-            const infoResponse = await sendPostRequest(new FetchClubInfoMessage(clubName));
-            const leaderId = infoResponse.data[0]?.leader;
-
-            // Fetch the student's name
-            const studentNameResponse = await sendPostRequest(new FetchNameMessage(parseInt(Id)));
-            const studentName = studentNameResponse.data;
-
-            // Send notification to the club leader
-            if (leaderId) {
-                const notificationMessage = new ReleaseNotificationMessage(
-                    parseInt(Id),
-                    leaderId,
-                    `学生 ${studentName} 申请加入俱乐部 ${clubName}`
-                );
-                await sendPostRequest(notificationMessage);
-            }
-        } catch (error) {
-            setError('申请加入俱乐部失败，请重试。');
-        }
-    };
-
     const ClubCard: React.FC<{ club: any; onClick: () => void; actionText?: string; onActionClick?: () => void }> = ({ club, onClick, actionText, onActionClick }) => (
         <div className={viewclub_styles.clubCard} onClick={onClick}>
             <div className={viewclub_styles.clubImage}>
@@ -135,12 +112,6 @@ export const ViewClub: React.FC = () => {
                         onActionClick?.();
                     }} className={viewclub_styles.actionButton}>{actionText}</button>
                 )}
-                {activeTab === "availableClubs" &&
-                    <button onClick={(e) => {
-                        e.stopPropagation();
-                        handleApplyToJoin(club.name);
-                    }} className={viewclub_styles.actionButton}>申请加入
-                    </button>}
             </div>
         </div>
     );

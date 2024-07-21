@@ -60,12 +60,12 @@ export interface TA {
     students:Student[]
 }
 export interface Notification{
-        notificationID: number,
-        releaseTime: string,
-        content: string,
-        sender: UserInfo,
-        receiver: UserInfo,
-        checked: number
+    notificationID: number,
+    releaseTime: string,
+    content: string,
+    sender: UserInfo,
+    receiver: UserInfo,
+    checked: number
 }
 interface UserInfo {
     userID: number;

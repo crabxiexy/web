@@ -3,8 +3,8 @@ import { useHistory } from 'react-router';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { LoginMessage } from 'Plugins/DoctorAPI/LoginMessage';
 import login_style from './login.module.css';
-import useIdStore from './IdStore';
-import useTokenStore from './TokenStore';
+import useIdStore from 'Plugins/IdStore';
+import useTokenStore from 'Plugins/TokenStore';
 
 export function Login() {
     const history = useHistory();

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import useIdStore from 'Pages/IdStore';
+import useIdStore from 'Plugins/IdStore';
+import useTokenStore from 'Plugins/TokenStore'; // Import TokenStore for token validation
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage';
 import { UpdateProfileMessage } from 'Plugins/DoctorAPI/UpdateProfileMessage';
 import * as Minio from 'minio';
 import updateprofilestyle from './UpdateProfile.module.css'; // Import CSS module
+import { validateToken } from 'Plugins/ValidateToken'; // Adjust path as necessary
 
 const minioClient = new Minio.Client({
     endPoint: '127.0.0.1',
@@ -18,6 +20,7 @@ const minioClient = new Minio.Client({
 export const UpdateProfilePage: React.FC = () => {
     const history = useHistory();
     const { Id } = useIdStore();
+    const { Token } = useTokenStore(); // Access TokenStore
     const [profileImage, setProfileImage] = useState<File | null>(null);
     const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
     const [currentProfileImage, setCurrentProfileImage] = useState<string | null>(null);
@@ -36,8 +39,18 @@ export const UpdateProfilePage: React.FC = () => {
             }
         };
 
-        fetchProfile();
-    }, [Id]);
+        const checkTokenAndFetchProfile = async () => {
+            const isValidToken = await validateToken(Id, Token);
+            if (!isValidToken) {
+                setError('Token is invalid. Please log in again.');
+                history.push('/login'); // Redirect to login page
+                return;
+            }
+            fetchProfile();
+        };
+
+        checkTokenAndFetchProfile();
+    }, [Id, Token, history]);
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;

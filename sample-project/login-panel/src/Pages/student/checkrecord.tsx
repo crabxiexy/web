@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils'; // Adjust the import path as per your project structure
 import { StudentQueryRunningMessage } from 'Plugins/RunAPI/StudentQueryRunningMessage'; // Adjust the import path as per your project structure
 import { StudentQueryHWMessage } from 'Plugins/ActivityAPI/StudentQueryHWMessage';
-import useIdStore from 'Pages/IdStore';
+import useIdStore from'Plugins/IdStore';
 import { useHistory } from 'react-router';
 import Modal from 'react-modal'; // Import react-modal component
 import { StudentQueryMessage } from 'Plugins/GroupExAPI/StudentQueryMessage';

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { useHistory } from 'react-router';
-import useIdStore from 'Pages/IdStore';
+import useIdStore from 'Plugins/IdStore';
 import ta_dashboard_style from './ta_dashboard.module.css'; // Ensure the correct path to your CSS file
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils'
 import Sidebar from 'Pages/Sidebar';

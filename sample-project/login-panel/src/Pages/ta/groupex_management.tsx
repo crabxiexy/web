@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { useHistory } from 'react-router-dom';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
-import useIdStore from 'Pages/IdStore';
+import useIdStore from 'Plugins/IdStore';
 import { CreateGroupexMessage } from 'Plugins/GroupExAPI/CreateGroupexMessage';
-import { TAQueryMessage } from 'Plugins/GroupExAPI/TAQueryMessage';
+import { TAQueryMessage } from 'Plugins/GroupExAPI/TAQueryMessage'; // Import CheckTokenMessage
 import { AxiosResponse } from 'axios';
 import TA_ExerciseCard from './ta_ExerciseCard';
 import Sidebar from "Pages/Sidebar";
 import groupex_management_style from './groupex_management.module.css';
+import useTokenStore from 'Plugins/TokenStore';
+import { validateToken } from 'Plugins/ValidateToken'; // Import validateToken
 
 Modal.setAppElement('#root');
 
@@ -24,7 +26,8 @@ interface TAQueryResult {
 
 export const GroupexManagement: React.FC = () => {
     const history = useHistory();
-    const { Id } = useIdStore();
+    const { Id } = useIdStore(); // Get Id and Token from the store
+    const { Token } = useTokenStore();
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
     const [startTime, setStartTime] = useState<string>('');
@@ -60,6 +63,18 @@ export const GroupexManagement: React.FC = () => {
 
     const closeModal = () => {
         setModalIsOpen(false);
+    };
+
+    const validateTokenAndHandleCreate = async () => {
+        const isValidToken = await validateToken(Id, Token);
+        if (!isValidToken) {
+            setError('Token is invalid. Please log in again.');
+            history.push('/login'); // Redirect to login page
+            return;
+        }
+
+        // Proceed with creating the group exercise if token is valid
+        await handleCreateGroupex();
     };
 
     const handleCreateGroupex = async () => {
@@ -105,7 +120,7 @@ export const GroupexManagement: React.FC = () => {
 
     const convertToLocalTime = (utcString: string) => {
         const localTime = new Date(parseInt(utcString) + 8 * 60 * 60 * 1000);
-        return localTime.getTime().toString();
+        return localTime.toISOString().slice(0, 16); // Corrected to ISO format for input
     };
 
     return (
@@ -198,7 +213,7 @@ export const GroupexManagement: React.FC = () => {
                         </div>
                     </div>
                     <div className={groupex_management_style.modalFooter}>
-                        <button className={groupex_management_style.button} onClick={handleCreateGroupex}>
+                        <button className={groupex_management_style.button} onClick={validateTokenAndHandleCreate}>
                             创建
                         </button>
                         <button className={groupex_management_style.button} onClick={closeModal}>

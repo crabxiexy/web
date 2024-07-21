@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import useClubNameStore from 'Pages/student/ClubNameStore';
+import useClubNameStore from 'Plugins/ClubNameStore';
+import useIdStore from 'Plugins/IdStore';
+import useTokenStore from 'Plugins/TokenStore'; // Import token store
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { FetchClubInfoMessage } from 'Plugins/ClubAPI/FetchClubInfoMessage';
-import Sidebar from 'Pages/Sidebar';
-import student_myclub_style from './myclub.module.css';
-import useIdStore from 'Pages/IdStore';
 import { MemberQueryActivityMessage } from 'Plugins/ActivityAPI/MemberQueryActivityMessage';
 import { JoinActivityMessage } from 'Plugins/ActivityAPI/JoinActivityMessage';
-import { Activity, Club, Student } from 'Pages/types';
+import { Activity, Club, Student } from 'Plugins/types';
+import { validateToken } from 'Plugins/ValidateToken'; // Import the external validateToken function
+import Sidebar from 'Pages/Sidebar';
+import student_myclub_style from './myclub.module.css';
 
 export const MyClubInfo: React.FC = () => {
     const history = useHistory();
     const { ClubName, setClubName } = useClubNameStore();
     const { Id } = useIdStore();
+    const { Token } = useTokenStore(); // Retrieve token from token store
     const studentIdNumber = parseInt(Id);
+
     const [clubInfo, setClubInfo] = useState<Club | null>(null);
     const [leaderInfo, setLeaderInfo] = useState<Student | null>(null);
     const [members, setMembers] = useState<Student[]>([]);
@@ -77,6 +81,14 @@ export const MyClubInfo: React.FC = () => {
     };
 
     const handleJoinActivity = async (activityId: number) => {
+        // Validate token before joining activity
+        const isValidToken = await validateToken(Id, Token);
+
+        if (!isValidToken) {
+            setError('Token 验证失败，请重新登录。');
+            return;
+        }
+
         try {
             await sendPostRequest(new JoinActivityMessage(studentIdNumber, activityId));
             alert('成功加入活动！');

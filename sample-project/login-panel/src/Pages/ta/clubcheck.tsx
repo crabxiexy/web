@@ -3,10 +3,12 @@ import { useHistory } from 'react-router-dom';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { TAQueryHWMessage } from 'Plugins/ActivityAPI/TAQueryHWMessage';
 import Modal from 'react-modal';
-import useIdStore from 'Pages/IdStore';
+import useIdStore from 'Plugins/IdStore';
+import useTokenStore from 'Plugins/TokenStore'; // Import TokenStore for token validation
 import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
 import { CheckHWMessage } from 'Plugins/ActivityAPI/CheckHWMessage';
+import { validateToken } from 'Plugins/ValidateToken'; // Adjust path as necessary
 import Sidebar from 'Pages/Sidebar';
 import styles from './clubcheck.module.css';
 
@@ -26,42 +28,50 @@ interface Homework {
     student_names: string[];
 }
 
-export const ClubHWCheck = () => {
+export const ClubHWCheck: React.FC = () => {
     const history = useHistory();
+    const { Id } = useIdStore();
+    const { Token } = useTokenStore(); // Access TokenStore
     const [error, setError] = useState<string>('');
     const [result, setResult] = useState<Homework[]>([]);
     const [editResponse, setEditResponse] = useState<{ [key: number]: string }>({});
     const [modalOpen, setModalOpen] = useState<{ [key: number]: boolean }>({});
     const [selectedImageUrl, setSelectedImageUrl] = useState<string>('');
-    const { Id } = useIdStore();
 
     useEffect(() => {
-        handleTAQuery();
-    }, []);
+        const checkTokenAndFetchData = async () => {
+            try {
+                const isValidToken = await validateToken(Id,Token);
+                if (!isValidToken) {
+                    setError('Token is invalid. Please log in again.');
+                    history.push('/login'); // Redirect to login page
+                    return;
+                }
 
-    const handleTAQuery = async () => {
-        try {
-            const taQueryMessage = new TAQueryHWMessage(parseInt(Id));
-            const response = await sendPostRequest(taQueryMessage);
-            if (response && response.data) {
-                const enrichedResults = await Promise.all(response.data.map(async (homework: Homework) => {
-                    const studentNames = await fetchStudentNames(homework.student_id);
-                    return {
-                        ...homework,
-                        student_names: studentNames,
-                    };
-                }));
-                // Grouping homework by activity_id
-                const groupedResults = groupByActivity(enrichedResults);
-                setResult(groupedResults);
-                setError('');
-            } else {
-                setError('TA 查询失败，请重试。');
+                const taQueryMessage = new TAQueryHWMessage(parseInt(Id));
+                const response = await sendPostRequest(taQueryMessage);
+                if (response && response.data) {
+                    const enrichedResults = await Promise.all(response.data.map(async (homework: Homework) => {
+                        const studentNames = await fetchStudentNames(homework.student_id);
+                        return {
+                            ...homework,
+                            student_names: studentNames,
+                        };
+                    }));
+                    // Grouping homework by activity_id
+                    const groupedResults = groupByActivity(enrichedResults);
+                    setResult(groupedResults);
+                    setError('');
+                } else {
+                    setError('TA 查询失败，请重试。');
+                }
+            } catch (error) {
+                setError('查询失败，请重试。');
             }
-        } catch (error) {
-            setError('TA 查询失败，请重试。');
-        }
-    };
+        };
+
+        checkTokenAndFetchData();
+    }, [Id, Token, history]);
 
     const fetchStudentNames = async (studentId: number): Promise<string[]> => {
         const fetchMessage = new FetchNameMessage(studentId);
@@ -92,15 +102,6 @@ export const ClubHWCheck = () => {
         setSelectedImageUrl('');
     };
 
-    const sendNotification = async (studentId: number, taName: string, status: 'approved' | 'rejected', response: string) => {
-        const message = status === 'approved'
-            ? `你提交的作业被批准，回复是: ${response}`
-            : `你提交的作业被驳回，回复是: ${response}`;
-
-        const notificationMessage = new ReleaseNotificationMessage(taName, parseInt(Id), studentId, message);
-        await sendPostRequest(notificationMessage);
-    };
-
     const handleCheck = async (activityId: number, status: number) => {
         const responses = result.filter(hw => hw.activity_id === activityId).map(hw => ({
             activity_id: hw.activity_id,
@@ -128,6 +129,15 @@ export const ClubHWCheck = () => {
 
     const handleBatchReject = async (activityId: number) => {
         await handleCheck(activityId, 2); // Reject
+    };
+
+    const sendNotification = async (studentId: number, taName: string, status: 'approved' | 'rejected', response: string) => {
+        const message = status === 'approved'
+            ? `你提交的作业被批准，回复是: ${response}`
+            : `你提交的作业被驳回，回复是: ${response}`;
+
+        const notificationMessage = new ReleaseNotificationMessage(parseInt(Id), studentId, message);
+        await sendPostRequest(notificationMessage);
     };
 
     return (
@@ -194,9 +204,6 @@ export const ClubHWCheck = () => {
                         </table>
                     </div>
                 ) : <center>暂时没有需要审核的俱乐部活动作业。</center>}
-                <div className={styles.buttonGroup}>
-
-                </div>
                 {result.map((homework) => (
                     <Modal
                         key={homework.activity_id}
@@ -220,7 +227,6 @@ export const ClubHWCheck = () => {
                         </div>
                     </Modal>
                 ))}
-
             </div>
         </div>
     );

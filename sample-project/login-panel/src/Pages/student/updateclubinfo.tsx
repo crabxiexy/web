@@ -5,9 +5,12 @@ import { FetchClubInfoMessage } from 'Plugins/ClubAPI/FetchClubInfoMessage';
 import { UpdateIntroMessage } from 'Plugins/ClubAPI/UpdateIntroMessage';
 import { UpdateProfileMessage } from 'Plugins/ClubAPI/UpdateProfileMessage';
 import * as Minio from 'minio';
-import useClubNameStore from 'Pages/student/ClubNameStore';
+import useClubNameStore from 'Plugins/ClubNameStore';
+import useIdStore from 'Plugins/IdStore';
+import useTokenStore from 'Plugins/TokenStore';
 import Sidebar from 'Pages/Sidebar';
 import updateclubinfo_style from './updateclubinfo.module.css';
+import { validateToken } from 'Plugins/ValidateToken'; // Import the external validateToken function
 
 const minioClient = new Minio.Client({
     endPoint: '127.0.0.1',
@@ -26,6 +29,8 @@ export const UpdateClubInfo = () => {
     const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
     const [error, setError] = useState('');
     const [isEditingIntro, setIsEditingIntro] = useState(false);
+    const token = useTokenStore(state => state.Token); // Fetch the token from the token store
+    const { Id } = useIdStore();
 
     useEffect(() => {
         const fetchClubInfo = async () => {
@@ -47,6 +52,12 @@ export const UpdateClubInfo = () => {
     }, [ClubName]);
 
     const handleUpdateIntro = async () => {
+        const isValidToken = await validateToken(Id, token);
+        if (!isValidToken) {
+            setError('Token 验证失败，请重试。');
+            return;
+        }
+
         const updateMessage = new UpdateIntroMessage(ClubName, newIntro);
         try {
             await sendPostRequest(updateMessage);
@@ -73,6 +84,12 @@ export const UpdateClubInfo = () => {
     };
 
     const handleUpdateProfile = async () => {
+        const isValidToken = await validateToken(Id, token);
+        if (!isValidToken) {
+            setError('Token 验证失败，请重试。');
+            return;
+        }
+
         if (newProfile) {
             const filename = newProfile.name;
             try {

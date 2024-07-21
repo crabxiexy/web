@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
-import useIdStore from 'Pages/IdStore';
+import useIdStore from 'Plugins/IdStore';
+import useTokenStore from 'Plugins/TokenStore'
 import Sidebar from 'Pages/Sidebar';
 import { AdminQueryAppMessage } from 'Plugins/ClubAPI/AdminQueryAppMessage';
 import { ReplyAppMessage } from 'Plugins/ClubAPI/ReplyAppMessage';
@@ -9,12 +10,14 @@ import { FoundClubMessage } from 'Plugins/ClubAPI/FoundClubMessage';
 import { GetDepartmentStudentMessage } from 'Plugins/StudentAPI/GetDepartmentStudentMessage';
 import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
 import root_styles from './root.module.css';
-import { ClubApplication } from 'Pages/types'; // 导入新的类型定义
+import { ClubApplication } from 'Plugins/types'; // Import new type definition
+import { validateToken } from 'Plugins/ValidateToken';
+
 
 export function Root() {
     const history = useHistory();
     const [dropdownVisible, setDropdownVisible] = useState(false);
-    const { setId } = useIdStore();
+    const { Id,setId } = useIdStore();
     const [applications, setApplications] = useState<ClubApplication[]>([]);
     const [showModal, setShowModal] = useState(false);
     const [selectedApplication, setSelectedApplication] = useState<ClubApplication | null>(null);
@@ -23,7 +26,7 @@ export function Root() {
     const [error, setError] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 4;
-
+    const {Token} = useTokenStore();
     const toggleDropdown = () => {
         setDropdownVisible(!dropdownVisible);
     };
@@ -61,6 +64,12 @@ export function Root() {
     };
 
     const handleSubmitReply = async () => {
+        const tokenIsValid = await validateToken(Id,Token);
+        if (!tokenIsValid) {
+            setError('Token is invalid. Please log in again.');
+            return;
+        }
+
         if (!selectedApplication) {
             setError('没有选择申请。');
             return;
@@ -70,13 +79,14 @@ export function Root() {
             setError('请填写回复。');
             return;
         }
+
         const replyMessage = new ReplyAppMessage(selectedApplication.name, result, response);
         try {
             const replyResponse = await sendPostRequest(replyMessage);
             if (replyResponse.status === 200 && result === 1) {
                 alert('回复成功！');
 
-// Trigger FoundClubMessage
+                // Trigger FoundClubMessage
                 const foundClubMessage = new FoundClubMessage(
                     selectedApplication.name,
                     selectedApplication.leader.studentID,
@@ -85,11 +95,10 @@ export function Root() {
                     ''
                 );
                 await sendPostRequest(foundClubMessage);
+
+                // Fetch department students and send notifications
                 const departmentStudentsResponse = await sendPostRequest(new GetDepartmentStudentMessage(selectedApplication.department));
                 const departmentStudents = departmentStudentsResponse.data;
-
-
-// Send notification to all department students
                 for (const student of departmentStudents) {
                     const notificationMessage = new ReleaseNotificationMessage(
                         selectedApplication.leader.studentID,
@@ -103,7 +112,7 @@ export function Root() {
                 setResponse('');
                 setResult(0);
 
-// Refresh applications
+                // Refresh applications
                 const queryMessage = new AdminQueryAppMessage(0);
                 const applicationResponse = await sendPostRequest(queryMessage);
                 setApplications(applicationResponse.data);
@@ -113,7 +122,7 @@ export function Root() {
         }
     };
 
-// Calculate the number of pages based on the number of applications and items per page
+    // Calculate the number of pages based on the number of applications and items per page
     const totalPages = Math.ceil(applications.length / itemsPerPage);
 
     return (

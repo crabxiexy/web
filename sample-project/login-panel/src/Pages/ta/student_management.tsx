@@ -7,11 +7,11 @@ import { CheckTokenMessage } from 'Plugins/DoctorAPI/CheckTokenMessage';
 import { GetStudentMessage } from 'Plugins/StudentAPI/GetStudentMessage';
 import { TAQueryMessage } from 'Plugins/StudentAPI/TAQueryMessage';
 import { AssignScoreMessage } from 'Plugins/StudentAPI/AssignScoreMessage';
-import useIdStore from 'Pages/IdStore';
-import useTokenStore from 'Pages/TokenStore';
+import useIdStore from 'Plugins/IdStore';
+import useTokenStore from 'Plugins/TokenStore';
 import styles from './student_management.module.css';
 import Sidebar from 'Pages/Sidebar';
-import { Student, TA } from 'Pages/types';
+import { Student, TA } from 'Plugins/types';
 
 interface TAData extends Student {
     standardScore: number;
@@ -21,7 +21,7 @@ interface TAData extends Student {
 export const AssignTA: React.FC = () => {
     const history = useHistory();
     const { Id } = useIdStore();
-    const token = useTokenStore(state => state.Token);
+    const {Token} =useTokenStore();
     const [students, setStudents] = useState<Student[]>([]);
     const [selectedStudents, setSelectedStudents] = useState<Set<number>>(new Set());
     const [error, setError] = useState<string>('');
@@ -98,6 +98,23 @@ export const AssignTA: React.FC = () => {
         );
     };
 
+    const validateTokenAndSubmitScores = async () => {
+        try {
+            const taIdNumber = parseInt(Id);
+            const checkTokenMessage = new CheckTokenMessage(taIdNumber, Token);
+            const tokenResponse = await sendPostRequest(checkTokenMessage);
+
+            if (tokenResponse.data === "Token is valid.") {
+                await handleSubmitScores();
+            } else {
+                setError("Token无效或已过期。");
+                history.push("/login");
+            }
+        } catch {
+            setError('Token 验证失败，请重试。');
+        }
+    };
+
     const handleSubmitScores = async () => {
         try {
             for (const ta of taData) {
@@ -121,7 +138,7 @@ export const AssignTA: React.FC = () => {
     const handleAssignTA = async () => {
         try {
             const taIdNumber = parseInt(Id);
-            const checkTokenMessage = new CheckTokenMessage(taIdNumber, token);
+            const checkTokenMessage = new CheckTokenMessage(taIdNumber, Token);
             const tokenResponse = await sendPostRequest(checkTokenMessage);
 
             if (tokenResponse.data === "Token is valid.") {
@@ -166,7 +183,7 @@ export const AssignTA: React.FC = () => {
                 {error && <p className={styles.errorMessage}>{error}</p>}
                 <div className={styles.tableHeader}>
                     <h2>已分配至当前 TA 的学生</h2>
-                    <button className={styles.button} onClick={handleSubmitScores}>提交成绩</button>
+                    <button className={styles.button} onClick={validateTokenAndSubmitScores}>提交成绩</button>
                     <button className={styles.button} onClick={openModal}>增加学生</button>
                 </div>
                 <div className={styles.tableContainer}>

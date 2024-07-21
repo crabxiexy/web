@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { TAQueryRunningMessage } from 'Plugins/RunAPI/TAQueryRunningMessage';
-import useIdStore from 'Pages/IdStore';
+import useIdStore from 'Plugins/IdStore';
+import useTokenStore from 'Plugins/TokenStore';
 import { CheckRunningMessage } from 'Plugins/RunAPI/CheckRunningMessage';
 import Modal from 'react-modal';
 import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
+import { validateToken } from 'Plugins/ValidateToken'; // Import validateToken
 import Sidebar from "Pages/Sidebar";
 import styles from './running_check.module.css'; // Import the CSS module
 
@@ -25,14 +27,15 @@ interface Run {
     studentName: string;
 }
 
-export const RunningCheck = () => {
+export const RunningCheck: React.FC = () => {
     const history = useHistory();
     const [error, setError] = useState<string>('');
     const [result, setResult] = useState<Run[]>([]);
     const [editData, setEditData] = useState<{ [key: number]: { response?: string } }>({});
-    const [modalOpen, setModalOpen] = useState<{ [key: number]: boolean }>({});
+    const [modalOpen, setModalOpen] = useState<number | null>(null);
     const [selectedImageUrl, setSelectedImageUrl] = useState<string>('');
     const { Id } = useIdStore();
+    const { Token } = useTokenStore(); // Get Token from the store
 
     useEffect(() => {
         handleTAQuery();
@@ -85,11 +88,11 @@ export const RunningCheck = () => {
 
     const handleImageClick = (imageUrl: string, runId: number) => {
         setSelectedImageUrl(imageUrl);
-        setModalOpen((prev) => ({ ...prev, [runId]: true }));
+        setModalOpen(runId);
     };
 
-    const closeModal = (runId: number) => {
-        setModalOpen((prev) => ({ ...prev, [runId]: false }));
+    const closeModal = () => {
+        setModalOpen(null);
         setSelectedImageUrl('');
     };
 
@@ -98,7 +101,7 @@ export const RunningCheck = () => {
             ? `你提交的跑步记录被批准，回复是: ${response}`
             : `你提交的跑步记录被驳回，回复是: ${response}`;
 
-        const notificationMessage = new ReleaseNotificationMessage(taName, parseInt(Id), studentId, message);
+        const notificationMessage = new ReleaseNotificationMessage(parseInt(Id), studentId, message);
         await sendPostRequest(notificationMessage);
     };
 
@@ -108,31 +111,22 @@ export const RunningCheck = () => {
         return response.data; // Adjust based on your API response structure
     };
 
-    const handleCheck = async (runId: number, studentId: number) => {
-        const { response = '' } = editData[runId] || {}; // Default to empty string if undefined
-        const checkRunningMessage = new CheckRunningMessage(runId, 1, response);
-
-        try {
-            await sendPostRequest(checkRunningMessage);
-            setResult((prevResult) => prevResult.filter((run) => run.runID !== runId));
-            // Send notification after approval
-            const taName = await fetchStudentName(parseInt(Id)); // Fetch TA name based on the runId or your logic
-            await sendNotification(studentId, taName, 'approved', response); // Use studentID here
-        } catch (error) {
-            setError('提交失败，请重试。');
+    const handleAction = async (runId: number, studentId: number, status: number) => {
+        const isValidToken = await validateToken(Id, Token);
+        if (!isValidToken) {
+            setError('Token is invalid. Please log in again.');
+            history.push('/login'); // Redirect to login page
+            return;
         }
-    };
 
-    const handleReject = async (runId: number, studentId: number) => {
         const { response = '' } = editData[runId] || {}; // Default to empty string if undefined
-        const checkRunningMessage = new CheckRunningMessage(runId, 2, response);
+        const checkRunningMessage = new CheckRunningMessage(runId, status, response);
 
         try {
             await sendPostRequest(checkRunningMessage);
             setResult((prevResult) => prevResult.filter((run) => run.runID !== runId));
-            // Send notification after rejection
-            const taName = await fetchStudentName(parseInt(Id)); // Fetch TA name based on the runId or your logic
-            await sendNotification(studentId, taName, 'rejected', response); // Use studentID here
+            const taName = await fetchStudentName(parseInt(Id));
+            await sendNotification(studentId, taName, status === 1 ? 'approved' : 'rejected', response);
         } catch (error) {
             setError('提交失败，请重试。');
         }
@@ -174,27 +168,29 @@ export const RunningCheck = () => {
                                             className={styles.button}
                                             onClick={() => handleImageClick(run.imgurl, run.runID)}
                                         >
-                                            查看
+                                            查看图片
                                         </button>
                                     </td>
                                     <td>
-                                        <input
-                                            type="text"
-                                            value={editData[run.runID]?.response ?? run.response}
-                                            onChange={(e) =>
-                                                handleFieldChange(run.runID, 'response', e.target.value)
-                                            }
-                                        />
+                                            <textarea
+                                                value={editData[run.runID]?.response || ''}
+                                                onChange={(e) => handleFieldChange(run.runID, 'response', e.target.value)}
+                                                placeholder="输入回复"
+                                            />
                                     </td>
                                     <td>{run.speed.toFixed(2)}</td>
                                     <td>
-                                        <button className={styles.button}
-                                                onClick={() => handleCheck(run.runID, run.studentID)}>
+                                        <button
+                                            className={styles.button}
+                                            onClick={() => handleAction(run.runID, run.studentID, 1)}
+                                        >
                                             通过
                                         </button>
-                                        <button className={styles.button}
-                                                onClick={() => handleReject(run.runID, run.studentID)}>
-                                            拒绝
+                                        <button
+                                            className={styles.button}
+                                            onClick={() => handleAction(run.runID, run.studentID, 2)}
+                                        >
+                                            驳回
                                         </button>
                                     </td>
                                 </tr>
@@ -203,27 +199,19 @@ export const RunningCheck = () => {
                         </table>
                     </div>
                 )}
-                {result.map((run) => (
+                {modalOpen !== null && (
                     <Modal
-                        key={run.runID}
-                        isOpen={modalOpen[run.runID] || false}
-                        onRequestClose={() => closeModal(run.runID)}
-                        contentLabel="Image Modal"
-                        className={styles.imageModal}
-                        overlayClassName={styles.imageModalOverlay}
+                        isOpen={modalOpen !== null}
+                        onRequestClose={closeModal}
+                        className={styles.modal}
+                        overlayClassName={styles.overlay}
                     >
-                        <div className={styles.modalContent}>
-                            <button className={styles.closeButton} onClick={() => closeModal(run.runID)}>
-                                &times;
-                            </button>
-                            <img
-                                src={run.imgurl}
-                                alt="Selected"
-                                className={styles.modalImage}
-                            />
-                        </div>
+                        <img src={selectedImageUrl} alt="Proof" className={styles.modalImage} />
+                        <button className={styles.closeButton} onClick={closeModal}>
+                            关闭
+                        </button>
                     </Modal>
-                ))}
+                )}
             </div>
         </div>
     );

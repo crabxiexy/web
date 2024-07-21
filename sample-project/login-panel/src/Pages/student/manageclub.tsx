@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import Modal from 'react-modal';
-import useClubNameStore from 'Pages/student/ClubNameStore';
-import useIdStore from 'Pages/IdStore';
+import useClubNameStore from 'Plugins/ClubNameStore';
+import useIdStore from 'Plugins/IdStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { FetchClubInfoMessage } from 'Plugins/ClubAPI/FetchClubInfoMessage';
 import { QueryApplyMessage } from 'Plugins/ClubAPI/QueryApplyMessage';
@@ -10,10 +10,11 @@ import { ResponseStudentApplyMessage } from 'Plugins/ClubAPI/ResponseStudentAppl
 import { AddMemberMessage } from 'Plugins/ClubAPI/AddMemberMessage';
 import { CreateActivityMessage } from 'Plugins/ActivityAPI/CreateActivityMessage';
 import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
-import { Student, Club, StudentApplication, Activity } from 'Plugins/type';
+import { Student, Club, StudentApplication, Activity } from 'Plugins/types';
 import student_manageclub_style from './manageclub.module.css';
 import Sidebar from 'Pages/Sidebar';
-
+import {validateToken} from 'Plugins/ValidateToken'
+import useTokenStore from 'Plugins/TokenStore'
 
 export const ManagedClubInfo: React.FC = () => {
     const { Id } = useIdStore();
@@ -42,7 +43,7 @@ export const ManagedClubInfo: React.FC = () => {
     });
     const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
     const [leaderName, setLeaderName] = useState<string>('');
-
+    const {Token} =useTokenStore();
     useEffect(() => {
         fetchClubInfo();
     }, [ClubName]);
@@ -89,6 +90,12 @@ export const ManagedClubInfo: React.FC = () => {
     };
 
     const handleResponseApplication = async (studentId: number, result: number) => {
+        const tokenIsValid = await validateToken(Id,Token);
+        if (!tokenIsValid) {
+            setError('Token is invalid. Please log in again.');
+            return;
+        }
+
         try {
             await sendPostRequest(new ResponseStudentApplyMessage(ClubName, studentId, result));
             if (result === 1) {
@@ -108,9 +115,16 @@ export const ManagedClubInfo: React.FC = () => {
         }
     };
 
+// Create activity with token validation
     const handleCreateActivity = async () => {
-        console.log(ClubName)
-        console.log(studentIdNumber)
+        const tokenIsValid = await validateToken(Id,Token);
+        if (!tokenIsValid) {
+            setError('Token is invalid. Please log in again.');
+            return;
+        }
+
+        console.log(ClubName);
+        console.log(studentIdNumber);
         if (!newActivity.startTime || !newActivity.finishTime || !newActivity.activityName || !newActivity.lowLimit || !newActivity.upLimit) {
             setError('请填写活动基本信息！');
             return;

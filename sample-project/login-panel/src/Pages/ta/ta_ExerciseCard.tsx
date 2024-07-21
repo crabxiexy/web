@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import useIdStore from 'Pages/IdStore';
+import useIdStore from 'Plugins/IdStore';
 import { TASignMessage } from 'Plugins/GroupExAPI/TASignMessage';
 import { ExQueryMessage } from 'Plugins/GroupExAPI/ExQueryMessage';
 import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage'; // Import the FetchNameMessage

@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import useClubNameStore from 'Pages/student/ClubNameStore';
+import useClubNameStore from 'Plugins/ClubNameStore';
 import { FetchClubInfoMessage } from 'Plugins/ClubAPI/FetchClubInfoMessage';
 import { ApplyMemberMessage } from 'Plugins/ClubAPI/ApplyMemberMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { ShowActivityMessage } from 'Plugins/ActivityAPI/ShowActivityMessage';
 import availableclubinfo_style from './availableclub.module.css';
 import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
-import useIdStore from 'Pages/IdStore';
+import useIdStore from 'Plugins/IdStore';
+import useTokenStore from 'Plugins/TokenStore';
 import Sidebar from 'Pages/Sidebar';
-import { Club, Activity, Student } from 'Pages/types'; // Import types
+import { Club, Activity, Student } from 'Plugins/types'; // Import types
+import { validateToken } from 'Plugins/ValidateToken'; // Import token validation utility
 
 export const AvailableClubInfo: React.FC = () => {
     const history = useHistory();
@@ -20,7 +22,7 @@ export const AvailableClubInfo: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
     const [error, setError] = useState<string>('');
     const [modalMembers, setModalMembers] = useState<Student[]>([]); // State for members in modal
-
+    const {Token}=useTokenStore();
     useEffect(() => {
         fetchClubInfo();
         fetchActivities();
@@ -55,6 +57,12 @@ export const AvailableClubInfo: React.FC = () => {
     };
 
     const handleApplyToJoin = async () => {
+        const tokenIsValid = await validateToken(Id,Token);
+        if (!tokenIsValid) {
+            setError('Token is invalid. Please log in again.');
+            return;
+        }
+
         try {
             const applyMessage = new ApplyMemberMessage(parseInt(Id), ClubName);
             await sendPostRequest(applyMessage);

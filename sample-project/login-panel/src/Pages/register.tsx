@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router';
 import { RegisterMessage } from 'Plugins/DoctorAPI/RegisterMessage';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
-import { useHistory } from 'react-router';
+import { validateToken } from 'Plugins/ValidateToken'; // Adjust the path as necessary
+import useIdStore from 'Plugins/IdStore';
+import useTokenStore from 'Plugins/TokenStore';
 import register_style from './register.module.css';
 
 // Define enum for identity mapping
@@ -13,6 +16,8 @@ enum Identity {
 
 export function Register() {
     const history = useHistory();
+    const { Id } = useIdStore();
+    const { Token } = useTokenStore();
     const [students, setStudents] = useState<{ student_id: string; name: string; password: string; department: string; class_name: string }[]>([
         { student_id: '', name: '', password: '', department: '', class_name: '' }
     ]);
@@ -33,6 +38,16 @@ export function Register() {
 
     const handleRegister = async () => {
         try {
+            // Validate token
+            const isValidToken = await validateToken(Id, Token);
+
+            if (!isValidToken) {
+                setError('Token is invalid. Please log in again.');
+                history.push('/login'); // Redirect to login page
+                return;
+            }
+
+            // Proceed with registration if token is valid
             for (const student of students) {
                 const { student_id, name, password, department, class_name } = student;
                 const identityNumber = Identity[identity as keyof typeof Identity]; // Convert string to enum number
@@ -84,7 +99,7 @@ export function Register() {
                         </select>
                     </div>
 
-                    {/* Your existing JSX code here */}
+                    {/* Student registration fields */}
                     {students.map((student, index) => (
                         <div key={index} className={register_style.student_form}>
                             <input

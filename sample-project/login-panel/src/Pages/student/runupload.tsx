@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
-import useIdStore from 'Pages/IdStore';
+import useIdStore from 'Plugins/IdStore';
+import useTokenStore from 'Plugins/TokenStore'
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { SubmitRunningMessage } from 'Plugins/RunAPI/SubmitRunningMessage';
 import { ReleaseNotificationMessage } from 'Plugins/NotificationAPI/ReleaseNotificationMessage';
 import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { GetTAMessage } from 'Plugins/StudentAPI/GetTAMessage'; // Import your getTA message
+import { validateToken } from 'Plugins/ValidateToken'; // Import the external validateToken function
 import * as Minio from 'minio';
 import runupload_styles from './runupload.module.css';
 import Sidebar from 'Pages/Sidebar'; // Import Sidebar
@@ -59,6 +61,15 @@ export const RunUpload: React.FC = () => {
     const handleSubmit = async () => {
         if (startTime && finishTime && distance && uploadedImage) {
             const filename = uploadedImage.name;
+
+            // Validate token before proceeding
+            const {Token} = useTokenStore() // Replace with actual token retrieval logic
+            const isValidToken = await validateToken(Id, Token);
+
+            if (!isValidToken) {
+                setError('Token 验证失败，请重新登录。');
+                return;
+            }
 
             try {
                 // Upload image to MinIO
@@ -178,7 +189,7 @@ export const RunUpload: React.FC = () => {
                         回到主页
                     </button>
                 </div>
-                {submitted && <p className={runupload_styles.submittedMessage}>Run data submitted successfully!</p>}
+                {submitted && <p className={runupload_styles.submittedMessage}>跑步数据提交成功！</p>}
             </div>
         </div>
     );

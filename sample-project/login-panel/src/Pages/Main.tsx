@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import SyncLoader from "react-spinners/SyncLoader";
 import main_styles from './Main.module.css'; // Import the CSS module
+import { RegisterMessage } from 'Plugins/DoctorAPI/RegisterMessage';
+import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 
 export function Main(): JSX.Element {
     const history = useHistory();
@@ -29,8 +31,14 @@ export function Main(): JSX.Element {
         history.push("/help");
     };
 
-    const handleRegister = (): void => {
-        history.push("/register");
+    const handleRegister = async (): Promise<void> => {
+        const response=await sendPostRequest(new RegisterMessage(0, "admin", "admin", 1, "None", "None", "None"));
+        if((response) &&(response.status === 200)){
+            alert("成功注册！管理员密码为admin");
+        }
+        else{
+            alert("出错！");
+        }
     };
 
     const handleLogin = (): void => {
@@ -43,7 +51,7 @@ export function Main(): JSX.Element {
                 <h1>乐动力 Pro</h1>
                 <div className={`${main_styles.buttonGroup}`}>
                     <button className={`${main_styles.btn}`} onClick={handleLogin}>登录</button>
-                    <button className={`${main_styles.btn}`} onClick={handleRegister}>注册</button>
+                    <button className={`${main_styles.btn}`} onClick={handleRegister}>注册管理员（第一次使用）</button>
                 </div>
             </header>
             {loading ? (

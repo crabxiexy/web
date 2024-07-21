@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
-import useIdStore from 'Pages/IdStore';
+import useIdStore from 'Plugins/IdStore';
+import useTokenStore from 'Plugins/TokenStore';
 import { StudentQueryMessage } from 'Plugins/GroupExAPI/StudentQueryMessage';
 import { SigninMessage } from 'Plugins/GroupExAPI/SigninMessage';
 import { SignoutMessage } from 'Plugins/GroupExAPI/SignoutMessage';
@@ -9,6 +10,7 @@ import Student_ExerciseCard from './student_ExerciseCard';
 import Sidebar from 'Pages/Sidebar';
 import { StudentRecordQueryMessage } from 'Plugins/GroupExAPI/StudentRecordQueryMessage';
 import checkgroupex_style from './checkgroupex.module.css';
+import { validateToken } from 'Plugins/ValidateToken';
 
 export const Checkgroupex: React.FC = () => {
     const history = useHistory();
@@ -16,7 +18,7 @@ export const Checkgroupex: React.FC = () => {
     const [studentQueryResult, setStudentQueryResult] = useState<any[]>([]);
     const [studentRecord, setStudentRecord] = useState<any[]>([]);
     const [error, setError] = useState<string>('');
-
+    const {Token} = useTokenStore();
     useEffect(() => {
         const fetchGroupexData = async () => {
             const studentQueryMessage = new StudentQueryMessage(parseInt(Id));
@@ -51,7 +53,7 @@ export const Checkgroupex: React.FC = () => {
             console.error('Invalid timestamp format:', timestamp);
             return null;
         }
-        return new Date(parsedTime); // 创建日期对象
+        return new Date(parsedTime);
     };
 
     const notStarted = studentQueryResult.filter(item => {
@@ -72,6 +74,12 @@ export const Checkgroupex: React.FC = () => {
     });
 
     const handleSignin = async (groupexID: number, token: string) => {
+        const tokenIsValid = await validateToken(Id,Token);
+        if (!tokenIsValid) {
+            setError('Token is invalid. Please log in again.');
+            return;
+        }
+
         if (!token) {
             setError('请填写token。');
             return;
@@ -86,6 +94,12 @@ export const Checkgroupex: React.FC = () => {
     };
 
     const handleSignout = async (groupexID: number, token: string) => {
+        const tokenIsValid = await validateToken(Id,Token);
+        if (!tokenIsValid) {
+            setError('Token is invalid. Please log in again.');
+            return;
+        }
+
         const signoutMessage = new SignoutMessage(parseInt(Id), groupexID, token);
         try {
             await sendPostRequest(signoutMessage);
@@ -112,17 +126,17 @@ export const Checkgroupex: React.FC = () => {
                         <h3>未开始</h3>
                         <div className={checkgroupex_style.exerciseCardContainer}>
                             {notStarted.map(item => (
-                            <Student_ExerciseCard
-                                key={item.groupexID}
-                                groupexID={item.groupexID}
-                                startTime={formatDate(item.starttime)}
-                                finishTime={formatDate(item.finishtime)}
-                                location={item.location}
-                                exName={item.ex_name}
-                                status={item.status}
-                                onSignin={handleSignin}
-                                onSignout={handleSignout}
-                            />
+                                <Student_ExerciseCard
+                                    key={item.groupexID}
+                                    groupexID={item.groupexID}
+                                    startTime={formatDate(item.starttime)}
+                                    finishTime={formatDate(item.finishtime)}
+                                    location={item.location}
+                                    exName={item.ex_name}
+                                    status={item.status}
+                                    onSignin={handleSignin}
+                                    onSignout={handleSignout}
+                                />
                             ))}
                         </div>
                     </div>

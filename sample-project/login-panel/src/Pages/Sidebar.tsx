@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import useIdStore from './IdStore';
+import useIdStore from 'Plugins/IdStore';
 import { sendPostRequest } from 'Plugins/CommonUtils/APIUtils';
 import { FetchNameMessage } from 'Plugins/DoctorAPI/FetchNameMessage';
 import { FetchProfileMessage } from 'Plugins/DoctorAPI/FetchProfileMessage';
 import { useHistory } from 'react-router';
 import styles from './Sidebar.module.css';
-import useTokenStore from './TokenStore';
+import useTokenStore from 'Plugins/TokenStore';
 
 const Sidebar = () => {
     const { Id, setId } = useIdStore();
